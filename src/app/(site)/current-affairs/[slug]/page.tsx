@@ -1,8 +1,12 @@
 import { getPostBySlug } from "@/lib/posts";
+import { getQuizByPostId } from "@/lib/quizzes";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { format } from "date-fns";
 import type { Metadata } from "next";
+import PostViewTracker from "@/components/site/PostViewTracker";
+import { ClipboardList } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -34,8 +38,11 @@ export default async function PostPage({
 
   if (!post || post.status !== "published") notFound();
 
+  const quiz = await getQuizByPostId(post.id);
+
   return (
     <article className="mx-auto max-w-3xl">
+      <PostViewTracker slug={post.slug} />
       {post.category && (
         <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
           {post.category.name}
@@ -77,6 +84,25 @@ export default async function PostPage({
             </span>
           ))}
         </div>
+      )}
+
+      {quiz && (
+        <Link
+          href={`/quiz/${quiz.slug}`}
+          className="mt-10 flex items-center gap-4 rounded-2xl border border-indigo-200 bg-indigo-50 p-5 hover:border-indigo-400"
+        >
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
+            <ClipboardList size={20} />
+          </span>
+          <span>
+            <span className="block font-bold text-indigo-900">
+              Test yourself on this article
+            </span>
+            <span className="block text-sm text-indigo-700">
+              Take the &ldquo;{quiz.title}&rdquo; quiz →
+            </span>
+          </span>
+        </Link>
       )}
     </article>
   );

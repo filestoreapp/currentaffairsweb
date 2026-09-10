@@ -31,3 +31,38 @@ export interface Post {
   created_at: string;
   updated_at: string;
 }
+
+export type QuizStatus = "draft" | "published";
+
+export interface QuizQuestion {
+  id: string;
+  quiz_id: string;
+  question: string;
+  options: string[];
+  correct_index: number;
+  explanation: string | null;
+  position: number;
+}
+
+export interface Quiz {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  post_id: string | null;
+  post?: Post | null;
+  status: QuizStatus;
+  created_at: string;
+  updated_at: string;
+  questions?: QuizQuestion[];
+  attempt_count?: number;
+}
+
+export interface QuizAttempt {
+  id: string;
+  quiz_id: string;
+  name: string;
+  score: number;
+  total: number;
+  created_at: string;
+}

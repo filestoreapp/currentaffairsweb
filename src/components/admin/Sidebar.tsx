@@ -10,6 +10,8 @@ import {
   PlusCircle,
   LogOut,
   Globe,
+  ClipboardList,
+  BarChart3,
 } from "lucide-react";
 
 const links = [
@@ -17,6 +19,8 @@ const links = [
   { href: "/admin/posts", label: "Posts", icon: FileText },
   { href: "/admin/posts/new", label: "New Post", icon: PlusCircle },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
+  { href: "/admin/quizzes", label: "Quizzes", icon: ClipboardList },
+  { href: "/admin/statistics", label: "Statistics", icon: BarChart3 },
 ];
 
 export default function Sidebar() {

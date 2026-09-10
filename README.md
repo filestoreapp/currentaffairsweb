@@ -143,7 +143,37 @@ Just add more users from **Supabase Dashboard → Authentication → Users**.
 Every authenticated user has full admin access (create/edit/delete
 posts & categories).
 
-## 9. Customization ideas
+## 9. Quizzes & Statistics (added after initial launch)
+
+If you're updating an existing deployment, just re-run the **entire**
+`supabase/schema.sql` file again in the Supabase SQL Editor — it's
+written to be safe to re-run (`create table if not exists`, `drop
+policy if exists`) and will only add the new `quizzes`,
+`quiz_questions`, `quiz_attempts` and `page_views` tables plus the
+`increment_post_views` function, without touching your existing posts.
+
+**Quizzes**
+- Manage from `/admin/quizzes` — create a quiz, add questions (4
+  options each, pick the correct one, optional explanation), and
+  either leave it standalone or attach it to a specific post.
+- Standalone quizzes show up at `/quiz`. Quizzes attached to a post
+  show a "Test yourself on this article" card at the bottom of that
+  post.
+- Visitors type their name, answer one question at a time with
+  instant feedback, and see a leaderboard (top 10 scores) at the end.
+  There's no login — scores are self-reported client-side, which is
+  fine for casual practice quizzes but not tamper-proof, so don't use
+  this for anything that needs to be cheat-proof.
+
+**Statistics**
+- `/admin/statistics` shows total post views, visits in the last 30
+  days (with a chart), quiz attempt counts, average quiz scores, your
+  5 most-viewed posts, and per-quiz performance.
+- Visit tracking is a lightweight built-in page-view logger (no
+  external analytics account needed) — every page load writes one row
+  to the `page_views` table.
+
+## 10. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material
