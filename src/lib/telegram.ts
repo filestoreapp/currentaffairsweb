@@ -1,4 +1,15 @@
-import type { Post } from "@/lib/types";
+import type { Post, PscUpdate } from "@/lib/types";
+
+const SOURCE_LABELS: Record<PscUpdate["source"], string> = {
+  notifications: "Notification",
+  examination_notification: "Examination Notification",
+  syllabus: "Syllabus",
+  exam_programme: "Exam Programme",
+  result_notifications: "Result Notification",
+  shortlists: "Short List",
+  rankedlist: "Ranked List",
+  interviews: "Interview Schedule",
+};
 
 /**
  * TELEGRAM AUTO-POST — PLACEHOLDER
@@ -48,6 +59,41 @@ export async function postToTelegram(post: Post) {
   if (!res.ok) {
     const errText = await res.text();
     console.error("Telegram post failed:", errText);
+    return { skipped: false, ok: false };
+  }
+
+  return { skipped: false, ok: true };
+}
+
+/**
+ * Same Telegram hook as postToTelegram, but for items picked up by the
+ * PSC auto-update scraper (src/lib/psc-scraper) rather than blog posts.
+ * Uses the same env vars (TELEGRAM_ENABLED / TELEGRAM_BOT_TOKEN /
+ * TELEGRAM_CHANNEL_ID) and silently no-ops until those are set.
+ */
+export async function postPscUpdateToTelegram(item: PscUpdate) {
+  const enabled = process.env.TELEGRAM_ENABLED === "true";
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const channelId = process.env.TELEGRAM_CHANNEL_ID;
+
+  if (!enabled || !token || !channelId) {
+    return { skipped: true };
+  }
+
+  const label = SOURCE_LABELS[item.source] ?? item.source;
+  const link = item.pdf_url || item.source_url;
+  const text = `📢 *New ${label}*\n\n${item.title}\n\n🔗 ${link}`;
+
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "Markdown" }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("Telegram PSC update post failed:", errText);
     return { skipped: false, ok: false };
   }
 

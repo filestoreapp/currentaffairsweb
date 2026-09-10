@@ -26,6 +26,9 @@ export default async function Header() {
           <Link href="/quiz" className="hover:text-indigo-600">
             Quiz
           </Link>
+          <Link href="/psc-updates" className="hover:text-indigo-600">
+            PSC Updates
+          </Link>
           {categories.slice(0, 3).map((c) => (
             <Link
               key={c.id}

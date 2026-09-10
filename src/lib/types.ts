@@ -66,3 +66,28 @@ export interface QuizAttempt {
   total: number;
   created_at: string;
 }
+
+// ---- PSC auto-updates (scraped from keralapsc.gov.in) ----
+
+export type PscSourceKey =
+  | "notifications"
+  | "examination_notification"
+  | "syllabus"
+  | "exam_programme"
+  | "result_notifications"
+  | "shortlists"
+  | "rankedlist"
+  | "interviews";
+
+export interface PscUpdate {
+  id: string;
+  source: PscSourceKey;
+  title: string;
+  source_url: string;
+  pdf_url: string | null;
+  category_number: string | null;
+  published_on: string | null;
+  scraped_at: string;
+  telegram_posted: boolean;
+  created_at: string;
+}

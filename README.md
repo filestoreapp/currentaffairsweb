@@ -173,7 +173,65 @@ policy if exists`) and will only add the new `quizzes`,
   external analytics account needed) — every page load writes one row
   to the `page_views` table.
 
-## 10. Customization ideas
+## 10. PSC auto-updates (added after initial launch)
+
+The site can auto-pull the latest **notifications, examination
+notifications, postwise syllabus, exam programme, result notifications,
+short lists, ranked lists and interview schedules** straight from
+`keralapsc.gov.in`, with no manual posting.
+
+**Setup**
+
+1. Re-run `supabase/schema.sql` in the Supabase SQL editor (it's
+   idempotent — this adds the new `psc_updates` table without touching
+   anything else).
+2. In Supabase, go to **Project Settings → API** and copy the
+   **`service_role`** key → set it as `SUPABASE_SERVICE_ROLE_KEY` (locally
+   in `.env.local`, and in Vercel under Environment Variables). This key
+   bypasses Row Level Security and is only ever used server-side by the
+   scraper — never expose it to the browser.
+3. Pick any long random string and set it as `CRON_SECRET` in the same
+   two places. Vercel automatically sends it as
+   `Authorization: Bearer $CRON_SECRET` when its Cron scheduler calls the
+   route, so no extra wiring is needed.
+4. Deploy. `vercel.json` registers a daily cron
+   (`/api/cron/psc-scrape`, `0 3 * * *` UTC ≈ 8:30am IST). Vercel's
+   **free Hobby plan only allows once-a-day cron schedules** — if you
+   want it to check more often, either upgrade to Pro (unlocks
+   per-minute schedules) or point a free external scheduler (e.g.
+   [cron-job.org](https://cron-job.org)) at
+   `https://your-site.vercel.app/api/cron/psc-scrape` with header
+   `Authorization: Bearer <your CRON_SECRET>` on whatever cadence you
+   like — the route itself has no rate limit of its own.
+5. New items found on a scrape are also sent to your Telegram channel
+   automatically, using the same `TELEGRAM_*` env vars from section 5.
+
+**Using it**
+
+- Public page: `/psc-updates` — filterable by category, shows a "NEW"
+  badge for anything scraped in the last 48 hours, direct PDF download
+  links where available.
+- Admin page: `/admin/psc-updates` — per-source counts, most recently
+  scraped items, and a **"Run scrape now"** button to trigger it on
+  demand instead of waiting for the schedule.
+- Debug endpoint: `GET /api/cron/psc-scrape?dry_run=1` (same auth
+  header) fetches and parses every source **without** writing to the
+  database or Telegram — useful for checking the scraper still matches
+  Kerala PSC's page markup if they redesign something.
+
+**How it works / limitations**
+
+The scraper (`src/lib/psc-scraper/`) fetches each listing page on
+`keralapsc.gov.in` fresh on every run and parses it generically — by
+walking `<table>`/`<tr>`/`<td>`/`<a>` structure rather than relying on
+Kerala PSC's specific CSS classes, since those weren't available to
+verify against ahead of time. This should be resilient to minor styling
+changes, but if a page's HTML structure changes significantly, check it
+with the `dry_run=1` endpoint above and adjust `src/lib/psc-scraper/parse.ts`
+if needed. New rows are deduped by URL, so re-running the scraper
+(including overlapping cron + manual runs) is always safe.
+
+## 11. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material
