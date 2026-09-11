@@ -6,6 +6,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import type { Metadata } from "next";
 import PostViewTracker from "@/components/site/PostViewTracker";
+import ShareButtons from "@/components/site/ShareButtons";
 import { ClipboardList } from "lucide-react";
 
 export async function generateMetadata({
@@ -36,13 +37,37 @@ export default async function PostPage({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-  if (!post || post.status !== "published") notFound();
+  const isVisible =
+    post &&
+    (post.status === "published" ||
+      (post.status === "scheduled" &&
+        post.published_at &&
+        new Date(post.published_at) <= new Date()));
+
+  if (!post || !isVisible) notFound();
 
   const quiz = await getQuizByPostId(post.id);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.meta_description || post.excerpt || undefined,
+    image: post.cover_image || undefined,
+    datePublished: post.published_at || undefined,
+    dateModified: post.updated_at,
+    mainEntityOfPage: postUrl,
+  };
 
   return (
     <article className="mx-auto max-w-3xl">
       <PostViewTracker slug={post.slug} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {post.category && (
         <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
           {post.category.name}
@@ -51,10 +76,13 @@ export default async function PostPage({
       <h1 className="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">
         {post.title}
       </h1>
-      <p className="mt-3 text-sm text-slate-500">
-        {post.published_at &&
-          format(new Date(post.published_at), "dd MMM yyyy, hh:mm a")}
-      </p>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-slate-500">
+          {post.published_at &&
+            format(new Date(post.published_at), "dd MMM yyyy, hh:mm a")}
+        </p>
+        <ShareButtons url={postUrl} title={post.title} />
+      </div>
 
       {post.cover_image && (
         <div className="relative mt-6 h-72 w-full overflow-hidden rounded-2xl sm:h-96">

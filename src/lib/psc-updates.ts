@@ -35,3 +35,12 @@ export async function getPscUpdateCountsBySource() {
   }
   return counts;
 }
+
+export async function getPscUpdateTotalCount() {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("psc_updates")
+    .select("*", { count: "exact", head: true });
+  if (error) throw error;
+  return count ?? 0;
+}

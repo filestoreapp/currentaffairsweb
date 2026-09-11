@@ -231,7 +231,23 @@ with the `dry_run=1` endpoint above and adjust `src/lib/psc-scraper/parse.ts`
 if needed. New rows are deduped by URL, so re-running the scraper
 (including overlapping cron + manual runs) is always safe.
 
-## 11. Customization ideas
+## 11. Scheduled posts
+
+Set a post's status to **Scheduled** in the editor and pick a date/time —
+it becomes publicly visible automatically once that time passes (the
+public queries check `published_at <= now()`), no redeploy or manual step
+needed.
+
+One caveat: the Telegram auto-post for a scheduled post only fires if you
+open and re-save it as Published after the time passes — there's no cron
+flipping the status label for you (this project already uses its one
+Vercel Hobby cron slot for the PSC scraper). If you want Telegram alerts
+to fire exactly on schedule too, the cleanest fix is a second cron route
+that queries for `status = 'scheduled' AND published_at <= now()`, flips
+them to `published`, and calls `postToTelegram` — happy to add that if
+you end up wanting it.
+
+## 12. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material

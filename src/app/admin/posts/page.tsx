@@ -31,7 +31,13 @@ export default async function AdminPostsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {posts.map((post) => (
+            {posts.map((post) => {
+              const isDue =
+                post.status === "scheduled" &&
+                post.published_at &&
+                new Date(post.published_at) <= new Date();
+              const displayStatus = isDue ? "published" : post.status;
+              return (
               <tr key={post.id} className="hover:bg-slate-50">
                 <td className="max-w-xs truncate px-5 py-3 font-medium text-slate-800">
                   {post.title}
@@ -42,15 +48,20 @@ export default async function AdminPostsPage() {
                 <td className="px-5 py-3">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      post.status === "published"
+                      displayStatus === "published"
                         ? "bg-green-100 text-green-700"
-                        : post.status === "scheduled"
+                        : displayStatus === "scheduled"
                         ? "bg-blue-100 text-blue-700"
                         : "bg-amber-100 text-amber-700"
                     }`}
                   >
-                    {post.status}
+                    {displayStatus}
                   </span>
+                  {post.status === "scheduled" && !isDue && post.published_at && (
+                    <span className="ml-2 text-xs text-slate-400">
+                      {format(new Date(post.published_at), "dd MMM, hh:mm a")}
+                    </span>
+                  )}
                 </td>
                 <td className="px-5 py-3 text-slate-500">
                   {format(new Date(post.updated_at), "dd MMM yyyy")}
@@ -68,7 +79,8 @@ export default async function AdminPostsPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
         {posts.length === 0 && (

@@ -33,6 +33,7 @@ export interface Post {
 }
 
 export type QuizStatus = "draft" | "published";
+export type QuizDifficulty = "easy" | "medium" | "hard";
 
 export interface QuizQuestion {
   id: string;
@@ -51,6 +52,10 @@ export interface Quiz {
   description: string | null;
   post_id: string | null;
   post?: Post | null;
+  category_id: string | null;
+  category?: Category | null;
+  difficulty: QuizDifficulty;
+  time_limit_seconds: number | null;
   status: QuizStatus;
   created_at: string;
   updated_at: string;

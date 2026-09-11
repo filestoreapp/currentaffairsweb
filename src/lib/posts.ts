@@ -19,7 +19,7 @@ export async function getPublishedPosts({
   let query = supabase
     .from("posts")
     .select(POST_SELECT, { count: "exact" })
-    .eq("status", "published")
+    .in("status", ["published", "scheduled"])
     .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false })
     .range(from, to);
@@ -43,7 +43,7 @@ export async function getLatestPosts(limit = 6) {
   const { data, error } = await supabase
     .from("posts")
     .select(POST_SELECT)
-    .eq("status", "published")
+    .in("status", ["published", "scheduled"])
     .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false })
     .limit(limit);

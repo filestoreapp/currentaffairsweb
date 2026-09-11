@@ -278,6 +278,25 @@ on psc_updates for select to authenticated
 using (true);
 
 -- =========================================================
+-- 9. QUIZ CATEGORY / DIFFICULTY / TIMER
+-- =========================================================
+alter table quizzes add column if not exists category_id uuid references categories(id) on delete set null;
+alter table quizzes add column if not exists difficulty text not null default 'medium';
+alter table quizzes add column if not exists time_limit_seconds integer; -- null = untimed
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'quizzes_difficulty_check'
+  ) then
+    alter table quizzes add constraint quizzes_difficulty_check
+      check (difficulty in ('easy', 'medium', 'hard'));
+  end if;
+end $$;
+
+create index if not exists quizzes_category_idx on quizzes (category_id);
+
+-- =========================================================
 -- NOTE: After running this, create your admin login user
 -- from Supabase Dashboard -> Authentication -> Users -> Add User
 -- (email + password). Only users created there can log in to /admin.
