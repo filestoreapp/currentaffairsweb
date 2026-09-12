@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import QuizPlayer from "@/components/site/QuizPlayer";
 import type { Metadata } from "next";
 
+export const revalidate = 300; // 5 min — leaderboard shown is the starting snapshot; client updates it live after each attempt
+
 export async function generateMetadata({
   params,
 }: {

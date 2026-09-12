@@ -1,21 +1,37 @@
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Quiz, QuizQuestion, QuizAttempt } from "@/lib/types";
 
-const QUIZ_SELECT = "*, post:posts(id, title, slug)";
+const QUIZ_SELECT = "*, post:posts(id, title, slug), category:categories(*)";
 
-export async function getPublishedQuizzes() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
+// ---- Public (anon, cacheable) helpers ----
+
+export async function getPublishedQuizzes({
+  categorySlug,
+}: { categorySlug?: string } = {}) {
+  const supabase = createPublicClient();
+  let query = supabase
     .from("quizzes")
     .select(QUIZ_SELECT)
     .eq("status", "published")
     .order("created_at", { ascending: false });
+
+  if (categorySlug) {
+    const { data: cat } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("slug", categorySlug)
+      .single();
+    if (cat) query = query.eq("category_id", cat.id);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return (data ?? []) as unknown as Quiz[];
 }
 
 export async function getQuizByPostId(postId: string) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("quizzes")
     .select(QUIZ_SELECT)
@@ -27,7 +43,7 @@ export async function getQuizByPostId(postId: string) {
 }
 
 export async function getQuizBySlug(slug: string) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: quiz, error } = await supabase
     .from("quizzes")
     .select(QUIZ_SELECT)
@@ -49,7 +65,7 @@ export async function getQuizBySlug(slug: string) {
 }
 
 export async function getLeaderboard(quizId: string, limit = 10) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("quiz_attempts")
     .select("*")
@@ -61,7 +77,7 @@ export async function getLeaderboard(quizId: string, limit = 10) {
   return (data ?? []) as QuizAttempt[];
 }
 
-// ---- Admin helpers ----
+// ---- Admin (authenticated, always-dynamic) helpers ----
 
 export async function getAllQuizzesForAdmin() {
   const supabase = await createClient();
@@ -140,4 +156,15 @@ export async function getQuizStatsForAdmin() {
   const totalAttempts = attempts?.length ?? 0;
 
   return { perQuiz, totalAttempts };
+}
+
+export async function getRecentQuizAttempts(limit = 6) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("quiz_attempts")
+    .select("*, quiz:quizzes(title, slug)")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as (QuizAttempt & { quiz: { title: string; slug: string } | null })[];
 }

@@ -37,6 +37,11 @@ export default function PostForm({
   const [categoryId, setCategoryId] = useState(post?.category_id ?? "");
   const [tags, setTags] = useState((post?.tags ?? []).join(", "));
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
+  const [scheduledAt, setScheduledAt] = useState(
+    post?.status === "scheduled" && post?.published_at
+      ? post.published_at.slice(0, 16)
+      : ""
+  );
   const [metaTitle, setMetaTitle] = useState(post?.meta_title ?? "");
   const [metaDescription, setMetaDescription] = useState(
     post?.meta_description ?? ""
@@ -49,6 +54,10 @@ export default function PostForm({
 
     if (!title.trim()) {
       setError("Title is required");
+      return;
+    }
+    if (status === "scheduled" && !scheduledAt) {
+      setError("Pick a date and time to schedule this post for");
       return;
     }
 
@@ -69,6 +78,8 @@ export default function PostForm({
         .map((t) => t.trim())
         .filter(Boolean),
       status,
+      published_at:
+        status === "scheduled" ? new Date(scheduledAt).toISOString() : undefined,
       meta_title: metaTitle,
       meta_description: metaDescription,
     };
@@ -219,8 +230,27 @@ export default function PostForm({
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
+                  <option value="scheduled">Scheduled</option>
                 </select>
               </div>
+
+              {status === "scheduled" && (
+                <div>
+                  <label className="text-xs font-medium text-slate-500">
+                    Publish at
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  />
+                  <p className="mt-1 text-xs text-slate-400">
+                    Goes live automatically at this time — no need to come
+                    back and hit publish.
+                  </p>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={isPending}

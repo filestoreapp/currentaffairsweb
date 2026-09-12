@@ -12,6 +12,7 @@ import {
   Globe,
   ClipboardList,
   BarChart3,
+  RefreshCw,
 } from "lucide-react";
 
 const links = [
@@ -20,6 +21,7 @@ const links = [
   { href: "/admin/posts/new", label: "New Post", icon: PlusCircle },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/quizzes", label: "Quizzes", icon: ClipboardList },
+  { href: "/admin/psc-updates", label: "PSC Auto-Updates", icon: RefreshCw },
   { href: "/admin/statistics", label: "Statistics", icon: BarChart3 },
 ];
 

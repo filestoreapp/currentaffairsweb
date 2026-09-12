@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Post, Category } from "@/lib/types";
 
 const POST_SELECT = "*, category:categories(*)";
+
+// ---- Public (anon, cacheable) helpers ----
 
 export async function getPublishedPosts({
   page = 1,
@@ -12,14 +15,14 @@ export async function getPublishedPosts({
   perPage?: number;
   categorySlug?: string;
 } = {}) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const from = (page - 1) * perPage;
   const to = from + perPage - 1;
 
   let query = supabase
     .from("posts")
     .select(POST_SELECT, { count: "exact" })
-    .eq("status", "published")
+    .in("status", ["published", "scheduled"])
     .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false })
     .range(from, to);
@@ -39,11 +42,11 @@ export async function getPublishedPosts({
 }
 
 export async function getLatestPosts(limit = 6) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("posts")
     .select(POST_SELECT)
-    .eq("status", "published")
+    .in("status", ["published", "scheduled"])
     .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false })
     .limit(limit);
@@ -52,7 +55,7 @@ export async function getLatestPosts(limit = 6) {
 }
 
 export async function getPostBySlug(slug: string) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("posts")
     .select(POST_SELECT)
@@ -63,7 +66,7 @@ export async function getPostBySlug(slug: string) {
 }
 
 export async function getAllCategories() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -72,7 +75,7 @@ export async function getAllCategories() {
   return (data ?? []) as Category[];
 }
 
-// ---- Admin (authenticated) helpers ----
+// ---- Admin (authenticated, always-dynamic) helpers ----
 
 export async function getAllPostsForAdmin() {
   const supabase = await createClient();
