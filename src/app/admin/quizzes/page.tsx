@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { getAllQuizzesForAdmin } from "@/lib/quizzes";
-import { PlusCircle, Pencil } from "lucide-react";
+import { PlusCircle, Pencil, Clock } from "lucide-react";
 import DeleteQuizButton from "@/components/admin/DeleteQuizButton";
+
+const DIFFICULTY_STYLE: Record<string, string> = {
+  easy: "bg-emerald-100 text-emerald-700",
+  medium: "bg-amber-100 text-amber-700",
+  hard: "bg-rose-100 text-rose-700",
+};
 
 export default async function AdminQuizzesPage() {
   const quizzes = await getAllQuizzesForAdmin();
@@ -23,6 +29,8 @@ export default async function AdminQuizzesPage() {
           <thead className="border-b border-slate-100 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-5 py-3">Title</th>
+              <th className="px-5 py-3">Category</th>
+              <th className="px-5 py-3">Difficulty</th>
               <th className="px-5 py-3">Linked post</th>
               <th className="px-5 py-3">Status</th>
               <th className="px-5 py-3">Attempts</th>
@@ -34,6 +42,21 @@ export default async function AdminQuizzesPage() {
               <tr key={quiz.id} className="hover:bg-slate-50">
                 <td className="max-w-xs truncate px-5 py-3 font-medium text-slate-800">
                   {quiz.title}
+                  {quiz.time_limit_seconds && (
+                    <span className="ml-2 inline-flex items-center gap-0.5 text-xs font-normal text-slate-400">
+                      <Clock size={12} /> {Math.round(quiz.time_limit_seconds / 60)}m
+                    </span>
+                  )}
+                </td>
+                <td className="px-5 py-3 text-slate-500">
+                  {quiz.category?.name ?? "—"}
+                </td>
+                <td className="px-5 py-3">
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${DIFFICULTY_STYLE[quiz.difficulty]}`}
+                  >
+                    {quiz.difficulty}
+                  </span>
                 </td>
                 <td className="max-w-xs truncate px-5 py-3 text-slate-500">
                   {quiz.post?.title ?? "—"}

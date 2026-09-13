@@ -3,8 +3,18 @@ import { getPublishedPosts, getAllCategories } from "@/lib/posts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const { posts } = await getPublishedPosts({ perPage: 1000 });
-  const categories = await getAllCategories();
+
+  // If Supabase is unreachable at build time, still ship a minimal sitemap
+  // rather than failing the whole deploy over this one route.
+  let posts: Awaited<ReturnType<typeof getPublishedPosts>>["posts"] = [];
+  let categories: Awaited<ReturnType<typeof getAllCategories>> = [];
+  try {
+    const result = await getPublishedPosts({ perPage: 1000 });
+    posts = result.posts;
+    categories = await getAllCategories();
+  } catch (err) {
+    console.error("sitemap: failed to fetch posts/categories", err);
+  }
 
   return [
     { url: siteUrl, lastModified: new Date() },

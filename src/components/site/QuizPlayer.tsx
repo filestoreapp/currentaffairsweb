@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { submitQuizAttempt } from "@/lib/actions/quizzes";
 import type { Quiz, QuizAttempt } from "@/lib/types";
-import { CheckCircle2, XCircle, Loader2, Trophy } from "lucide-react";
+import { CheckCircle2, XCircle, Loader2, Trophy, Timer } from "lucide-react";
 
 type Stage = "intro" | "playing" | "result";
+
+function formatClock(seconds: number) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
 
 export default function QuizPlayer({
   quiz,
@@ -23,8 +29,65 @@ export default function QuizPlayer({
   const [score, setScore] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [leaderboard, setLeaderboard] = useState(initialLeaderboard);
+  const [timeLeft, setTimeLeft] = useState(quiz.time_limit_seconds ?? 0);
+  const [timedOut, setTimedOut] = useState(false);
+  const finishedRef = useRef(false);
+  const scoreRef = useRef(score);
+
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
 
   const question = questions[current];
+
+  async function finishQuiz(finalScore: number) {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    setSubmitting(true);
+    try {
+      await submitQuizAttempt(quiz.id, name, finalScore, questions.length);
+      setLeaderboard((prev) =>
+        [
+          ...prev,
+          {
+            id: "temp",
+            quiz_id: quiz.id,
+            name,
+            score: finalScore,
+            total: questions.length,
+            created_at: new Date().toISOString(),
+          },
+        ]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 10)
+      );
+    } catch {
+      // non-fatal — still show the result even if saving the score failed
+    } finally {
+      setSubmitting(false);
+      setStage("result");
+    }
+  }
+
+  // Countdown timer — only runs while playing a timed quiz.
+  useEffect(() => {
+    if (stage !== "playing" || !quiz.time_limit_seconds) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(interval);
+          setTimedOut(true);
+          finishQuiz(scoreRef.current);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
   function selectOption(index: number) {
     if (answered) return;
@@ -41,20 +104,7 @@ export default function QuizPlayer({
     if (current + 1 < questions.length) {
       setCurrent((c) => c + 1);
     } else {
-      setSubmitting(true);
-      try {
-        await submitQuizAttempt(quiz.id, name, score, questions.length);
-        setLeaderboard(
-          [...leaderboard, { id: "temp", quiz_id: quiz.id, name, score, total: questions.length, created_at: new Date().toISOString() }]
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 10)
-        );
-      } catch {
-        // non-fatal — still show the result even if saving the score failed
-      } finally {
-        setSubmitting(false);
-        setStage("result");
-      }
+      await finishQuiz(score);
     }
   }
 
@@ -73,8 +123,15 @@ export default function QuizPlayer({
         {quiz.description && (
           <p className="mt-2 text-sm text-slate-500">{quiz.description}</p>
         )}
-        <p className="mt-4 text-sm font-medium text-slate-600">
-          {questions.length} question{questions.length !== 1 ? "s" : ""}
+        <p className="mt-4 flex items-center justify-center gap-3 text-sm font-medium text-slate-600">
+          <span>
+            {questions.length} question{questions.length !== 1 ? "s" : ""}
+          </span>
+          {quiz.time_limit_seconds && (
+            <span className="flex items-center gap-1 text-amber-600">
+              <Timer size={14} /> {Math.round(quiz.time_limit_seconds / 60)} min limit
+            </span>
+          )}
         </p>
 
         <input
@@ -85,7 +142,10 @@ export default function QuizPlayer({
         />
         <button
           disabled={!name.trim()}
-          onClick={() => setStage("playing")}
+          onClick={() => {
+            setTimeLeft(quiz.time_limit_seconds ?? 0);
+            setStage("playing");
+          }}
           className="mt-4 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
         >
           Start Quiz
@@ -101,7 +161,18 @@ export default function QuizPlayer({
           <span>
             Question {current + 1} of {questions.length}
           </span>
-          <span>Score: {score}</span>
+          <span className="flex items-center gap-3">
+            {quiz.time_limit_seconds && (
+              <span
+                className={`flex items-center gap-1 font-semibold ${
+                  timeLeft <= 10 ? "text-red-600" : "text-slate-600"
+                }`}
+              >
+                <Timer size={14} /> {formatClock(timeLeft)}
+              </span>
+            )}
+            <span>Score: {score}</span>
+          </span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
@@ -176,7 +247,7 @@ export default function QuizPlayer({
           {score} / {questions.length}
         </h2>
         <p className="mt-1 text-slate-500">
-          {name}, you scored {pct}%
+          {name}, you scored {pct}%{timedOut ? " — time ran out!" : ""}
         </p>
       </div>
 

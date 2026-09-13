@@ -1,3 +1,19 @@
+export interface PostRevision {
+  id: string;
+  post_id: string;
+  title: string;
+  excerpt: string | null;
+  content_html: string;
+  content_markdown: string | null;
+  editor_mode: EditorMode;
+  cover_image: string | null;
+  category_id: string | null;
+  tags: string[];
+  meta_title: string | null;
+  meta_description: string | null;
+  created_at: string;
+}
+
 export type PostStatus = "draft" | "published" | "scheduled";
 export type EditorMode = "richtext" | "markdown";
 
@@ -33,6 +49,7 @@ export interface Post {
 }
 
 export type QuizStatus = "draft" | "published";
+export type QuizDifficulty = "easy" | "medium" | "hard";
 
 export interface QuizQuestion {
   id: string;
@@ -51,6 +68,10 @@ export interface Quiz {
   description: string | null;
   post_id: string | null;
   post?: Post | null;
+  category_id: string | null;
+  category?: Category | null;
+  difficulty: QuizDifficulty;
+  time_limit_seconds: number | null;
   status: QuizStatus;
   created_at: string;
   updated_at: string;
@@ -64,5 +85,30 @@ export interface QuizAttempt {
   name: string;
   score: number;
   total: number;
+  created_at: string;
+}
+
+// ---- PSC auto-updates (scraped from keralapsc.gov.in) ----
+
+export type PscSourceKey =
+  | "notifications"
+  | "examination_notification"
+  | "syllabus"
+  | "exam_programme"
+  | "result_notifications"
+  | "shortlists"
+  | "rankedlist"
+  | "interviews";
+
+export interface PscUpdate {
+  id: string;
+  source: PscSourceKey;
+  title: string;
+  source_url: string;
+  pdf_url: string | null;
+  category_number: string | null;
+  published_on: string | null;
+  scraped_at: string;
+  telegram_posted: boolean;
   created_at: string;
 }

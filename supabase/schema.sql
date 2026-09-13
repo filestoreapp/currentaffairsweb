@@ -244,6 +244,94 @@ $$ language plpgsql security definer;
 grant execute on function increment_post_views(text) to anon;
 
 -- =========================================================
+-- 8. PSC AUTO-UPDATES (scraped from keralapsc.gov.in)
+-- =========================================================
+create table if not exists psc_updates (
+  id uuid primary key default gen_random_uuid(),
+  source text not null,                 -- e.g. 'notifications', 'examination_notification', 'syllabus', 'exam_programme', 'result_notifications', 'shortlists', 'rankedlist', 'interviews'
+  title text not null,
+  source_url text not null unique,      -- the keralapsc.gov.in page/node link (or pdf url if no node page) - used to dedupe
+  pdf_url text,                         -- direct PDF download link, when available
+  category_number text,                 -- e.g. "CAT.NO : 130/2026" when present
+  published_on date,                    -- date as shown on the PSC site, when parseable
+  scraped_at timestamptz not null default now(),
+  telegram_posted boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists psc_updates_source_idx on psc_updates (source, scraped_at desc);
+create index if not exists psc_updates_scraped_idx on psc_updates (scraped_at desc);
+
+alter table psc_updates enable row level security;
+
+drop policy if exists "public read psc updates" on psc_updates;
+create policy "public read psc updates"
+on psc_updates for select to anon
+using (true);
+
+-- Only the service role (used by the cron route) writes here, so there is
+-- deliberately no insert/update policy for anon or authenticated users.
+-- The admin dashboard reads through the authenticated policy below.
+drop policy if exists "admins read psc updates" on psc_updates;
+create policy "admins read psc updates"
+on psc_updates for select to authenticated
+using (true);
+
+-- =========================================================
+-- 9. QUIZ CATEGORY / DIFFICULTY / TIMER
+-- =========================================================
+alter table quizzes add column if not exists category_id uuid references categories(id) on delete set null;
+alter table quizzes add column if not exists difficulty text not null default 'medium';
+alter table quizzes add column if not exists time_limit_seconds integer; -- null = untimed
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'quizzes_difficulty_check'
+  ) then
+    alter table quizzes add constraint quizzes_difficulty_check
+      check (difficulty in ('easy', 'medium', 'hard'));
+  end if;
+end $$;
+
+create index if not exists quizzes_category_idx on quizzes (category_id);
+
+-- =========================================================
+-- 10. POST REVISION HISTORY (editor workflow: undo/restore)
+-- =========================================================
+-- One row is inserted here automatically every time an existing post is
+-- updated (a snapshot of its state right BEFORE the new changes are
+-- applied), so editors can see and restore earlier versions. Older rows
+-- beyond the most recent 20 per post are pruned automatically by the app
+-- after each save, so this table doesn't grow without bound.
+create table if not exists post_revisions (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references posts(id) on delete cascade,
+  title text not null,
+  excerpt text,
+  content_html text not null default '',
+  content_markdown text,
+  editor_mode text not null default 'richtext',
+  cover_image text,
+  category_id uuid references categories(id) on delete set null,
+  tags text[] default '{}',
+  meta_title text,
+  meta_description text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists post_revisions_post_idx on post_revisions (post_id, created_at desc);
+
+alter table post_revisions enable row level security;
+
+-- Revisions are only ever written/read by logged-in admins — no public
+-- access at all (unlike posts/categories, there's no anon select policy).
+drop policy if exists "admins manage post revisions" on post_revisions;
+create policy "admins manage post revisions"
+on post_revisions for all to authenticated
+using (true) with check (true);
+
+-- =========================================================
 -- NOTE: After running this, create your admin login user
 -- from Supabase Dashboard -> Authentication -> Users -> Add User
 -- (email + password). Only users created there can log in to /admin.
