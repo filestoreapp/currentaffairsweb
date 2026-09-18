@@ -9,6 +9,15 @@ import { revalidatePath } from "next/cache";
  * returning its public URL. `keySeed` should be the post's slug when known
  * (stable path, easy to spot in storage) or any unique-ish string for posts
  * that haven't been saved yet.
+ *
+ * The storage path is stable per keySeed (no timestamp suffix) and the
+ * upload uses `upsert: true`, so re-generating a thumbnail for the same
+ * post/title overwrites the old file instead of leaving it behind. Every
+ * earlier version of this stamped a new `-${Date.now()}` file on each call,
+ * so every click of "Generate thumbnail" while drafting left a permanent
+ * orphaned file in storage — that's almost certainly what was filling up
+ * the storage quota. Use cleanupOrphanedThumbnails() below to remove any
+ * old timestamped files left over from before this fix.
  */
 export async function generateAndUploadThumbnail({
   keySeed,
@@ -22,7 +31,7 @@ export async function generateAndUploadThumbnail({
   const buffer = await generateThumbnailBuffer({ title, category });
   const supabase = await createClient();
 
-  const path = `auto-thumbnails/${keySeed}-${Date.now()}.png`;
+  const path = `auto-thumbnails/${keySeed}.png`;
   const { error } = await supabase.storage
     .from("post-images")
     .upload(path, buffer, { contentType: "image/png", upsert: true });
@@ -30,7 +39,9 @@ export async function generateAndUploadThumbnail({
   if (error) throw new Error(error.message);
 
   const { data } = supabase.storage.from("post-images").getPublicUrl(path);
-  return data.publicUrl;
+  // Cache-bust the public URL so the browser/CDN doesn't keep showing a
+  // stale image after upsert overwrites the same path.
+  return `${data.publicUrl}?v=${Date.now()}`;
 }
 
 /**
@@ -94,4 +105,60 @@ export async function backfillMissingThumbnails(): Promise<{
   revalidatePath("/current-affairs");
 
   return { updated, failed };
+}
+
+/**
+ * Deletes any file under `auto-thumbnails/` in the `post-images` bucket
+ * that isn't currently used as a post's cover_image. Safe to run any time
+ * — this is the cleanup for the storage leak described above
+ * (every old "Generate thumbnail" click before the stable-path fix left a
+ * file behind forever). Run this once after upgrading, then occasionally
+ * afterwards to sweep up previews from posts that were never saved.
+ */
+export async function cleanupOrphanedThumbnails(): Promise<{
+  deleted: number;
+  kept: number;
+}> {
+  const supabase = await createClient();
+
+  const { data: files, error: listError } = await supabase.storage
+    .from("post-images")
+    .list("auto-thumbnails", { limit: 1000 });
+  if (listError) throw new Error(listError.message);
+
+  const { data: posts, error: postsError } = await supabase
+    .from("posts")
+    .select("cover_image")
+    .not("cover_image", "is", null);
+  if (postsError) throw new Error(postsError.message);
+
+  const marker = "/post-images/";
+  const referencedPaths = new Set(
+    (posts ?? [])
+      .map((p) => p.cover_image as string | null)
+      .filter((url): url is string => !!url)
+      .map((url) => {
+        const idx = url.indexOf(marker);
+        if (idx === -1) return null;
+        return url.slice(idx + marker.length).split("?")[0];
+      })
+      .filter((p): p is string => !!p)
+  );
+
+  const orphaned = (files ?? [])
+    .filter((f) => f.name && !referencedPaths.has(`auto-thumbnails/${f.name}`))
+    .map((f) => `auto-thumbnails/${f.name}`);
+
+  let deleted = 0;
+  if (orphaned.length > 0) {
+    const { error: deleteError } = await supabase.storage
+      .from("post-images")
+      .remove(orphaned);
+    if (deleteError) throw new Error(deleteError.message);
+    deleted = orphaned.length;
+  }
+
+  revalidatePath("/admin/posts");
+
+  return { deleted, kept: (files?.length ?? 0) - deleted };
 }
