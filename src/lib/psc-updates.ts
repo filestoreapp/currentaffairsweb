@@ -23,6 +23,17 @@ export async function getLatestPscUpdates({
   return (data ?? []) as PscUpdate[];
 }
 
+export async function getPscUpdateById(id: string) {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("psc_updates")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data as PscUpdate | null;
+}
+
 export async function getPscUpdateCountsBySource() {
   const supabase = createPublicClient();
   const { data, error } = await supabase.from("psc_updates").select("source");

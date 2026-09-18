@@ -96,7 +96,8 @@ export async function postPscUpdateToTelegram(item: PscUpdate) {
   }
 
   const label = SOURCE_LABELS[item.source] ?? item.source;
-  const link = item.pdf_url || item.source_url;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const link = `${siteUrl}/psc-updates/${item.id}`;
   const text = `📢 *New ${label}*\n\n${item.title}\n\n🔗 ${link}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
