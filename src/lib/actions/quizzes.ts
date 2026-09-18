@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
-import type { QuizStatus } from "@/lib/types";
+import type { QuizDifficulty, QuizStatus } from "@/lib/types";
 
 export interface QuizQuestionInput {
   question: string;
@@ -18,6 +18,9 @@ export interface QuizFormInput {
   slug?: string;
   description?: string;
   post_id?: string | null;
+  category_id?: string | null;
+  difficulty: QuizDifficulty;
+  time_limit_seconds?: number | null;
   status: QuizStatus;
   questions: QuizQuestionInput[];
 }
@@ -35,6 +38,9 @@ export async function createQuiz(input: QuizFormInput) {
       slug,
       description: input.description || null,
       post_id: input.post_id || null,
+      category_id: input.category_id || null,
+      difficulty: input.difficulty,
+      time_limit_seconds: input.time_limit_seconds || null,
       status: input.status,
     })
     .select()
@@ -74,6 +80,9 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       slug,
       description: input.description || null,
       post_id: input.post_id || null,
+      category_id: input.category_id || null,
+      difficulty: input.difficulty,
+      time_limit_seconds: input.time_limit_seconds || null,
       status: input.status,
     })
     .eq("id", id);
