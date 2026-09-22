@@ -4,7 +4,7 @@ import { Image as ImageIcon, Database, Globe, AlertTriangle } from "lucide-react
 
 export const dynamic = "force-dynamic";
 
-const IMAGE_REPO = "filestoreapp/currentaffairs-images";
+const IMAGE_REPO = "filestoreapp/images";
 const DB_FREE_MB = 500;
 
 function fmtBytes(bytes: number | null): string {
@@ -118,7 +118,7 @@ export default async function UsagePage() {
               </p>
               <p className="mt-1">
                 Create a public repo named{" "}
-                <span className="font-mono">currentaffairs-images</span> on
+                <span className="font-mono">images</span> on
                 GitHub — new uploads will go there automatically.
               </p>
             </div>

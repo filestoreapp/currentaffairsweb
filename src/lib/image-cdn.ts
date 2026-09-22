@@ -1,6 +1,6 @@
 import sharp from "sharp";
 
-const REPO = "filestoreapp/currentaffairs-images";
+const REPO = "filestoreapp/images";
 const BRANCH = "main";
 
 /**
@@ -23,7 +23,7 @@ function cdnUrl(path: string, commitSha: string) {
 }
 
 /**
- * Upload a buffer to the currentaffairs-images GitHub repo and return a
+ * Upload a buffer to the images GitHub repo and return a
  * jsDelivr CDN URL. Pass `upsert: true` with a stable path to overwrite
  * an existing file (used for generated thumbnails).
  */
@@ -36,7 +36,7 @@ export async function uploadToImageCdn(
   if (!token) {
     throw new Error(
       "Image uploads need a GITHUB_IMAGE_TOKEN env var (a GitHub fine-grained " +
-        "PAT with Contents read/write on the currentaffairs-images repo). " +
+        "PAT with Contents read/write on the images repo). " +
         "Add it in Vercel → Project → Settings → Environment Variables."
     );
   }
