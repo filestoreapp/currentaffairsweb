@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { getPublishedPosts, getAllCategories } from "@/lib/posts";
-import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
-import type { PscSourceKey } from "@/lib/types";
-import PostCard from "@/components/site/PostCard";
-import PscUpdateCard from "@/components/site/PscUpdateCard";
+import HomeLatestPosts from "@/components/site/HomeLatestPosts";
+import HomePscUpdates from "@/components/site/HomePscUpdates";
 import {
   ClipboardList,
   ScrollText,
@@ -15,7 +13,11 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const PER_PAGE = 9;
+// Cache the homepage shell for 5 minutes. The searchParams-dependent
+// sections (post pagination, PSC source filter) live in Suspense-wrapped
+// islands below, so they stay dynamic without forcing the whole page
+// to re-query Supabase on every visit.
+export const revalidate = 300;
 
 const FEATURES = [
   {
@@ -56,27 +58,33 @@ const FEATURES = [
   },
 ];
 
+function SectionSkeleton() {
+  return (
+    <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 3 }, (_, i) => (
+        <div
+          key={i}
+          className="h-56 animate-pulse rounded-2xl border border-slate-200 bg-slate-100"
+        />
+      ))}
+    </div>
+  );
+}
+
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Promise<{ pscSource?: string; page?: string }>;
 }) {
-  const params = await searchParams;
-  const activePscSource = PSC_SOURCES.find((s) => s.key === params.pscSource)?.key as
-    | PscSourceKey
-    | undefined;
-  const page = Math.max(1, Number(params.page) || 1);
-
-  const [{ posts, count }, categories, pscUpdates, mocks, pyqs, quizzes] =
-    await Promise.all([
-      getPublishedPosts({ page, perPage: PER_PAGE }),
-      getAllCategories(),
-      getLatestPscUpdates({ source: activePscSource, limit: 6 }),
-      getPublishedMocks(),
-      getPublishedPyqs(),
-      getPublishedQuizzes(),
-    ]);
-  const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+  // NOTE: searchParams is intentionally NOT awaited here — it's passed
+  // straight through to the Suspense islands so this shell stays static.
+  const [categories, mocks, pyqs, quizzes, { count }] = await Promise.all([
+    getAllCategories(),
+    getPublishedMocks(),
+    getPublishedPyqs(),
+    getPublishedQuizzes(),
+    getPublishedPosts({ page: 1, perPage: 1 }),
+  ]);
 
   const heroStats = [
     { value: mocks.length, label: "Mock Tests" },
@@ -84,11 +92,6 @@ export default async function HomePage({
     { value: quizzes.length, label: "Practice Quizzes" },
     { value: count, label: "Study Notes" },
   ];
-
-  // Preserve the psc-updates filter (if any) when paginating the posts
-  // section, so switching pages doesn't reset the other section.
-  const pageHref = (p: number) =>
-    `/?page=${p}${activePscSource ? `&pscSource=${activePscSource}` : ""}`;
 
   return (
     <div>
@@ -229,86 +232,9 @@ export default async function HomePage({
         </Link>
       </div>
 
-      {posts.length === 0 ? (
-        <p className="mt-6 text-slate-500">
-          No posts published yet. Log in to /admin to create your first
-          post.
-        </p>
-      ) : (
-        <>
-          {posts[0] && (
-            <Link
-              href={`/current-affairs/${posts[0].slug}`}
-              className="card-hover group mt-6 grid overflow-hidden rounded-2xl border border-slate-200 bg-white sm:grid-cols-2"
-            >
-              <div className="relative min-h-56 overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 sm:min-h-72">
-                {posts[0].cover_image ? (
-                  <img
-                    src={posts[0].cover_image}
-                    alt={posts[0].title}
-                    className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center p-8">
-                    <span className="text-6xl font-extrabold text-white/25">
-                      PSC
-                    </span>
-                  </div>
-                )}
-                <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700 backdrop-blur">
-                  Latest
-                </span>
-              </div>
-              <div className="flex flex-col justify-center p-6 sm:p-8">
-                {posts[0].category && (
-                  <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
-                    {posts[0].category.name}
-                  </span>
-                )}
-                <h3 className="mt-2 text-2xl font-extrabold leading-tight tracking-tight text-slate-900 group-hover:text-indigo-700 sm:text-3xl">
-                  {posts[0].title}
-                </h3>
-                {posts[0].excerpt && (
-                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate-500">
-                    {posts[0].excerpt}
-                  </p>
-                )}
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600">
-                  Read the full story
-                  <ArrowRight
-                    size={16}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
-                </span>
-              </div>
-            </Link>
-          )}
-
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.slice(1).map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        </>
-      )}
-
-      {totalPages > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <Link
-              key={p}
-              href={pageHref(p)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                p === page
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              {p}
-            </Link>
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<SectionSkeleton />}>
+        <HomeLatestPosts searchParams={searchParams} />
+      </Suspense>
 
       <section id="psc-updates" className="mt-14">
         <div className="flex items-end justify-between">
@@ -336,44 +262,9 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <div className="scrollbar-hide mt-4 flex gap-2 overflow-x-auto pb-2">
-          <Link
-            href="/#psc-updates"
-            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium ${
-              !activePscSource
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-slate-700 hover:bg-slate-100"
-            }`}
-          >
-            All
-          </Link>
-          {PSC_SOURCES.map((s) => (
-            <Link
-              key={s.key}
-              href={`/?pscSource=${s.key}#psc-updates`}
-              className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium ${
-                activePscSource === s.key
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              {s.label}
-            </Link>
-          ))}
-        </div>
-
-        {pscUpdates.length === 0 ? (
-          <p className="mt-6 text-slate-500">
-            No updates yet for this category — the scraper hasn&apos;t run,
-            or hasn&apos;t found anything new.
-          </p>
-        ) : (
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {pscUpdates.map((u) => (
-              <PscUpdateCard key={u.id} update={u} />
-            ))}
-          </div>
-        )}
+        <Suspense fallback={<SectionSkeleton />}>
+          <HomePscUpdates searchParams={searchParams} />
+        </Suspense>
       </section>
     </div>
   );
