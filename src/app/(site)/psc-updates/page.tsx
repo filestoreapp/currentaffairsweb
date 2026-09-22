@@ -24,7 +24,7 @@ export default async function PscUpdatesPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">PSC Notifications &amp; Updates</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">PSC Notifications &amp; Updates</h1>
       <p className="mt-2 text-slate-500">
         Auto-pulled from the official{" "}
         <a

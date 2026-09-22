@@ -358,7 +358,34 @@ adds `is_mock`, `negative_marking`, `instructions` to `quizzes`; per-question
 to `quiz_attempts`; and widens `quiz_attempts.score` to numeric for fractional
 scores. Public read/insert RLS policies are unchanged from the quiz system.
 
-## 15. Customization ideas
+## 15. PYQ papers, syllabus tracker & daily streaks
+
+Three retention features that keep aspirants coming back every day.
+
+**PYQ papers** (`/pyqs`) — previous-year Kerala PSC papers playable in the
+same exam-style runner as mock tests (palette, timer, negative marking,
+ranked leaderboard). In `/admin/quizzes`, tick **"PYQ paper mode"** and set
+the **exam name** (e.g. LDC) and **exam year**; the listing page gets year
+filter chips. Publishing a PYQ paper announces it on Telegram with the exam
+name/year, question count and marking scheme. PYQ papers don't appear under
+`/quiz` or `/mock-tests`.
+
+**Syllabus tracker** (`/syllabus`) — the Kerala PSC syllabus broken into
+checkable topics across 6 sections (GK, Current Affairs, Renaissance,
+Arithmetic, English, Malayalam). Progress is stored in the browser's
+localStorage — no login, no database. Edit the static data in
+`src/lib/syllabus.ts`.
+
+**Daily streaks** — consecutive days with at least one quiz/mock/PYQ attempt,
+computed from `quiz_attempts` (IST calendar days, top 10). Shown as a
+"Daily streaks" leaderboard on `/mock-tests`. Streaks are live only if the
+player attempted today or yesterday.
+
+**Database** — re-run `supabase/schema.sql` (section 15, additive and safe):
+adds `is_pyq`, `exam_name`, `exam_year` to `quizzes` plus two indexes. No
+RLS changes needed.
+
+## 16. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material

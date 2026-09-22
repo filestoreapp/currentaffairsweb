@@ -10,7 +10,7 @@ export default async function NewQuizPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">New Quiz</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">New Quiz</h1>
       <div className="mt-6">
         <QuizForm posts={posts} categories={categories} />
       </div>

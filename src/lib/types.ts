@@ -75,6 +75,9 @@ export interface Quiz {
   is_mock: boolean;
   negative_marking: number;
   instructions: string | null;
+  is_pyq: boolean;
+  exam_name: string | null;
+  exam_year: number | null;
   status: QuizStatus;
   created_at: string;
   updated_at: string;

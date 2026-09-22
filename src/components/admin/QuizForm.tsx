@@ -40,6 +40,11 @@ export default function QuizForm({
     quiz?.time_limit_seconds ? String(Math.round(quiz.time_limit_seconds / 60)) : ""
   );
   const [isMock, setIsMock] = useState(quiz?.is_mock ?? false);
+  const [isPyq, setIsPyq] = useState(quiz?.is_pyq ?? false);
+  const [examName, setExamName] = useState(quiz?.exam_name ?? "");
+  const [examYear, setExamYear] = useState(
+    quiz?.exam_year ? String(quiz.exam_year) : ""
+  );
   const [negativeMarking, setNegativeMarking] = useState(
     quiz?.negative_marking ? String(quiz.negative_marking) : "0"
   );
@@ -91,9 +96,12 @@ export default function QuizForm({
       category_id: categoryId || null,
       difficulty,
       time_limit_seconds: timeLimitMinutes ? Number(timeLimitMinutes) * 60 : null,
-      is_mock: isMock,
-      negative_marking: isMock ? Number(negativeMarking) : 0,
-      instructions: isMock ? instructions : "",
+      is_mock: isMock && !isPyq,
+      negative_marking: isMock || isPyq ? Number(negativeMarking) : 0,
+      instructions: isMock || isPyq ? instructions : "",
+      is_pyq: isPyq && !isMock,
+      exam_name: isPyq ? examName : "",
+      exam_year: isPyq && examYear ? Number(examYear) : null,
       status,
       questions,
     };
@@ -218,7 +226,10 @@ export default function QuizForm({
               <input
                 type="checkbox"
                 checked={isMock}
-                onChange={(e) => setIsMock(e.target.checked)}
+                onChange={(e) => {
+                  setIsMock(e.target.checked);
+                  if (e.target.checked) setIsPyq(false);
+                }}
                 className="mt-1"
               />
               <span>
@@ -232,7 +243,55 @@ export default function QuizForm({
               </span>
             </label>
 
-            {isMock && (
+            <label className="mt-4 flex cursor-pointer items-start gap-2">
+              <input
+                type="checkbox"
+                checked={isPyq}
+                onChange={(e) => {
+                  setIsPyq(e.target.checked);
+                  if (e.target.checked) setIsMock(false);
+                }}
+                className="mt-1"
+              />
+              <span>
+                <span className="block text-sm font-medium text-slate-700">
+                  PYQ paper mode
+                </span>
+                <span className="block text-xs text-slate-400">
+                  Previous-year Kerala PSC paper, played in the same
+                  exam-style runner and listed under PYQ Papers.
+                </span>
+              </span>
+            </label>
+
+            {isPyq && (
+              <>
+                <label className="mt-4 block text-sm font-medium text-slate-700">
+                  Exam name
+                </label>
+                <input
+                  value={examName}
+                  onChange={(e) => setExamName(e.target.value)}
+                  placeholder="e.g. LDC, Secretariat Assistant, SI"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                />
+
+                <label className="mt-4 block text-sm font-medium text-slate-700">
+                  Exam year
+                </label>
+                <input
+                  type="number"
+                  min={1990}
+                  max={2100}
+                  value={examYear}
+                  onChange={(e) => setExamYear(e.target.value)}
+                  placeholder="e.g. 2024"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                />
+              </>
+            )}
+
+            {(isMock || isPyq) && (
               <>
                 <label className="mt-4 block text-sm font-medium text-slate-700">
                   Negative marking

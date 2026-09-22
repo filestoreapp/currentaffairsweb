@@ -84,6 +84,7 @@ export default function PostsTable({ posts }: { posts: Post[] }) {
                   checked={allSelected}
                   onChange={toggleAll}
                   aria-label="Select all posts"
+                  className="h-4 w-4 rounded accent-indigo-600"
                 />
               </th>
               <th className="px-5 py-3">Title</th>
@@ -101,28 +102,58 @@ export default function PostsTable({ posts }: { posts: Post[] }) {
                 new Date(post.published_at) <= new Date();
               const displayStatus = isDue ? "published" : post.status;
               return (
-                <tr key={post.id} className="hover:bg-slate-50">
+                <tr
+                  key={post.id}
+                  className={`transition hover:bg-slate-50 ${
+                    selected.has(post.id) ? "bg-indigo-50/50" : ""
+                  }`}
+                >
                   <td className="px-5 py-3">
                     <input
                       type="checkbox"
                       checked={selected.has(post.id)}
                       onChange={() => toggleOne(post.id)}
                       aria-label={`Select ${post.title}`}
+                      className="h-4 w-4 rounded accent-indigo-600"
                     />
                   </td>
-                  <td className="max-w-xs truncate px-5 py-3 font-medium text-slate-800">
-                    {post.title}
+                  <td className="max-w-xs px-5 py-3">
+                    <Link
+                      href={`/admin/posts/${post.id}/edit`}
+                      className="group flex items-center gap-3"
+                    >
+                      {post.cover_image ? (
+                        <img
+                          src={post.cover_image}
+                          alt=""
+                          className="h-10 w-14 shrink-0 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-10 w-14 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[10px] font-extrabold text-slate-400">
+                          PC
+                        </span>
+                      )}
+                      <span className="truncate font-medium text-slate-800 group-hover:text-indigo-600">
+                        {post.title}
+                      </span>
+                    </Link>
                   </td>
-                  <td className="px-5 py-3 text-slate-500">
-                    {post.category?.name ?? "—"}
+                  <td className="px-5 py-3">
+                    {post.category?.name ? (
+                      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+                        {post.category.name}
+                      </span>
+                    ) : (
+                      <span className="text-slate-300">—</span>
+                    )}
                   </td>
                   <td className="px-5 py-3">
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
                         displayStatus === "published"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-emerald-100 text-emerald-700"
                           : displayStatus === "scheduled"
-                          ? "bg-blue-100 text-blue-700"
+                          ? "bg-sky-100 text-sky-700"
                           : "bg-amber-100 text-amber-700"
                       }`}
                     >
@@ -134,14 +165,14 @@ export default function PostsTable({ posts }: { posts: Post[] }) {
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-slate-500">
+                  <td className="whitespace-nowrap px-5 py-3 text-slate-500">
                     {format(new Date(post.updated_at), "dd MMM yyyy")}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex justify-end gap-1">
                       <Link
                         href={`/admin/posts/${post.id}/edit`}
-                        className="rounded-lg p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600"
+                        className="rounded-lg p-2 text-slate-400 transition hover:bg-indigo-50 hover:text-indigo-600"
                         title="Edit post"
                       >
                         <Pencil size={16} />

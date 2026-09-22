@@ -96,7 +96,7 @@ export default async function StatisticsPage({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold">Statistics</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Statistics</h1>
         <div className="flex gap-2">
           {RANGE_OPTIONS.map((r) => (
             <Link
