@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { postToTelegram } from "@/lib/telegram";
 import { generateAndUploadThumbnail } from "@/lib/actions/thumbnail";
+import { compressImage, datedImagePath, uploadToImageCdn } from "@/lib/image-cdn";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
@@ -329,19 +330,13 @@ export async function deleteCategory(id: string) {
 }
 
 export async function uploadImage(formData: FormData) {
-  const supabase = await createClient();
   const file = formData.get("file") as File;
   if (!file) throw new Error("No file provided");
 
-  const ext = file.name.split(".").pop();
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-
-  const { error } = await supabase.storage
-    .from("post-images")
-    .upload(path, file, { contentType: file.type });
-
-  if (error) throw new Error(error.message);
-
-  const { data } = supabase.storage.from("post-images").getPublicUrl(path);
-  return data.publicUrl;
+  // Compress on the way in, then store in the free GitHub-backed image
+  // repo served via jsDelivr (Supabase storage stays for legacy images).
+  const input = Buffer.from(await file.arrayBuffer());
+  const compressed = await compressImage(input);
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.webp`;
+  return uploadToImageCdn(compressed, datedImagePath(filename));
 }

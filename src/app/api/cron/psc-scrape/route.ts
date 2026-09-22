@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { runPscScrape, scrapeAllSources } from "@/lib/psc-scraper/scrape";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -44,5 +45,20 @@ export async function GET(request: NextRequest) {
   }
 
   const summary = await runPscScrape();
-  return NextResponse.json(summary);
+
+  // Retention: page_views grows one row per visit — prune rows older than
+  // 90 days so the table can't eat the free-tier database quota.
+  // (Best-effort: never fail the scrape if the RPC isn't installed yet.)
+  let pruned: number | null = null;
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.rpc("prune_page_views", {
+      retention_days: 90,
+    });
+    if (!error) pruned = data as number;
+  } catch {
+    pruned = null;
+  }
+
+  return NextResponse.json({ ...summary, pageViewsPruned: pruned });
 }
