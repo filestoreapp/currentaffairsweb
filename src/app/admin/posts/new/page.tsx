@@ -6,7 +6,7 @@ export default async function NewPostPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">New Post</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">New Post</h1>
       <div className="mt-6">
         <PostForm categories={categories} />
       </div>

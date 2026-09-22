@@ -19,7 +19,7 @@ export default async function EditQuizPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Edit Quiz</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Edit Quiz</h1>
       <div className="mt-6">
         <QuizForm quiz={quiz} posts={posts} categories={categories} />
       </div>

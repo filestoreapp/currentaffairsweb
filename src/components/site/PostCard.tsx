@@ -7,9 +7,9 @@ export default function PostCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/current-affairs/${post.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+      className="card-hover group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white"
     >
-      <div className="relative h-44 w-full overflow-hidden bg-slate-100">
+      <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-indigo-100 via-slate-100 to-violet-100">
         {post.cover_image ? (
           <Image
             src={post.cover_image}
@@ -18,8 +18,11 @@ export default function PostCard({ post }: { post: Post }) {
             className="object-cover transition duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-slate-300">
-            No image
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-slate-400">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/70 text-lg font-extrabold text-indigo-500">
+              PC
+            </span>
+            <span className="text-xs font-medium">PSC Current Affairs</span>
           </div>
         )}
         {post.category && (

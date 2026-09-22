@@ -217,77 +217,99 @@ export default function MockTestPlayer({
   // ---------- INTRO ----------
   if (stage === "intro") {
     return (
-      <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-8">
-        <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-indigo-700">
-          Mock Test
-        </span>
-        <h1 className="mt-3 text-2xl font-extrabold text-slate-900">
-          {quiz.title}
-        </h1>
-        {quiz.description && (
-          <p className="mt-2 text-sm text-slate-500">{quiz.description}</p>
-        )}
-
-        <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xl font-extrabold text-slate-900">
-              {questions.length}
-            </p>
-            <p className="text-xs text-slate-500">Questions</p>
+      <div className="mx-auto max-w-xl">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-white sm:p-10">
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-indigo-600/40 blur-3xl" />
+            <div className="absolute -bottom-20 -right-12 h-56 w-56 rounded-full bg-violet-600/30 blur-3xl" />
           </div>
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xl font-extrabold text-slate-900">
-              {quiz.time_limit_seconds
-                ? `${Math.round(quiz.time_limit_seconds / 60)}m`
-                : "—"}
-            </p>
-            <p className="text-xs text-slate-500">Duration</p>
-          </div>
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xl font-extrabold text-slate-900">
-              {negMark > 0 ? `−${negMark}` : "0"}
-            </p>
-            <p className="text-xs text-slate-500">Negative mark</p>
+          <div className="relative">
+            <span className="inline-block rounded-full bg-indigo-500/20 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-indigo-200 ring-1 ring-indigo-400/30">
+              {quiz.is_pyq ? "PYQ Paper" : "Mock Test"}
+            </span>
+            <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+              {quiz.title}
+            </h1>
+            {quiz.description && (
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                {quiz.description}
+              </p>
+            )}
+            <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+              <div className="rounded-2xl bg-white/5 px-2 py-3 ring-1 ring-white/10">
+                <p className="text-xl font-extrabold">{questions.length}</p>
+                <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                  Questions
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/5 px-2 py-3 ring-1 ring-white/10">
+                <p className="text-xl font-extrabold">
+                  {quiz.time_limit_seconds
+                    ? `${Math.round(quiz.time_limit_seconds / 60)}m`
+                    : "—"}
+                </p>
+                <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                  Duration
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/5 px-2 py-3 ring-1 ring-white/10">
+                <p className="text-xl font-extrabold">
+                  {negMark > 0 ? `−${negMark}` : "0"}
+                </p>
+                <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                  Neg. mark
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-5 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          <p className="font-semibold">Marking scheme</p>
-          <p className="mt-0.5">
-            +1 for every correct answer
-            {negMark > 0
-              ? `, −${negMark} for every wrong answer`
-              : ", no negative marking"}
-            . Skipped questions score 0. Answers are revealed only after you
-            submit — just like the real exam.
-          </p>
-        </div>
-
-        {quiz.instructions && (
-          <div className="mt-4 text-sm text-slate-600">
-            <p className="font-semibold text-slate-800">Instructions</p>
-            <p className="mt-1 whitespace-pre-line">{quiz.instructions}</p>
+        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6">
+          <div className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <p className="font-semibold">Marking scheme</p>
+            <p className="mt-0.5">
+              +1 for every correct answer
+              {negMark > 0
+                ? `, −${negMark} for every wrong answer`
+                : ", no negative marking"}
+              . Skipped questions score 0. Answers are revealed only after you
+              submit — just like the real exam.
+            </p>
           </div>
-        )}
 
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name for the leaderboard"
-          maxLength={60}
-          className="mt-6 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none"
-        />
-        <button
-          disabled={!name.trim()}
-          onClick={() => {
-            setTimeLeft(quiz.time_limit_seconds ?? 0);
-            timeLeftRef.current = quiz.time_limit_seconds ?? 0;
-            setStage("playing");
-          }}
-          className="mt-4 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          Start Test
-        </button>
+          {quiz.instructions && (
+            <div className="mt-4 text-sm text-slate-600">
+              <p className="font-semibold text-slate-800">Instructions</p>
+              <p className="mt-1 whitespace-pre-line">{quiz.instructions}</p>
+            </div>
+          )}
+
+          <label
+            htmlFor="mock-name"
+            className="mt-5 block text-sm font-semibold text-slate-700"
+          >
+            Your name for the leaderboard
+          </label>
+          <input
+            id="mock-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Anjali K"
+            maxLength={60}
+            className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          />
+          <button
+            disabled={!name.trim()}
+            onClick={() => {
+              setTimeLeft(quiz.time_limit_seconds ?? 0);
+              timeLeftRef.current = quiz.time_limit_seconds ?? 0;
+              setStage("playing");
+            }}
+            className="mt-3 w-full rounded-xl bg-indigo-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 disabled:opacity-40 disabled:shadow-none"
+          >
+            Start Test →
+          </button>
+        </div>
       </div>
     );
   }

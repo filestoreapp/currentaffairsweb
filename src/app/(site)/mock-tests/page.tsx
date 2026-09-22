@@ -26,7 +26,7 @@ export default async function MockTestsPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">Free Mock Tests</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Free Mock Tests</h1>
       <p className="mt-2 max-w-2xl text-slate-500">
         Full-length Kerala PSC mock tests — exam-style timer, negative
         marking, and a live leaderboard. Free forever, no login needed.

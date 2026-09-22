@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { submitQuizAttempt } from "@/lib/actions/quizzes";
 import type { Quiz, QuizAttempt } from "@/lib/types";
-import { CheckCircle2, XCircle, Loader2, Trophy, Timer } from "lucide-react";
+import { CheckCircle2, XCircle, Loader2, Trophy, Timer, ClipboardList } from "lucide-react";
 
 type Stage = "intro" | "playing" | "result";
 
@@ -132,38 +133,66 @@ export default function QuizPlayer({
 
   if (stage === "intro") {
     return (
-      <div className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <h1 className="text-2xl font-extrabold">{quiz.title}</h1>
-        {quiz.description && (
-          <p className="mt-2 text-sm text-slate-500">{quiz.description}</p>
-        )}
-        <p className="mt-4 flex items-center justify-center gap-3 text-sm font-medium text-slate-600">
-          <span>
-            {questions.length} question{questions.length !== 1 ? "s" : ""}
-          </span>
-          {quiz.time_limit_seconds && (
-            <span className="flex items-center gap-1 text-amber-600">
-              <Timer size={14} /> {Math.round(quiz.time_limit_seconds / 60)} min limit
+      <div className="mx-auto max-w-lg">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-center text-white sm:p-10">
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-indigo-600/40 blur-3xl" />
+            <div className="absolute -bottom-20 -right-12 h-56 w-56 rounded-full bg-violet-600/30 blur-3xl" />
+          </div>
+          <div className="relative">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-600/30">
+              <ClipboardList size={26} className="text-white" />
             </span>
-          )}
-        </p>
+            <h1 className="mt-5 text-2xl font-extrabold tracking-tight sm:text-3xl">
+              {quiz.title}
+            </h1>
+            {quiz.description && (
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-300">
+                {quiz.description}
+              </p>
+            )}
+            <div className="mt-5 flex items-center justify-center gap-2">
+              <span className="rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-indigo-200">
+                {questions.length} question{questions.length !== 1 ? "s" : ""}
+              </span>
+              {quiz.time_limit_seconds && (
+                <span className="flex items-center gap-1 rounded-full bg-amber-500/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-amber-300">
+                  <Timer size={12} /> {Math.round(quiz.time_limit_seconds / 60)} min
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
 
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name"
-          className="mt-6 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none"
-        />
-        <button
-          disabled={!name.trim()}
-          onClick={() => {
-            setTimeLeft(quiz.time_limit_seconds ?? 0);
-            setStage("playing");
-          }}
-          className="mt-4 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          Start Quiz
-        </button>
+        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6">
+          <label
+            htmlFor="quiz-name"
+            className="text-sm font-semibold text-slate-700"
+          >
+            Your name for the leaderboard
+          </label>
+          <input
+            id="quiz-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Anjali K"
+            maxLength={40}
+            className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          />
+          <button
+            disabled={!name.trim()}
+            onClick={() => {
+              setTimeLeft(quiz.time_limit_seconds ?? 0);
+              setStage("playing");
+            }}
+            className="mt-3 w-full rounded-xl bg-indigo-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 disabled:opacity-40 disabled:shadow-none"
+          >
+            Start Quiz →
+          </button>
+          <p className="mt-3 text-center text-xs text-slate-400">
+            No login needed — your score goes straight to the leaderboard.
+          </p>
+        </div>
       </div>
     );
   }
@@ -253,16 +282,47 @@ export default function QuizPlayer({
 
   // stage === "result"
   const pct = Math.round((score / questions.length) * 100);
+  const message =
+    pct >= 80
+      ? "Outstanding! PSC-ready performance."
+      : pct >= 50
+      ? "Good going — a little revision and you'll ace it."
+      : "Keep practicing — every attempt makes you sharper.";
   return (
-    <div className="mx-auto max-w-lg space-y-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <Trophy className="mx-auto text-amber-500" size={40} />
-        <h2 className="mt-3 text-2xl font-extrabold">
-          {score} / {questions.length}
-        </h2>
-        <p className="mt-1 text-slate-500">
-          {name}, you scored {pct}%{timedOut ? " — time ran out!" : ""}
-        </p>
+    <div className="mx-auto max-w-lg space-y-6">
+      <div className="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-center text-white">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-amber-500/20 blur-3xl" />
+          <div className="absolute -bottom-20 -right-12 h-56 w-56 rounded-full bg-indigo-600/30 blur-3xl" />
+        </div>
+        <div className="relative">
+          <Trophy className="mx-auto text-amber-400" size={44} />
+          <p className="mt-4 text-5xl font-extrabold tracking-tight">
+            {score}
+            <span className="text-2xl text-slate-400">/{questions.length}</span>
+          </p>
+          <p className="mt-2 text-sm font-semibold text-indigo-200">
+            {pct}% · {name}
+            {timedOut ? " · time ran out" : ""}
+          </p>
+          <p className="mx-auto mt-2 max-w-xs text-sm text-slate-300">
+            {message}
+          </p>
+          <div className="mt-5 flex items-center justify-center gap-2.5">
+            <Link
+              href="/quiz"
+              className="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              More quizzes
+            </Link>
+            <Link
+              href="/mock-tests"
+              className="rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500"
+            >
+              Try a mock test
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -273,10 +333,19 @@ export default function QuizPlayer({
           {leaderboard.map((a, i) => (
             <li
               key={a.id + i}
-              className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2 text-sm"
+              className={`flex items-center justify-between rounded-lg px-4 py-2 text-sm ${
+                a.id === "temp"
+                  ? "bg-indigo-50 ring-1 ring-indigo-200"
+                  : "bg-slate-50"
+              }`}
             >
               <span className="font-medium text-slate-700">
                 {i + 1}. {a.name}
+                {a.id === "temp" && (
+                  <span className="ml-2 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                    YOU
+                  </span>
+                )}
               </span>
               <span className="font-semibold text-indigo-600">
                 {a.score}/{a.total}

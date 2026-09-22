@@ -24,7 +24,7 @@ export default async function QuizListPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">Practice Quizzes</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Practice Quizzes</h1>
       <p className="mt-2 text-slate-500">
         Test your knowledge of Kerala PSC current affairs. Enter your name,
         answer the questions, and see how you rank!

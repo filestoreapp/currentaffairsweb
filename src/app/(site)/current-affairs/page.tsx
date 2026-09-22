@@ -20,7 +20,7 @@ export default async function CurrentAffairsPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">Current Affairs</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Current Affairs</h1>
       <p className="mt-2 text-slate-500">{count} articles published</p>
 
       {posts.length === 0 ? (

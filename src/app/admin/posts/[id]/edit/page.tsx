@@ -20,7 +20,7 @@ export default async function EditPostPage({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold">Edit Post</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Edit Post</h1>
         <Link
           href={`/admin/posts/${id}/history`}
           className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600"

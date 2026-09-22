@@ -31,7 +31,7 @@ export default async function CategoryPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">{category.name}</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">{category.name}</h1>
       {category.description && (
         <p className="mt-2 text-slate-500">{category.description}</p>
       )}

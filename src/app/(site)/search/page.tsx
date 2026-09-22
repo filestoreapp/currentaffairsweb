@@ -16,7 +16,7 @@ export default async function SearchPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold">Search</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Search</h1>
       <form action="/search" className="mt-4 flex gap-2">
         <input
           name="q"

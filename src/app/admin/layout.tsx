@@ -17,10 +17,12 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen flex-col bg-slate-50 lg:flex-row">
       <Sidebar />
-      <div className="flex-1 overflow-y-auto">
-        <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+      <div className="min-w-0 flex-1">
+        <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+          {children}
+        </main>
       </div>
     </div>
   );
