@@ -384,3 +384,39 @@ create index if not exists quizzes_exam_year_idx on quizzes (exam_year desc);
 -- from Supabase Dashboard -> Authentication -> Users -> Add User
 -- (email + password). Only users created there can log in to /admin.
 -- =========================================================
+
+-- =========================================================
+-- 16. USAGE / RETENTION HELPERS (admin usage page + cron)
+-- =========================================================
+-- Total database size in bytes (free tier: 500 MB). Called from the
+-- admin usage page via the anon key — security definer so it can read
+-- pg_database_size without exposing anything else.
+create or replace function get_database_size()
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$
+  select pg_database_size(current_database());
+$$;
+grant execute on function get_database_size() to anon, authenticated;
+
+-- Delete page_views older than retention_days (clamped 30-365).
+-- Run daily from the psc-scrape cron so the table can't grow forever.
+create or replace function prune_page_views(retention_days int default 90)
+returns int
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  deleted int;
+begin
+  retention_days := greatest(30, least(365, retention_days));
+  delete from page_views
+  where created_at < now() - (retention_days || ' days')::interval;
+  get diagnostics deleted = row_count;
+  return deleted;
+end;
+$$;
+grant execute on function prune_page_views(int) to anon, authenticated;

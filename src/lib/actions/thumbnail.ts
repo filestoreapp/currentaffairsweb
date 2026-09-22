@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { generateThumbnailBuffer } from "@/lib/thumbnail";
+import { compressImage, uploadToImageCdn } from "@/lib/image-cdn";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -29,19 +30,13 @@ export async function generateAndUploadThumbnail({
   category?: string | null;
 }): Promise<string> {
   const buffer = await generateThumbnailBuffer({ title, category });
-  const supabase = await createClient();
+  const compressed = await compressImage(Buffer.from(buffer));
 
-  const path = `auto-thumbnails/${keySeed}.png`;
-  const { error } = await supabase.storage
-    .from("post-images")
-    .upload(path, buffer, { contentType: "image/png", upsert: true });
-
-  if (error) throw new Error(error.message);
-
-  const { data } = supabase.storage.from("post-images").getPublicUrl(path);
-  // Cache-bust the public URL so the browser/CDN doesn't keep showing a
-  // stale image after upsert overwrites the same path.
-  return `${data.publicUrl}?v=${Date.now()}`;
+  // Stable path per keySeed + upsert: re-generating overwrites the old
+  // file instead of leaving orphans. The returned CDN URL is pinned to
+  // the new commit SHA, so there's never a stale-cache problem.
+  const path = `auto-thumbnails/${keySeed}.webp`;
+  return uploadToImageCdn(compressed, path, { upsert: true });
 }
 
 /**

@@ -14,6 +14,7 @@ import {
   ClipboardList,
   BarChart3,
   RefreshCw,
+  Gauge,
   Menu,
   X,
 } from "lucide-react";
@@ -21,7 +22,10 @@ import {
 const SECTIONS = [
   {
     title: "Overview",
-    links: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard }],
+    links: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin/usage", label: "Usage", icon: Gauge },
+    ],
   },
   {
     title: "Content",
