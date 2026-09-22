@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getPublishedQuizzes } from "@/lib/quizzes";
 import { getAllCategories } from "@/lib/posts";
-import { ClipboardList, Clock } from "lucide-react";
+import { ClipboardList, Clock, ArrowRight } from "lucide-react";
 
 export const metadata = { title: "Quiz" };
 
@@ -29,6 +29,22 @@ export default async function QuizListPage({
         Test your knowledge of Kerala PSC current affairs. Enter your name,
         answer the questions, and see how you rank!
       </p>
+
+      <Link
+        href="/mock-tests"
+        className="mt-6 flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-5 text-white transition hover:shadow-lg"
+      >
+        <span>
+          <span className="block font-extrabold">
+            Want the full exam experience?
+          </span>
+          <span className="mt-0.5 block text-sm text-indigo-100">
+            Try our free full-length mock tests — timer, negative marking and
+            live leaderboards.
+          </span>
+        </span>
+        <ArrowRight size={24} className="shrink-0" />
+      </Link>
 
       <div className="scrollbar-hide mt-6 flex gap-2 overflow-x-auto pb-2">
         <Link

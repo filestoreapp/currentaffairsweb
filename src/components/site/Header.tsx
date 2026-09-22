@@ -27,6 +27,9 @@ export default async function Header() {
           <Link href="/quiz" className="hover:text-indigo-600">
             Quiz
           </Link>
+          <Link href="/mock-tests" className="hover:text-indigo-600">
+            Mock Tests
+          </Link>
           <Link href="/psc-updates" className="hover:text-indigo-600">
             PSC Updates
           </Link>
@@ -53,6 +56,9 @@ export default async function Header() {
         </Link>
         <Link href="/quiz" className="whitespace-nowrap hover:text-indigo-600">
           Quiz
+        </Link>
+        <Link href="/mock-tests" className="whitespace-nowrap hover:text-indigo-600">
+          Mock Tests
         </Link>
         <Link href="/psc-updates" className="whitespace-nowrap hover:text-indigo-600">
           PSC Updates

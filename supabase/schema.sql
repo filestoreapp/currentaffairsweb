@@ -332,6 +332,39 @@ on post_revisions for all to authenticated
 using (true) with check (true);
 
 -- =========================================================
+-- 14. MOCK TEST MODE (extends quizzes)
+-- =========================================================
+-- A mock test is a quiz with is_mock = true: exam-style runner with a
+-- question palette, countdown timer, negative marking, per-question
+-- review and a ranked leaderboard (score desc, fastest first).
+alter table quizzes add column if not exists is_mock boolean not null default false;
+alter table quizzes add column if not exists negative_marking numeric not null default 0;
+alter table quizzes add column if not exists instructions text;
+
+alter table quiz_attempts add column if not exists correct_count int not null default 0;
+alter table quiz_attempts add column if not exists wrong_count int not null default 0;
+alter table quiz_attempts add column if not exists skipped_count int not null default 0;
+alter table quiz_attempts add column if not exists time_taken_seconds int;
+alter table quiz_attempts add column if not exists answers jsonb;
+
+-- Fractional scores (negative marking) need numeric instead of int.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_name = 'quiz_attempts'
+      and column_name = 'score'
+      and data_type = 'integer'
+  ) then
+    alter table quiz_attempts alter column score type numeric using score::numeric;
+  end if;
+end $$;
+
+create index if not exists quizzes_is_mock_idx on quizzes (is_mock, status);
+create index if not exists quiz_attempts_mock_rank_idx
+  on quiz_attempts (quiz_id, score desc, time_taken_seconds asc nulls last);
+
+-- =========================================================
 -- NOTE: After running this, create your admin login user
 -- from Supabase Dashboard -> Authentication -> Users -> Add User
 -- (email + password). Only users created there can log in to /admin.

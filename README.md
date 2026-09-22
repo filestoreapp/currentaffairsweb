@@ -323,7 +323,42 @@ image at all), instead of a text-only message like before.
   of channel messages from one bulk action) — publish posts individually
   from the editor if you want each one announced.
 
-## 14. Customization ideas
+## 14. Mock tests & leaderboards
+
+Free full-length mock tests are the site's biggest traffic magnet — exam-style
+practice with a timer, negative marking and ranked leaderboards, no login needed.
+
+**Creating a mock test**
+
+- In `/admin/quizzes`, create a quiz as usual, then tick **"Mock test mode"**.
+- Set a **time limit** (minutes), pick **negative marking** (none, −1/4, −1/3, −1/2),
+  and write the **instructions** shown before the test starts.
+- Publish — mocks get their own listing at `/mock-tests` (they don't appear
+  under `/quiz`), and publishing a mock automatically announces it on your
+  Telegram channel with the question count, duration and marking scheme
+  (same `TELEGRAM_*` env vars, no extra setup).
+
+**The test experience** (`/mock-tests/[slug]`)
+
+- Intro screen: name entry, question count, duration, marking scheme, instructions.
+- Exam runner: numbered **question palette** (answered / marked-for-review /
+  unanswered), countdown timer with auto-submit on timeout, prev/next navigation,
+  click-again-to-clear answers — no instant feedback, just like the real exam.
+- Submit confirmation shows how many you answered before locking in.
+- Results: score with negative marking applied, correct/wrong/skipped counts,
+  accuracy %, time taken, your **rank**, a full **answer review** (your answer vs
+  the correct one + explanations), and the test leaderboard (ties broken by
+  fastest finish).
+- `/mock-tests` also shows an **overall leaderboard** ranked by average best
+  score across all mocks — rewards consistent performers.
+
+**Database** — re-run `supabase/schema.sql` (section 14, additive and safe):
+adds `is_mock`, `negative_marking`, `instructions` to `quizzes`; per-question
+`answers` plus `correct_count`/`wrong_count`/`skipped_count`/`time_taken_seconds`
+to `quiz_attempts`; and widens `quiz_attempts.score` to numeric for fractional
+scores. Public read/insert RLS policies are unchanged from the quiz system.
+
+## 15. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material

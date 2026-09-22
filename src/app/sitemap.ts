@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts, getAllCategories } from "@/lib/posts";
+import { getPublishedMocks } from "@/lib/quizzes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -8,10 +9,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // rather than failing the whole deploy over this one route.
   let posts: Awaited<ReturnType<typeof getPublishedPosts>>["posts"] = [];
   let categories: Awaited<ReturnType<typeof getAllCategories>> = [];
+  let mocks: Awaited<ReturnType<typeof getPublishedMocks>> = [];
   try {
     const result = await getPublishedPosts({ perPage: 1000 });
     posts = result.posts;
     categories = await getAllCategories();
+    mocks = await getPublishedMocks();
   } catch (err) {
     console.error("sitemap: failed to fetch posts/categories", err);
   }
@@ -19,6 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: siteUrl, lastModified: new Date() },
     { url: `${siteUrl}/current-affairs`, lastModified: new Date() },
+    { url: `${siteUrl}/quiz`, lastModified: new Date() },
+    { url: `${siteUrl}/mock-tests`, lastModified: new Date() },
+    ...mocks.map((m) => ({
+      url: `${siteUrl}/mock-tests/${m.slug}`,
+      lastModified: new Date(m.created_at),
+    })),
     ...categories.map((c) => ({
       url: `${siteUrl}/category/${c.slug}`,
       lastModified: new Date(c.created_at),

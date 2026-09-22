@@ -72,6 +72,9 @@ export interface Quiz {
   category?: Category | null;
   difficulty: QuizDifficulty;
   time_limit_seconds: number | null;
+  is_mock: boolean;
+  negative_marking: number;
+  instructions: string | null;
   status: QuizStatus;
   created_at: string;
   updated_at: string;
@@ -85,6 +88,11 @@ export interface QuizAttempt {
   name: string;
   score: number;
   total: number;
+  correct_count: number;
+  wrong_count: number;
+  skipped_count: number;
+  time_taken_seconds: number | null;
+  answers: (number | null)[] | null;
   created_at: string;
 }
 
