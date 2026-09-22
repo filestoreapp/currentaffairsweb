@@ -173,7 +173,192 @@ policy if exists`) and will only add the new `quizzes`,
   external analytics account needed) — every page load writes one row
   to the `page_views` table.
 
-## 10. Customization ideas
+## 10. PSC auto-updates (added after initial launch)
+
+The site can auto-pull the latest **notifications, examination
+notifications, postwise syllabus, exam programme, result notifications,
+short lists, ranked lists and interview schedules** straight from
+`keralapsc.gov.in`, with no manual posting.
+
+**Setup**
+
+1. Re-run `supabase/schema.sql` in the Supabase SQL editor (it's
+   idempotent — this adds the new `psc_updates` table without touching
+   anything else).
+2. In Supabase, go to **Project Settings → API** and copy the
+   **`service_role`** key → set it as `SUPABASE_SERVICE_ROLE_KEY` (locally
+   in `.env.local`, and in Vercel under Environment Variables). This key
+   bypasses Row Level Security and is only ever used server-side by the
+   scraper — never expose it to the browser.
+3. Pick any long random string and set it as `CRON_SECRET` in the same
+   two places. Vercel automatically sends it as
+   `Authorization: Bearer $CRON_SECRET` when its Cron scheduler calls the
+   route, so no extra wiring is needed.
+4. Deploy. `vercel.json` registers a daily cron
+   (`/api/cron/psc-scrape`, `0 3 * * *` UTC ≈ 8:30am IST). Vercel's
+   **free Hobby plan only allows once-a-day cron schedules** — if you
+   want it to check more often, either upgrade to Pro (unlocks
+   per-minute schedules) or point a free external scheduler (e.g.
+   [cron-job.org](https://cron-job.org)) at
+   `https://your-site.vercel.app/api/cron/psc-scrape` with header
+   `Authorization: Bearer <your CRON_SECRET>` on whatever cadence you
+   like — the route itself has no rate limit of its own.
+5. New items found on a scrape are also sent to your Telegram channel
+   automatically, using the same `TELEGRAM_*` env vars from section 5.
+
+**Using it**
+
+- Public page: `/psc-updates` — filterable by category, shows a "NEW"
+  badge for anything scraped in the last 48 hours, direct PDF download
+  links where available.
+- Admin page: `/admin/psc-updates` — per-source counts, most recently
+  scraped items, and a **"Run scrape now"** button to trigger it on
+  demand instead of waiting for the schedule.
+- Debug endpoint: `GET /api/cron/psc-scrape?dry_run=1` (same auth
+  header) fetches and parses every source **without** writing to the
+  database or Telegram — useful for checking the scraper still matches
+  Kerala PSC's page markup if they redesign something.
+
+**How it works / limitations**
+
+The scraper (`src/lib/psc-scraper/`) fetches each listing page on
+`keralapsc.gov.in` fresh on every run and parses it generically — by
+walking `<table>`/`<tr>`/`<td>`/`<a>` structure rather than relying on
+Kerala PSC's specific CSS classes, since those weren't available to
+verify against ahead of time. This should be resilient to minor styling
+changes, but if a page's HTML structure changes significantly, check it
+with the `dry_run=1` endpoint above and adjust `src/lib/psc-scraper/parse.ts`
+if needed. New rows are deduped by URL, so re-running the scraper
+(including overlapping cron + manual runs) is always safe.
+
+## 11. Scheduled posts
+
+Set a post's status to **Scheduled** in the editor and pick a date/time —
+it becomes publicly visible automatically once that time passes (the
+public queries check `published_at <= now()`), no redeploy or manual step
+needed.
+
+One caveat: the Telegram auto-post for a scheduled post only fires if you
+open and re-save it as Published after the time passes — there's no cron
+flipping the status label for you (this project already uses its one
+Vercel Hobby cron slot for the PSC scraper). If you want Telegram alerts
+to fire exactly on schedule too, the cleanest fix is a second cron route
+that queries for `status = 'scheduled' AND published_at <= now()`, flips
+them to `published`, and calls `postToTelegram` — happy to add that if
+you end up wanting it.
+
+## 12. Automatic post thumbnails
+
+Every post now always has a cover image — no more "No image" placeholder
+cards on the homepage or listing pages.
+
+**How it works**
+
+- When you publish or update a post in `/admin` **without** uploading a
+  cover image, the server automatically renders a branded thumbnail (site
+  name, category badge, and the post title on a gradient background) and
+  stores it in the same `post-images` Supabase bucket used for manual
+  uploads. It's a real PNG file with a real URL — it works in the post
+  card grid, the article hero image, `og:image` meta tags, JSON-LD, and
+  Telegram (see below), exactly like a manually uploaded cover would.
+- If you'd rather see it before saving, click **"Auto-generate thumbnail"**
+  next to the cover image uploader in the post editor — it fills in the
+  cover image field with a preview you can keep or replace.
+- Uploading your own image always takes priority; the auto-generator only
+  ever fills in the gap when the field is left empty.
+- **Existing posts** created before this feature (or ones you never added a
+  cover to) aren't touched automatically. Go to `/admin/posts` and click
+  **"Generate missing thumbnails"** — it finds every post with no cover
+  image and generates one in one pass.
+- The generator lives in `src/lib/thumbnail.tsx` (the visual design) and
+  `src/lib/actions/thumbnail.ts` (rendering + upload). To change the
+  look — colors, logo, layout — edit `ThumbnailImage` in `thumbnail.tsx`;
+  every code path (auto-generate on save, the editor preview button, and
+  the bulk backfill) renders from that one component, so a single edit
+  updates all of them.
+- There's also a live preview endpoint, `/api/thumbnail?title=...&category=...`,
+  used internally for the editor's preview button — you can also hit it
+  directly if you ever want to generate a one-off image outside the CMS.
+
+**Telegram channel posts now include the image too** — `postToTelegram`
+sends the cover image as a photo with the post details as the caption
+(falls back to a plain text message on the rare post that still has no
+image at all), instead of a text-only message like before.
+
+## 13. Editor workflow: autosave, version history, bulk actions
+
+**Autosave drafts**
+- While writing or editing a post, your in-progress changes are saved to
+  the browser's local storage a couple of seconds after you stop typing —
+  no server round-trip, so it works even offline.
+- If you accidentally close the tab or your browser crashes mid-edit,
+  reopening that same post (or "New Post") shows a banner offering to
+  restore the unsaved draft, or discard it.
+- The draft is cleared automatically once you actually save (Create/Update
+  Post). It's purely a client-side safety net — it never touches the
+  database, so there's nothing to clean up server-side.
+- Implementation: `src/lib/useDraftAutosave.ts` (a small reusable hook),
+  wired into `PostForm`.
+
+**Version history**
+- Every time you update an existing post, a snapshot of its *previous*
+  state is saved automatically (title, content, cover image, category,
+  tags, SEO fields).
+- Click **"Version history"** at the top of the post editor to see every
+  past snapshot with a timestamp, and restore any of them with one click.
+  Restoring itself snapshots the current state first, so it's never a
+  one-way trip.
+- Only the most recent 20 snapshots per post are kept — older ones are
+  pruned automatically after each save so the `post_revisions` table
+  doesn't grow forever. Adjust `MAX_REVISIONS_PER_POST` in
+  `src/lib/actions/posts.ts` if you want a different limit.
+- Requires re-running `supabase/schema.sql` (section 10) — it's additive
+  and safe to re-run on an existing database.
+
+**Bulk actions**
+- `/admin/posts` now has checkboxes on every row (plus a "select all" in
+  the header). Selecting one or more posts shows a toolbar to **Publish**,
+  **Move to draft**, or **Delete** all of them at once.
+- Bulk-publishing skips Telegram auto-posting (to avoid firing off a burst
+  of channel messages from one bulk action) — publish posts individually
+  from the editor if you want each one announced.
+
+## 14. Mock tests & leaderboards
+
+Free full-length mock tests are the site's biggest traffic magnet — exam-style
+practice with a timer, negative marking and ranked leaderboards, no login needed.
+
+**Creating a mock test**
+
+- In `/admin/quizzes`, create a quiz as usual, then tick **"Mock test mode"**.
+- Set a **time limit** (minutes), pick **negative marking** (none, −1/4, −1/3, −1/2),
+  and write the **instructions** shown before the test starts.
+- Publish — mocks get their own listing at `/mock-tests` (they don't appear
+  under `/quiz`), and publishing a mock automatically announces it on your
+  Telegram channel with the question count, duration and marking scheme
+  (same `TELEGRAM_*` env vars, no extra setup).
+
+**The test experience** (`/mock-tests/[slug]`)
+
+- Intro screen: name entry, question count, duration, marking scheme, instructions.
+- Exam runner: numbered **question palette** (answered / marked-for-review /
+  unanswered), countdown timer with auto-submit on timeout, prev/next navigation,
+  click-again-to-clear answers — no instant feedback, just like the real exam.
+- Submit confirmation shows how many you answered before locking in.
+- Results: score with negative marking applied, correct/wrong/skipped counts,
+  accuracy %, time taken, your **rank**, a full **answer review** (your answer vs
+  the correct one + explanations), and the test leaderboard (ties broken by
+  fastest finish).
+- `/mock-tests` also shows an **overall leaderboard** ranked by average best
+  score across all mocks — rewards consistent performers.
+
+**Database** — re-run `supabase/schema.sql` (section 14, additive and safe):
+adds `is_mock`, `negative_marking`, `instructions` to `quizzes`; per-question
+`answers` plus `correct_count`/`wrong_count`/`skipped_count`/`time_taken_seconds`
+to `quiz_attempts`; and widens `quiz_attempts.score` to numeric for fractional
+scores. Public read/insert RLS policies are unchanged from the quiz system.
+
+## 15. Customization ideas
 
 - Add a search bar (Supabase full-text search on `posts.title`/`content_html`)
 - Add a "Quiz of the day" or PDF download section for PSC study material

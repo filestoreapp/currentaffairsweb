@@ -3,19 +3,27 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createQuiz, updateQuiz, type QuizQuestionInput } from "@/lib/actions/quizzes";
-import type { Post, Quiz, QuizStatus } from "@/lib/types";
+import type { Category, Post, Quiz, QuizDifficulty, QuizStatus } from "@/lib/types";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
 function emptyQuestion(): QuizQuestionInput {
   return { question: "", options: ["", "", "", ""], correct_index: 0, explanation: "" };
 }
 
+const DIFFICULTIES: { value: QuizDifficulty; label: string }[] = [
+  { value: "easy", label: "Easy" },
+  { value: "medium", label: "Medium" },
+  { value: "hard", label: "Hard" },
+];
+
 export default function QuizForm({
   quiz,
   posts,
+  categories,
 }: {
   quiz?: Quiz;
   posts: Post[];
+  categories: Category[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -24,6 +32,18 @@ export default function QuizForm({
   const [slug, setSlug] = useState(quiz?.slug ?? "");
   const [description, setDescription] = useState(quiz?.description ?? "");
   const [postId, setPostId] = useState(quiz?.post_id ?? "");
+  const [categoryId, setCategoryId] = useState(quiz?.category_id ?? "");
+  const [difficulty, setDifficulty] = useState<QuizDifficulty>(
+    quiz?.difficulty ?? "medium"
+  );
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState(
+    quiz?.time_limit_seconds ? String(Math.round(quiz.time_limit_seconds / 60)) : ""
+  );
+  const [isMock, setIsMock] = useState(quiz?.is_mock ?? false);
+  const [negativeMarking, setNegativeMarking] = useState(
+    quiz?.negative_marking ? String(quiz.negative_marking) : "0"
+  );
+  const [instructions, setInstructions] = useState(quiz?.instructions ?? "");
   const [status, setStatus] = useState<QuizStatus>(quiz?.status ?? "draft");
   const [questions, setQuestions] = useState<QuizQuestionInput[]>(
     quiz?.questions && quiz.questions.length > 0
@@ -68,6 +88,12 @@ export default function QuizForm({
       slug: slug || undefined,
       description,
       post_id: postId || null,
+      category_id: categoryId || null,
+      difficulty,
+      time_limit_seconds: timeLimitMinutes ? Number(timeLimitMinutes) * 60 : null,
+      is_mock: isMock,
+      negative_marking: isMock ? Number(negativeMarking) : 0,
+      instructions: isMock ? instructions : "",
       status,
       questions,
     };
@@ -140,6 +166,100 @@ export default function QuizForm({
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
+
+            <label className="mt-4 block text-sm font-medium text-slate-700">
+              Difficulty
+            </label>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as QuizDifficulty)}
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            >
+              {DIFFICULTIES.map((d) => (
+                <option key={d.value} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+
+            <label className="mt-4 block text-sm font-medium text-slate-700">
+              Category (optional)
+            </label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            >
+              <option value="">No category</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+
+            <label className="mt-4 block text-sm font-medium text-slate-700">
+              Time limit — minutes (optional)
+            </label>
+            <input
+              type="number"
+              min={1}
+              value={timeLimitMinutes}
+              onChange={(e) => setTimeLimitMinutes(e.target.value)}
+              placeholder="Untimed"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            />
+            <p className="mt-1 text-xs text-slate-400">
+              Leave blank for no time limit. The clock runs for the whole
+              quiz, not per question.
+            </p>
+
+            <label className="mt-4 flex cursor-pointer items-start gap-2">
+              <input
+                type="checkbox"
+                checked={isMock}
+                onChange={(e) => setIsMock(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                <span className="block text-sm font-medium text-slate-700">
+                  Mock test mode
+                </span>
+                <span className="block text-xs text-slate-400">
+                  Exam-style runner: question palette, countdown, negative
+                  marking, per-question review and a ranked leaderboard.
+                </span>
+              </span>
+            </label>
+
+            {isMock && (
+              <>
+                <label className="mt-4 block text-sm font-medium text-slate-700">
+                  Negative marking
+                </label>
+                <select
+                  value={negativeMarking}
+                  onChange={(e) => setNegativeMarking(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                >
+                  <option value="0">None (+1 / 0)</option>
+                  <option value="0.25">−1/4 (−0.25 per wrong answer)</option>
+                  <option value="0.33">−1/3 (−0.33 per wrong answer)</option>
+                  <option value="0.5">−1/2 (−0.5 per wrong answer)</option>
+                </select>
+
+                <label className="mt-4 block text-sm font-medium text-slate-700">
+                  Instructions shown before the test
+                </label>
+                <textarea
+                  value={instructions}
+                  onChange={(e) => setInstructions(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. 100 questions · 75 minutes · +1 for correct, −1/3 for wrong. Read each question carefully."
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                />
+              </>
+            )}
 
             <label className="mt-4 block text-sm font-medium text-slate-700">
               Attach to a post (optional)

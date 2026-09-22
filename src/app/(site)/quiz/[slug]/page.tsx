@@ -1,7 +1,9 @@
 import { getQuizBySlug, getLeaderboard } from "@/lib/quizzes";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import QuizPlayer from "@/components/site/QuizPlayer";
 import type { Metadata } from "next";
+
+export const revalidate = 300; // 5 min — leaderboard shown is the starting snapshot; client updates it live after each attempt
 
 export async function generateMetadata({
   params,
@@ -22,6 +24,9 @@ export default async function QuizTakePage({
   const quiz = await getQuizBySlug(slug);
 
   if (!quiz) notFound();
+
+  // Mock tests have their own exam-style runner.
+  if (quiz.is_mock) redirect(`/mock-tests/${slug}`);
 
   const leaderboard = await getLeaderboard(quiz.id);
 

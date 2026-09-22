@@ -4,12 +4,31 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { marked } from "marked";
 import slugify from "slugify";
+import { formatDistanceToNow } from "date-fns";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { createPost, updatePost, type PostFormInput } from "@/lib/actions/posts";
+import { previewThumbnail } from "@/lib/actions/thumbnail";
+import { useDraftAutosave } from "@/lib/useDraftAutosave";
 import type { Category, EditorMode, Post, PostStatus } from "@/lib/types";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
+
+interface DraftShape {
+  title: string;
+  slug: string;
+  excerpt: string;
+  editorMode: EditorMode;
+  contentHtml: string;
+  contentMarkdown: string;
+  coverImage: string | null;
+  categoryId: string;
+  tags: string;
+  status: PostStatus;
+  scheduledAt: string;
+  metaTitle: string;
+  metaDescription: string;
+}
 
 export default function PostForm({
   post,
@@ -37,11 +56,70 @@ export default function PostForm({
   const [categoryId, setCategoryId] = useState(post?.category_id ?? "");
   const [tags, setTags] = useState((post?.tags ?? []).join(", "));
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
+  const [scheduledAt, setScheduledAt] = useState(
+    post?.status === "scheduled" && post?.published_at
+      ? post.published_at.slice(0, 16)
+      : ""
+  );
   const [metaTitle, setMetaTitle] = useState(post?.meta_title ?? "");
   const [metaDescription, setMetaDescription] = useState(
     post?.meta_description ?? ""
   );
   const [error, setError] = useState<string | null>(null);
+  const [generatingThumb, setGeneratingThumb] = useState(false);
+
+  const draftKey = `postDraft:${post?.id ?? "new"}`;
+  const { restorableDraft, restorableSavedAt, restore, discard, clearDraft } =
+    useDraftAutosave<DraftShape>(draftKey, {
+      title,
+      slug,
+      excerpt,
+      editorMode,
+      contentHtml,
+      contentMarkdown,
+      coverImage,
+      categoryId,
+      tags,
+      status,
+      scheduledAt,
+      metaTitle,
+      metaDescription,
+    });
+
+  function applyDraft(d: DraftShape) {
+    setTitle(d.title);
+    setSlug(d.slug);
+    setExcerpt(d.excerpt);
+    setEditorMode(d.editorMode);
+    setContentHtml(d.contentHtml);
+    setContentMarkdown(d.contentMarkdown);
+    setCoverImage(d.coverImage);
+    setCategoryId(d.categoryId);
+    setTags(d.tags);
+    setStatus(d.status);
+    setScheduledAt(d.scheduledAt);
+    setMetaTitle(d.metaTitle);
+    setMetaDescription(d.metaDescription);
+  }
+
+  async function handleGenerateThumbnail() {
+    if (!title.trim()) {
+      setError("Add a title first so the thumbnail has something to show");
+      return;
+    }
+    setError(null);
+    setGeneratingThumb(true);
+    try {
+      const categoryName =
+        categories.find((c) => c.id === categoryId)?.name ?? null;
+      const url = await previewThumbnail(title, categoryName);
+      setCoverImage(url);
+    } catch (err) {
+      setError("Couldn't generate a thumbnail: " + (err as Error).message);
+    } finally {
+      setGeneratingThumb(false);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,6 +127,10 @@ export default function PostForm({
 
     if (!title.trim()) {
       setError("Title is required");
+      return;
+    }
+    if (status === "scheduled" && !scheduledAt) {
+      setError("Pick a date and time to schedule this post for");
       return;
     }
 
@@ -69,12 +151,15 @@ export default function PostForm({
         .map((t) => t.trim())
         .filter(Boolean),
       status,
+      published_at:
+        status === "scheduled" ? new Date(scheduledAt).toISOString() : undefined,
       meta_title: metaTitle,
       meta_description: metaDescription,
     };
 
     startTransition(async () => {
       try {
+        clearDraft();
         if (post) {
           await updatePost(post.id, input);
         } else {
@@ -88,6 +173,36 @@ export default function PostForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {restorableDraft && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <span>
+            You have an unsaved draft from{" "}
+            {restorableSavedAt
+              ? formatDistanceToNow(new Date(restorableSavedAt), { addSuffix: true })
+              : "earlier"}
+            .
+          </span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const d = restore();
+                if (d) applyDraft(d);
+              }}
+              className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700"
+            >
+              Restore draft
+            </button>
+            <button
+              type="button"
+              onClick={discard}
+              className="rounded-lg border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+            >
+              Discard
+            </button>
+          </div>
+        </div>
+      )}
       {error && (
         <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
           {error}
@@ -219,8 +334,27 @@ export default function PostForm({
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
+                  <option value="scheduled">Scheduled</option>
                 </select>
               </div>
+
+              {status === "scheduled" && (
+                <div>
+                  <label className="text-xs font-medium text-slate-500">
+                    Publish at
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+                  />
+                  <p className="mt-1 text-xs text-slate-400">
+                    Goes live automatically at this time — no need to come
+                    back and hit publish.
+                  </p>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={isPending}
@@ -241,6 +375,23 @@ export default function PostForm({
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
             <ImageUploader value={coverImage} onChange={setCoverImage} />
+            <button
+              type="button"
+              onClick={handleGenerateThumbnail}
+              disabled={generatingThumb}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-indigo-200 bg-indigo-50 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 disabled:opacity-60"
+            >
+              {generatingThumb ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Sparkles size={16} />
+              )}
+              {coverImage ? "Regenerate branded thumbnail" : "Auto-generate thumbnail"}
+            </button>
+            <p className="mt-2 text-xs text-slate-400">
+              Leave the cover image blank and one is generated automatically
+              from the title and category when you save.
+            </p>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5">

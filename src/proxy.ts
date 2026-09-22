@@ -6,7 +6,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  // Only /admin routes need the auth-cookie check. Running it on every
+  // public page (posts, quizzes, search, PSC updates) added an extra
+  // Supabase round-trip to requests that never needed a session at all,
+  // and forced those pages to skip static/ISR caching.
+  matcher: ["/admin/:path*"],
 };

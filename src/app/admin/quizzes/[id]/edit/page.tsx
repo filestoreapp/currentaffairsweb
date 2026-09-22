@@ -1,4 +1,4 @@
-import { getAllPostsForAdmin } from "@/lib/posts";
+import { getAllPostsForAdmin, getAllCategories } from "@/lib/posts";
 import { getQuizByIdForAdmin } from "@/lib/quizzes";
 import QuizForm from "@/components/admin/QuizForm";
 import { notFound } from "next/navigation";
@@ -9,9 +9,10 @@ export default async function EditQuizPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [quiz, posts] = await Promise.all([
+  const [quiz, posts, categories] = await Promise.all([
     getQuizByIdForAdmin(id),
     getAllPostsForAdmin(),
+    getAllCategories(),
   ]);
 
   if (!quiz) notFound();
@@ -20,7 +21,7 @@ export default async function EditQuizPage({
     <div>
       <h1 className="text-2xl font-extrabold">Edit Quiz</h1>
       <div className="mt-6">
-        <QuizForm quiz={quiz} posts={posts} />
+        <QuizForm quiz={quiz} posts={posts} categories={categories} />
       </div>
     </div>
   );

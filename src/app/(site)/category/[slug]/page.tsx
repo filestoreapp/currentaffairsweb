@@ -3,6 +3,8 @@ import PostCard from "@/components/site/PostCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+export const revalidate = 300; // 5 min — no cookies/searchParams here, so this can ISR
+
 export async function generateMetadata({
   params,
 }: {
