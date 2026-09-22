@@ -27,16 +27,22 @@ export default function QuizPlayer({
   const [selected, setSelected] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
   const [score, setScore] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [leaderboard, setLeaderboard] = useState(initialLeaderboard);
   const [timeLeft, setTimeLeft] = useState(quiz.time_limit_seconds ?? 0);
   const [timedOut, setTimedOut] = useState(false);
   const finishedRef = useRef(false);
   const scoreRef = useRef(score);
+  const wrongRef = useRef(wrongCount);
 
   useEffect(() => {
     scoreRef.current = score;
   }, [score]);
+
+  useEffect(() => {
+    wrongRef.current = wrongCount;
+  }, [wrongCount]);
 
   const question = questions[current];
 
@@ -46,6 +52,7 @@ export default function QuizPlayer({
     setSubmitting(true);
     try {
       await submitQuizAttempt(quiz.id, name, finalScore, questions.length);
+      const wrong = wrongRef.current;
       setLeaderboard((prev) =>
         [
           ...prev,
@@ -55,6 +62,11 @@ export default function QuizPlayer({
             name,
             score: finalScore,
             total: questions.length,
+            correct_count: finalScore,
+            wrong_count: wrong,
+            skipped_count: questions.length - finalScore - wrong,
+            time_taken_seconds: null,
+            answers: null,
             created_at: new Date().toISOString(),
           },
         ]
@@ -95,6 +107,8 @@ export default function QuizPlayer({
     setAnswered(true);
     if (index === question.correct_index) {
       setScore((s) => s + 1);
+    } else {
+      setWrongCount((w) => w + 1);
     }
   }
 
