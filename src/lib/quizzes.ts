@@ -15,6 +15,7 @@ export async function getPublishedQuizzes({
     .select(QUIZ_SELECT)
     .eq("status", "published")
     .eq("is_mock", false)
+    .eq("is_pyq", false)
     .order("created_at", { ascending: false });
 
   if (categorySlug) {
@@ -87,6 +88,7 @@ export async function getPublishedMocks() {
     .select(QUIZ_SELECT)
     .eq("status", "published")
     .eq("is_mock", true)
+    .eq("is_pyq", false)
     .order("created_at", { ascending: false });
   if (error) throw error;
 
@@ -168,7 +170,8 @@ export async function getGlobalMockLeaderboard(
     .from("quizzes")
     .select("id")
     .eq("status", "published")
-    .eq("is_mock", true);
+    .eq("is_mock", true)
+    .eq("is_pyq", false);
   const ids = (mocks ?? []).map((m) => m.id);
   if (ids.length === 0) return [];
 
@@ -296,4 +299,148 @@ export async function getRecentQuizAttempts(limit = 6) {
     .limit(limit);
   if (error) throw error;
   return (data ?? []) as (QuizAttempt & { quiz: { title: string; slug: string } | null })[];
+}
+
+// ---- PYQ papers (previous-year Kerala PSC papers, exam-style runner) ----
+
+export async function getPublishedPyqs() {
+  const supabase = createPublicClient();
+  const { data: papers, error } = await supabase
+    .from("quizzes")
+    .select(QUIZ_SELECT)
+    .eq("status", "published")
+    .eq("is_pyq", true)
+    .order("exam_year", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+
+  const ids = (papers ?? []).map((p) => p.id);
+  let counts: Record<string, number> = {};
+  if (ids.length > 0) {
+    const { data: attempts } = await supabase
+      .from("quiz_attempts")
+      .select("quiz_id")
+      .in("quiz_id", ids);
+    counts = (attempts ?? []).reduce<Record<string, number>>((acc, a) => {
+      acc[a.quiz_id] = (acc[a.quiz_id] ?? 0) + 1;
+      return acc;
+    }, {});
+  }
+
+  return ((papers ?? []) as unknown as Quiz[]).map((p) => ({
+    ...p,
+    attempt_count: counts[p.id] ?? 0,
+  }));
+}
+
+export async function getPyqBySlug(slug: string) {
+  const supabase = createPublicClient();
+  const { data: quiz, error } = await supabase
+    .from("quizzes")
+    .select(QUIZ_SELECT)
+    .eq("slug", slug)
+    .eq("status", "published")
+    .eq("is_pyq", true)
+    .single();
+  if (error || !quiz) return null;
+
+  const { data: questions } = await supabase
+    .from("quiz_questions")
+    .select("*")
+    .eq("quiz_id", quiz.id)
+    .order("position", { ascending: true });
+
+  return {
+    ...(quiz as unknown as Quiz),
+    questions: (questions ?? []) as QuizQuestion[],
+  };
+}
+
+/** Distinct exam years present among published PYQ papers (for filter chips). */
+export async function getPyqYears(): Promise<number[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("quizzes")
+    .select("exam_year")
+    .eq("status", "published")
+    .eq("is_pyq", true)
+    .not("exam_year", "is", null);
+  if (error) throw error;
+  const years = Array.from(
+    new Set((data ?? []).map((r) => r.exam_year as number))
+  );
+  return years.sort((a, b) => b - a);
+}
+
+// ---- Daily streaks (consecutive days with at least one attempt) ----
+
+export interface StreakEntry {
+  name: string;
+  streak: number;
+  last_active: string; // YYYY-MM-DD
+}
+
+/**
+ * Top daily streaks across all quiz + mock + PYQ attempts, computed in JS:
+ * for each name, count consecutive days (IST) ending today/yesterday with
+ * at least one attempt.
+ */
+export async function getTopStreaks(limit = 10): Promise<StreakEntry[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("quiz_attempts")
+    .select("name, created_at")
+    .order("created_at", { ascending: false })
+    .limit(5000);
+  if (error) throw error;
+
+  // Distinct active days per name (IST calendar days).
+  const daysByName = new Map<string, Set<string>>();
+  const fmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  for (const row of data ?? []) {
+    const day = fmt.format(new Date(row.created_at));
+    let set = daysByName.get(row.name);
+    if (!set) {
+      set = new Set();
+      daysByName.set(row.name, set);
+    }
+    set.add(day);
+  }
+
+  const todayStr = fmt.format(new Date());
+  const yesterday = new Date(Date.now() - 86400000);
+  const yesterdayStr = fmt.format(yesterday);
+
+  const entries: StreakEntry[] = [];
+  for (const [name, days] of daysByName) {
+    // Streak is live only if active today or yesterday.
+    let cursor: Date;
+    if (days.has(todayStr)) cursor = new Date();
+    else if (days.has(yesterdayStr)) cursor = yesterday;
+    else continue;
+
+    let streak = 0;
+    for (;;) {
+      if (days.has(fmt.format(cursor))) {
+        streak += 1;
+        cursor = new Date(cursor.getTime() - 86400000);
+      } else break;
+    }
+    if (streak > 0) {
+      entries.push({
+        name,
+        streak,
+        last_active: days.has(todayStr) ? todayStr : yesterdayStr,
+      });
+    }
+  }
+
+  return entries
+    .sort((a, b) => b.streak - a.streak || a.name.localeCompare(b.name))
+    .slice(0, limit);
 }

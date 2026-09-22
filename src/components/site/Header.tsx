@@ -30,6 +30,12 @@ export default async function Header() {
           <Link href="/mock-tests" className="hover:text-indigo-600">
             Mock Tests
           </Link>
+          <Link href="/pyqs" className="hover:text-indigo-600">
+            PYQ Papers
+          </Link>
+          <Link href="/syllabus" className="hover:text-indigo-600">
+            Syllabus
+          </Link>
           <Link href="/psc-updates" className="hover:text-indigo-600">
             PSC Updates
           </Link>
@@ -59,6 +65,12 @@ export default async function Header() {
         </Link>
         <Link href="/mock-tests" className="whitespace-nowrap hover:text-indigo-600">
           Mock Tests
+        </Link>
+        <Link href="/pyqs" className="whitespace-nowrap hover:text-indigo-600">
+          PYQ Papers
+        </Link>
+        <Link href="/syllabus" className="whitespace-nowrap hover:text-indigo-600">
+          Syllabus
         </Link>
         <Link href="/psc-updates" className="whitespace-nowrap hover:text-indigo-600">
           PSC Updates

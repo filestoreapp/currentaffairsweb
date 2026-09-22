@@ -47,6 +47,12 @@ export default async function AdminQuizzesPage() {
                       MOCK
                     </span>
                   )}
+                  {quiz.is_pyq && (
+                    <span className="ml-2 rounded-full bg-amber-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                      PYQ
+                      {quiz.exam_year ? ` ${quiz.exam_year}` : ""}
+                    </span>
+                  )}
                   {quiz.time_limit_seconds && (
                     <span className="ml-2 inline-flex items-center gap-0.5 text-xs font-normal text-slate-400">
                       <Clock size={12} /> {Math.round(quiz.time_limit_seconds / 60)}m

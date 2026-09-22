@@ -2,8 +2,9 @@ import Link from "next/link";
 import {
   getPublishedMocks,
   getGlobalMockLeaderboard,
+  getTopStreaks,
 } from "@/lib/quizzes";
-import { ClipboardList, Clock, Trophy, Users, Medal } from "lucide-react";
+import { ClipboardList, Clock, Trophy, Users, Medal, Flame } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,9 +18,10 @@ export const revalidate = 300;
 const RANK_STYLE = ["text-amber-500", "text-slate-400", "text-amber-700"];
 
 export default async function MockTestsPage() {
-  const [mocks, globalBoard] = await Promise.all([
+  const [mocks, globalBoard, streaks] = await Promise.all([
     getPublishedMocks(),
     getGlobalMockLeaderboard(),
+    getTopStreaks(),
   ]);
 
   return (
@@ -109,6 +111,34 @@ export default async function MockTestsPage() {
                   <span className="ml-2 text-xs font-normal text-slate-400">
                     best {entry.best_score_pct}%
                   </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {streaks.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+          <h2 className="flex items-center gap-2 text-lg font-extrabold text-slate-900">
+            <Flame size={20} className="text-orange-500" /> Daily Streaks
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Consecutive days with at least one quiz, mock or PYQ attempt.
+            Keep the fire alive.
+          </p>
+          <ol className="mt-4 space-y-2">
+            {streaks.map((entry, i) => (
+              <li
+                key={entry.name + i}
+                className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 text-sm"
+              >
+                <span className="flex items-center gap-2 font-medium text-slate-700">
+                  <Medal size={16} className={RANK_STYLE[i] ?? "text-slate-300"} />
+                  {i + 1}. {entry.name}
+                </span>
+                <span className="flex items-center gap-1 font-semibold text-orange-600">
+                  <Flame size={15} />
+                  {entry.streak} day{entry.streak !== 1 ? "s" : ""}
                 </span>
               </li>
             ))}

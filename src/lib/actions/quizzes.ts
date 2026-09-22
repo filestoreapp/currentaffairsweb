@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
 import type { QuizDifficulty, QuizStatus } from "@/lib/types";
-import { postMockToTelegram } from "@/lib/telegram";
+import { postMockToTelegram, postPyqToTelegram } from "@/lib/telegram";
 
 export interface QuizQuestionInput {
   question: string;
@@ -25,6 +25,9 @@ export interface QuizFormInput {
   is_mock: boolean;
   negative_marking: number;
   instructions?: string;
+  is_pyq: boolean;
+  exam_name?: string;
+  exam_year?: number | null;
   status: QuizStatus;
   questions: QuizQuestionInput[];
 }
@@ -34,6 +37,9 @@ export async function createQuiz(input: QuizFormInput) {
   const slug = input.slug
     ? slugify(input.slug, { lower: true, strict: true })
     : slugify(input.title, { lower: true, strict: true }).slice(0, 90);
+
+  // A quiz is either a regular quiz, a mock test, or a PYQ paper — never two at once.
+  const isPyq = input.is_pyq && !input.is_mock;
 
   const { data: quiz, error } = await supabase
     .from("quizzes")
@@ -45,9 +51,12 @@ export async function createQuiz(input: QuizFormInput) {
       category_id: input.category_id || null,
       difficulty: input.difficulty,
       time_limit_seconds: input.time_limit_seconds || null,
-      is_mock: input.is_mock,
+      is_mock: input.is_mock && !isPyq,
       negative_marking: input.negative_marking || 0,
       instructions: input.instructions || null,
+      is_pyq: isPyq,
+      exam_name: isPyq ? input.exam_name || null : null,
+      exam_year: isPyq ? input.exam_year || null : null,
       status: input.status,
     })
     .select()
@@ -72,10 +81,11 @@ export async function createQuiz(input: QuizFormInput) {
   revalidatePath("/admin/quizzes");
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
+  revalidatePath("/pyqs");
 
   // Announce newly published mock tests on Telegram so followers know
   // a fresh full-length test is available.
-  if (input.is_mock && input.status === "published") {
+  if (input.is_mock && !isPyq && input.status === "published") {
     await postMockToTelegram({
       title: quiz.title,
       slug: quiz.slug,
@@ -84,6 +94,19 @@ export async function createQuiz(input: QuizFormInput) {
       durationMinutes: input.time_limit_seconds
         ? Math.round(input.time_limit_seconds / 60)
         : null,
+      negativeMarking: input.negative_marking || 0,
+    });
+  }
+
+  // Announce newly published PYQ papers the same way.
+  if (isPyq && input.status === "published") {
+    await postPyqToTelegram({
+      title: quiz.title,
+      slug: quiz.slug,
+      description: quiz.description,
+      examName: input.exam_name || null,
+      examYear: input.exam_year || null,
+      questionCount: input.questions.length,
       negativeMarking: input.negative_marking || 0,
     });
   }
@@ -103,6 +126,9 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
     .eq("id", id)
     .single();
 
+  // A quiz is either a regular quiz, a mock test, or a PYQ paper — never two at once.
+  const isPyq = input.is_pyq && !input.is_mock;
+
   const { error } = await supabase
     .from("quizzes")
     .update({
@@ -113,9 +139,12 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       category_id: input.category_id || null,
       difficulty: input.difficulty,
       time_limit_seconds: input.time_limit_seconds || null,
-      is_mock: input.is_mock,
+      is_mock: input.is_mock && !isPyq,
       negative_marking: input.negative_marking || 0,
       instructions: input.instructions || null,
+      is_pyq: isPyq,
+      exam_name: isPyq ? input.exam_name || null : null,
+      exam_year: isPyq ? input.exam_year || null : null,
       status: input.status,
     })
     .eq("id", id);
@@ -142,12 +171,15 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
   revalidatePath("/admin/quizzes");
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
+  revalidatePath("/pyqs");
   revalidatePath(`/quiz/${slug}`);
   revalidatePath(`/mock-tests/${slug}`);
+  revalidatePath(`/pyqs/${slug}`);
 
   // Announce when a mock test is published for the first time (draft -> published).
   if (
     input.is_mock &&
+    !isPyq &&
     input.status === "published" &&
     previous?.status !== "published"
   ) {
@@ -159,6 +191,23 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       durationMinutes: input.time_limit_seconds
         ? Math.round(input.time_limit_seconds / 60)
         : null,
+      negativeMarking: input.negative_marking || 0,
+    });
+  }
+
+  // Announce when a PYQ paper is published for the first time (draft -> published).
+  if (
+    isPyq &&
+    input.status === "published" &&
+    previous?.status !== "published"
+  ) {
+    await postPyqToTelegram({
+      title: input.title,
+      slug,
+      description: input.description || null,
+      examName: input.exam_name || null,
+      examYear: input.exam_year || null,
+      questionCount: input.questions.length,
       negativeMarking: input.negative_marking || 0,
     });
   }

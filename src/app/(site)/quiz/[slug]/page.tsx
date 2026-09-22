@@ -25,8 +25,9 @@ export default async function QuizTakePage({
 
   if (!quiz) notFound();
 
-  // Mock tests have their own exam-style runner.
+  // Mock tests and PYQ papers have their own exam-style runner.
   if (quiz.is_mock) redirect(`/mock-tests/${slug}`);
+  if (quiz.is_pyq) redirect(`/pyqs/${slug}`);
 
   const leaderboard = await getLeaderboard(quiz.id);
 

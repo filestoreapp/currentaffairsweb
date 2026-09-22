@@ -365,6 +365,21 @@ create index if not exists quiz_attempts_mock_rank_idx
   on quiz_attempts (quiz_id, score desc, time_taken_seconds asc nulls last);
 
 -- =========================================================
+
+-- =========================================================
+-- 15. PYQ PAPER MODE (extends quizzes)
+-- =========================================================
+-- A PYQ paper is a quiz with is_pyq = true: a previous-year Kerala PSC
+-- question paper, playable in the same exam-style runner as mock tests
+-- (palette, timer, negative marking, ranked leaderboard). exam_name/year
+-- identify the paper, e.g. "LDC" / 2024.
+alter table quizzes add column if not exists is_pyq boolean not null default false;
+alter table quizzes add column if not exists exam_name text;
+alter table quizzes add column if not exists exam_year int;
+
+create index if not exists quizzes_is_pyq_idx on quizzes (is_pyq, status);
+create index if not exists quizzes_exam_year_idx on quizzes (exam_year desc);
+
 -- NOTE: After running this, create your admin login user
 -- from Supabase Dashboard -> Authentication -> Users -> Add User
 -- (email + password). Only users created there can log in to /admin.
