@@ -37,13 +37,16 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
-  const now = new Date().toISOString();
+  // Look ahead 10 minutes: this cron runs at 12:55 PM IST while the district
+  // posts are scheduled for 1:00 PM IST. Flipping a few minutes early is safe —
+  // the anon RLS policy still hides the row until published_at actually passes.
+  const cutoff = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
   const { data, error } = await supabase
     .from("posts")
     .update({ status: "published" })
     .eq("status", "scheduled")
-    .lte("published_at", now)
+    .lte("published_at", cutoff)
     .select("id, slug, title, published_at");
 
   if (error) {
