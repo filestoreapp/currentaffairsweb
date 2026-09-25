@@ -11,6 +11,8 @@ const EXAM_LINKS = [
 const LEARN_LINKS = [
   { href: "/current-affairs", label: "Current Affairs" },
   { href: "/psc-updates", label: "PSC Notifications" },
+  { href: "/exam-calendar", label: "Exam Calendar" },
+  { href: "/faq", label: "FAQs" },
 ];
 
 export default function Footer() {
