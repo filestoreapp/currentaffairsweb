@@ -46,8 +46,7 @@ export default function AboutPage() {
       <h1 className="text-3xl font-extrabold tracking-tight">About Us</h1>
       <p className="mt-3 max-w-3xl text-lg leading-relaxed text-slate-600">
         <strong className="font-bold text-slate-900">PSC Current Affairs</strong>{" "}
-        is a free Kerala PSC exam preparation website run by{" "}
-        <strong className="font-bold text-slate-900">Abin Vinoy</strong>. Every
+        is a free Kerala PSC exam preparation website. Every
         day we publish Kerala PSC current affairs, quizzes and study material —
         in English and Malayalam — so aspirants can prepare without paying for
         expensive coaching material.
