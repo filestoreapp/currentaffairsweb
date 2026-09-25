@@ -30,6 +30,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/mock-tests`, lastModified: new Date() },
     { url: `${siteUrl}/pyqs`, lastModified: new Date() },
     { url: `${siteUrl}/syllabus`, lastModified: new Date() },
+    { url: `${siteUrl}/about`, lastModified: new Date() },
+    { url: `${siteUrl}/contact`, lastModified: new Date() },
+    { url: `${siteUrl}/privacy`, lastModified: new Date() },
     ...mocks.map((m) => ({
       url: `${siteUrl}/mock-tests/${m.slug}`,
       lastModified: new Date(m.created_at),
