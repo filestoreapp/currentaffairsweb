@@ -91,10 +91,23 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-10 border-t border-white/10 pt-6 text-xs text-slate-500">
-          © {new Date().getFullYear()} PSC Current Affairs. All rights
-          reserved. Not affiliated with the Kerala Public Service Commission.
-        </p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} PSC Current Affairs. All rights
+            reserved. Not affiliated with the Kerala Public Service Commission.
+          </p>
+          <nav className="flex items-center gap-5" aria-label="Legal">
+            <Link href="/about" className="hover:text-white">
+              About
+            </Link>
+            <Link href="/contact" className="hover:text-white">
+              Contact
+            </Link>
+            <Link href="/privacy" className="hover:text-white">
+              Privacy Policy
+            </Link>
+          </nav>
+        </div>
       </div>
     </footer>
   );
