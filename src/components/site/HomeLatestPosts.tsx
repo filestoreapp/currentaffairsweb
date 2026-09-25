@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getPublishedPosts } from "@/lib/posts";
 import PostCard from "@/components/site/PostCard";
@@ -38,9 +39,12 @@ export default async function HomeLatestPosts({
             >
               <div className="relative min-h-56 overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 sm:min-h-72">
                 {posts[0].cover_image ? (
-                  <img
+                  <Image
                     src={posts[0].cover_image}
                     alt={posts[0].title}
+                    fill
+                    priority
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                 ) : (
