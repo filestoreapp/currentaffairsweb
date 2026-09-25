@@ -22,14 +22,18 @@ function isAuthorized(request: NextRequest): boolean {
  * never match — nothing in the app ever flips the status, so scheduled
  * posts would stay invisible forever. This cron is the missing flip.
  *
- * It deliberately does NOT post to Telegram: the scheduled Telegram
- * catch-up (daily 13:05 IST) handles channel announcements with its own
- * format. Flipping here keeps the two jobs independent and avoids
- * double-posting.
+ * It deliberately does NOT post to Telegram: publishing a post through the
+ * admin panel triggers the site's own Telegram auto-post (see
+ * src/lib/actions/posts.ts), so a separate announcement here would
+ * double-post.
  *
- * Triggered on a schedule by Vercel Cron (see vercel.json), which sends
- * `Authorization: Bearer $CRON_SECRET` automatically when CRON_SECRET is
- * set as an env var.
+ * NOTE (2026-09-25): the Vercel Cron entry for this route was removed from
+ * vercel.json because the route requires CRON_SECRET and Vercel only sends
+ * the Authorization header when that env var is set — it never was, so the
+ * cron 401'd every day and scheduled posts never flipped. The scheduled
+ * flip is now done by an operator-side scheduled task through the admin
+ * panel (which also fires the Telegram auto-post). This route remains as a
+ * manual tool: call it with `Authorization: Bearer $CRON_SECRET`.
  */
 export async function GET(request: NextRequest) {
   if (!isAuthorized(request)) {

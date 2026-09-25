@@ -1,1 +1,8 @@
-{"crons":[{"path":"/api/cron/psc-scrape","schedule":"0 3 * * *"},{"path":"/api/cron/publish-scheduled","schedule":"25 7 * * *"}]}
+{
+  "crons": [
+    {
+      "path": "/api/cron/psc-scrape",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
