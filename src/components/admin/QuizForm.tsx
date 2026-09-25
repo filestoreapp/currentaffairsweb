@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createQuiz, updateQuiz, type QuizQuestionInput } from "@/lib/actions/quizzes";
+import QuizExcelImport from "./QuizExcelImport";
 import type { Category, Post, Quiz, QuizDifficulty, QuizStatus } from "@/lib/types";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
@@ -74,6 +75,16 @@ export default function QuizForm({
           : q
       )
     );
+  }
+
+  function handleExcelImport(imported: QuizQuestionInput[]) {
+    setQuestions((qs) => {
+      const isPlaceholder =
+        qs.length === 1 &&
+        !qs[0].question.trim() &&
+        qs[0].options.every((o) => !o.trim());
+      return isPlaceholder ? imported : [...qs, ...imported];
+    });
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -358,13 +369,16 @@ export default function QuizForm({
       <div>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-800">Questions</h3>
-          <button
-            type="button"
-            onClick={() => setQuestions((qs) => [...qs, emptyQuestion()])}
-            className="flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-          >
-            <Plus size={14} /> Add question
-          </button>
+          <div className="flex items-center gap-2">
+            <QuizExcelImport onImport={handleExcelImport} />
+            <button
+              type="button"
+              onClick={() => setQuestions((qs) => [...qs, emptyQuestion()])}
+              className="flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              <Plus size={14} /> Add question
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">
