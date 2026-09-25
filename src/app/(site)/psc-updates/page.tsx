@@ -5,7 +5,9 @@ import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
 import PscUpdateCard from "@/components/site/PscUpdateCard";
 
 export const metadata = {
-  title: "PSC Notifications & Updates",
+  title: "Kerala PSC Notifications & Updates",
+  description:
+    "Latest Kerala PSC notifications, exam programmes, ranked lists and official updates — tracked daily.",
 };
 
 export const revalidate = 900; // 15 min - these come from a scraper, not live traffic

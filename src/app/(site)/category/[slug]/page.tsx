@@ -13,7 +13,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const categories = await getAllCategories();
   const category = categories.find((c) => c.slug === slug);
-  return { title: category ? category.name : "Category" };
+  if (!category) return { title: "Category" };
+  return {
+    title: `${category.name} — Kerala PSC`,
+    description:
+      category.description ||
+      `Free Kerala PSC ${category.name} current affairs, quizzes and study material.`,
+  };
 }
 
 export default async function CategoryPage({
