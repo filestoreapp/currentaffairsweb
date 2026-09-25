@@ -1,6 +1,7 @@
 import { getQuizBySlug, getLeaderboard } from "@/lib/quizzes";
 import { notFound, redirect } from "next/navigation";
 import QuizPlayer from "@/components/site/QuizPlayer";
+import { quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300; // 5 min — leaderboard shown is the starting snapshot; client updates it live after each attempt
@@ -12,7 +13,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const quiz = await getQuizBySlug(slug);
-  return { title: quiz ? quiz.title : "Quiz" };
+  if (!quiz) return { title: "Quiz" };
+  const count = quiz.questions?.length ?? 0;
+  const description =
+    quiz.description ||
+    `Practice "${quiz.title}" — ${count} free Kerala PSC quiz questions with answers and explanations.`;
+  return quizPageMetadata({
+    title: quiz.title,
+    description,
+    url: `${siteUrl()}/quiz/${quiz.slug}`,
+  });
 }
 
 export default async function QuizTakePage({
@@ -31,5 +41,17 @@ export default async function QuizTakePage({
 
   const leaderboard = await getLeaderboard(quiz.id);
 
-  return <QuizPlayer quiz={quiz} initialLeaderboard={leaderboard} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            quizJsonLd(quiz, `${siteUrl()}/quiz/${quiz.slug}`)
+          ),
+        }}
+      />
+      <QuizPlayer quiz={quiz} initialLeaderboard={leaderboard} />
+    </>
+  );
 }

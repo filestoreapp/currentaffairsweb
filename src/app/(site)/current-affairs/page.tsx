@@ -5,7 +5,9 @@ import PostCard from "@/components/site/PostCard";
 const PER_PAGE = 12;
 
 export const metadata = {
-  title: "Current Affairs",
+  title: "Daily Kerala PSC Current Affairs",
+  description:
+    "Day-wise Kerala PSC current affairs in English and Malayalam — daily updates, exam-oriented facts and free quizzes.",
 };
 
 export default async function CurrentAffairsPage({

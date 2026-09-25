@@ -20,14 +20,30 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
+  const title = post.meta_title || post.title;
+  const desc = post.meta_description || post.excerpt || undefined;
+  const images = post.cover_image ? [post.cover_image] : ["/og-default.png"];
   return {
-    title: post.meta_title || post.title,
-    description: post.meta_description || post.excerpt || undefined,
+    title,
+    description: desc,
+    alternates: { canonical: postUrl },
     openGraph: {
-      title: post.meta_title || post.title,
-      description: post.meta_description || post.excerpt || undefined,
-      images: post.cover_image ? [post.cover_image] : undefined,
+      title,
+      description: desc,
+      images,
       type: "article",
+      url: postUrl,
+      publishedTime: post.published_at || undefined,
+      modifiedTime: post.updated_at,
+      authors: ["PSC Current Affairs"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: desc,
+      images,
     },
   };
 }
@@ -66,15 +82,53 @@ export default async function PostPage({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
 
+  const publisher = {
+    "@type": "Organization",
+    name: "PSC Current Affairs",
+    url: siteUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteUrl}/og-default.png`,
+    },
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "NewsArticle",
     headline: post.title,
     description: post.meta_description || post.excerpt || undefined,
-    image: post.cover_image || undefined,
+    image: post.cover_image ? [post.cover_image] : [`${siteUrl}/og-default.png`],
     datePublished: post.published_at || undefined,
     dateModified: post.updated_at,
+    author: publisher,
+    publisher,
     mainEntityOfPage: postUrl,
+    inLanguage: "en",
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Current Affairs",
+        item: `${siteUrl}/current-affairs`,
+      },
+      ...(post.category
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: post.category.name,
+              item: `${siteUrl}/category/${post.category.slug}`,
+            },
+          ]
+        : []),
+      { "@type": "ListItem", position: post.category ? 4 : 3, name: post.title },
+    ],
   };
 
   return (
@@ -83,6 +137,10 @@ export default async function PostPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <nav

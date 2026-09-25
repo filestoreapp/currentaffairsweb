@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts, getAllCategories } from "@/lib/posts";
-import { getPublishedMocks, getPublishedPyqs } from "@/lib/quizzes";
+import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -11,12 +11,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let categories: Awaited<ReturnType<typeof getAllCategories>> = [];
   let mocks: Awaited<ReturnType<typeof getPublishedMocks>> = [];
   let pyqs: Awaited<ReturnType<typeof getPublishedPyqs>> = [];
+  let quizzes: Awaited<ReturnType<typeof getPublishedQuizzes>> = [];
   try {
     const result = await getPublishedPosts({ perPage: 1000 });
     posts = result.posts;
     categories = await getAllCategories();
     mocks = await getPublishedMocks();
     pyqs = await getPublishedPyqs();
+    quizzes = await getPublishedQuizzes();
   } catch (err) {
     console.error("sitemap: failed to fetch posts/categories", err);
   }
@@ -31,6 +33,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...mocks.map((m) => ({
       url: `${siteUrl}/mock-tests/${m.slug}`,
       lastModified: new Date(m.created_at),
+    })),
+    ...quizzes.map((q) => ({
+      url: `${siteUrl}/quiz/${q.slug}`,
+      lastModified: new Date(q.updated_at ?? q.created_at),
     })),
     ...pyqs.map((p) => ({
       url: `${siteUrl}/pyqs/${p.slug}`,

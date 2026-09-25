@@ -3,7 +3,11 @@ import { getPublishedQuizzes } from "@/lib/quizzes";
 import { getAllCategories } from "@/lib/posts";
 import { ClipboardList, Clock, ArrowRight } from "lucide-react";
 
-export const metadata = { title: "Quiz" };
+export const metadata = {
+  title: "Free Kerala PSC Quizzes",
+  description:
+    "Free Kerala PSC practice quizzes with answers, explanations and leaderboards — lock in every topic.",
+};
 
 const DIFFICULTY_STYLE: Record<string, string> = {
   easy: "bg-emerald-100 text-emerald-700",
