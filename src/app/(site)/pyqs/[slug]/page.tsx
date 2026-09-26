@@ -52,10 +52,10 @@ export default async function PyqTakePage({
           ),
         }}
       />
-      {paper.pdf_url && (
+      {paper.pdf_key && (
         <div className="mx-auto mb-6 max-w-5xl px-4 sm:px-6">
           <a
-            href={paper.pdf_url}
+            href={`/api/pyq/download/${paper.slug}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"

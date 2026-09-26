@@ -179,7 +179,7 @@ export async function postPyqToTelegram(paper: {
   description: string | null;
   examName: string | null;
   examYear: number | null;
-  pdfUrl: string | null;
+  hasPdf: boolean;
   questionCount: number;
   negativeMarking: number;
 }) {
@@ -205,7 +205,7 @@ export async function postPyqToTelegram(paper: {
     `${paper.description ? `${paper.description}\n\n` : ""}` +
     `❓ ${paper.questionCount} questions · 📊 ${marking}\n\n` +
     `Practice the real paper free 👇\n🔗 ${link}` +
-    `${paper.pdfUrl ? `\n\n📄 Original question paper (PDF):\n${paper.pdfUrl}` : ""}` +
+    `${paper.hasPdf ? `\n\n📄 Original question paper (PDF):\n${siteUrl}/api/pyq/download/${paper.slug}` : ""}` +
     `${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;

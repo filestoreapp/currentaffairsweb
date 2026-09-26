@@ -46,7 +46,7 @@ export default function QuizForm({
   const [examYear, setExamYear] = useState(
     quiz?.exam_year ? String(quiz.exam_year) : ""
   );
-  const [pdfUrl, setPdfUrl] = useState(quiz?.pdf_url ?? "");
+  const [pdfKey, setPdfKey] = useState(quiz?.pdf_key ?? "");
   const [pdfUploading, setPdfUploading] = useState(false);
   const [negativeMarking, setNegativeMarking] = useState(
     quiz?.negative_marking ? String(quiz.negative_marking) : "0"
@@ -96,7 +96,7 @@ export default function QuizForm({
       "paper";
     setPdfUploading(true);
     try {
-      const { uploadUrl, publicUrl } = await getPyqPdfUploadUrl(
+      const { uploadUrl, key } = await getPyqPdfUploadUrl(
         slugForKey,
         file.name,
         file.size
@@ -107,7 +107,7 @@ export default function QuizForm({
         body: file,
       });
       if (!res.ok) throw new Error(`Upload failed (${res.status})`);
-      setPdfUrl(publicUrl);
+      setPdfKey(key);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "PDF upload failed. Try again."
@@ -153,7 +153,7 @@ export default function QuizForm({
       is_pyq: isPyq && !isMock,
       exam_name: isPyq ? examName : "",
       exam_year: isPyq && examYear ? Number(examYear) : null,
-      pdf_url: isPyq ? pdfUrl || null : null,
+      pdf_key: isPyq ? pdfKey || null : null,
       status,
       questions,
     };
@@ -348,19 +348,14 @@ export default function QuizForm({
                   Optional — the original paper, stored in cloud storage and
                   shown as a download button on the paper page.
                 </p>
-                {pdfUrl ? (
+                {pdfKey ? (
                   <div className="mt-2 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="truncate text-sm font-medium text-emerald-700 underline"
-                    >
-                      {pdfUrl.split("/").pop()}
-                    </a>
+                    <span className="truncate text-sm font-medium text-emerald-700">
+                      {pdfKey.split("/").pop()}
+                    </span>
                     <button
                       type="button"
-                      onClick={() => setPdfUrl("")}
+                      onClick={() => setPdfKey("")}
                       className="ml-auto shrink-0 text-xs font-medium text-slate-500 hover:text-red-600"
                     >
                       Remove
