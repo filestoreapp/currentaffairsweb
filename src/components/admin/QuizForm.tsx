@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createQuiz, updateQuiz, type QuizQuestionInput } from "@/lib/actions/quizzes";
+import { createQuiz, updateQuiz, getPyqPdfUploadUrl, type QuizQuestionInput } from "@/lib/actions/quizzes";
 import QuizExcelImport from "./QuizExcelImport";
 import type { Category, Post, Quiz, QuizDifficulty, QuizStatus } from "@/lib/types";
 import { Loader2, Plus, Trash2 } from "lucide-react";
@@ -46,6 +46,8 @@ export default function QuizForm({
   const [examYear, setExamYear] = useState(
     quiz?.exam_year ? String(quiz.exam_year) : ""
   );
+  const [pdfUrl, setPdfUrl] = useState(quiz?.pdf_url ?? "");
+  const [pdfUploading, setPdfUploading] = useState(false);
   const [negativeMarking, setNegativeMarking] = useState(
     quiz?.negative_marking ? String(quiz.negative_marking) : "0"
   );
@@ -75,6 +77,44 @@ export default function QuizForm({
           : q
       )
     );
+  }
+
+  /** Upload a PYQ paper PDF straight to R2 via a presigned URL (bypasses Vercel's request-body limit). */
+  async function handlePdfSelect(file: File) {
+    setError(null);
+    if (!/\.pdf$/i.test(file.name) || file.type !== "application/pdf") {
+      setError("Please choose a PDF file.");
+      return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      setError("PDF must be under 50 MB.");
+      return;
+    }
+    const slugForKey =
+      slug.trim() ||
+      title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60) ||
+      "paper";
+    setPdfUploading(true);
+    try {
+      const { uploadUrl, publicUrl } = await getPyqPdfUploadUrl(
+        slugForKey,
+        file.name,
+        file.size
+      );
+      const res = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": "application/pdf" },
+        body: file,
+      });
+      if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+      setPdfUrl(publicUrl);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "PDF upload failed. Try again."
+      );
+    } finally {
+      setPdfUploading(false);
+    }
   }
 
   function handleExcelImport(imported: QuizQuestionInput[]) {
@@ -113,6 +153,7 @@ export default function QuizForm({
       is_pyq: isPyq && !isMock,
       exam_name: isPyq ? examName : "",
       exam_year: isPyq && examYear ? Number(examYear) : null,
+      pdf_url: isPyq ? pdfUrl || null : null,
       status,
       questions,
     };
@@ -299,6 +340,55 @@ export default function QuizForm({
                   placeholder="e.g. 2024"
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
                 />
+
+                <label className="mt-4 block text-sm font-medium text-slate-700">
+                  Question paper PDF
+                </label>
+                <p className="mt-1 text-xs text-slate-400">
+                  Optional — the original paper, stored on Cloudflare R2 and
+                  shown as a download button on the paper page.
+                </p>
+                {pdfUrl ? (
+                  <div className="mt-2 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="truncate text-sm font-medium text-emerald-700 underline"
+                    >
+                      {pdfUrl.split("/").pop()}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setPdfUrl("")}
+                      className="ml-auto shrink-0 text-xs font-medium text-slate-500 hover:text-red-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 hover:border-indigo-400 hover:text-indigo-600">
+                    <input
+                      type="file"
+                      accept="application/pdf,.pdf"
+                      className="hidden"
+                      disabled={pdfUploading}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handlePdfSelect(file);
+                        e.target.value = "";
+                      }}
+                    />
+                    {pdfUploading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Uploading to R2…
+                      </>
+                    ) : (
+                      <>Choose a PDF (max 50 MB)</>
+                    )}
+                  </label>
+                )}
               </>
             )}
 
