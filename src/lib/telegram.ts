@@ -5,8 +5,8 @@ import type { Post, PscUpdate } from "@/lib/types";
  * auto-post so readers can find and share the channel even after the
  * message is forwarded elsewhere.
  */
-const CHANNEL_USERNAME = "@Daily_CurrentAffairs_Malayalam";
-const CHANNEL_FOOTER = `\n\n📢 Join our channel: ${CHANNEL_USERNAME}`;
+const CHANNEL_LINK = "https://t.me/Daily_CurrentAffairs_Malayalam";
+const CHANNEL_FOOTER = `\n\n📢 Join our channel: ${CHANNEL_LINK}`;
 
 const SOURCE_LABELS: Record<PscUpdate["source"], string> = {
   notifications: "Notification",
