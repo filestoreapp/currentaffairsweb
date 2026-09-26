@@ -1,5 +1,13 @@
 import type { Post, PscUpdate } from "@/lib/types";
 
+/**
+ * The public username of the channel these posts land in, appended to every
+ * auto-post so readers can find and share the channel even after the
+ * message is forwarded elsewhere.
+ */
+const CHANNEL_USERNAME = "@Daily_CurrentAffairs_Malayalam";
+const CHANNEL_FOOTER = `\n\n📢 Join our channel: ${CHANNEL_USERNAME}`;
+
 const SOURCE_LABELS: Record<PscUpdate["source"], string> = {
   notifications: "Notification",
   examination_notification: "Examination Notification",
@@ -42,7 +50,7 @@ export async function postToTelegram(post: Post) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
   const link = `${siteUrl}/current-affairs/${post.slug}`;
-  const caption = `📢 *${post.title}*\n\n${post.excerpt ?? ""}\n\n🔗 ${link}`;
+  const caption = `📢 *${post.title}*\n\n${post.excerpt ?? ""}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   // Every post now gets a cover image (either uploaded, or an
   // auto-generated branded thumbnail) — send it as a photo with the post
@@ -113,7 +121,7 @@ export async function postMockToTelegram(mock: {
     `❓ ${mock.questionCount} questions` +
     `${mock.durationMinutes ? ` · ⏱ ${mock.durationMinutes} minutes` : ""}\n` +
     `📊 ${marking}\n\n` +
-    `Take it free and see your rank 👇\n🔗 ${link}`;
+    `Take it free and see your rank 👇\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const res = await fetch(url, {
@@ -142,7 +150,7 @@ export async function postPscUpdateToTelegram(item: PscUpdate) {
   const label = SOURCE_LABELS[item.source] ?? item.source;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const link = `${siteUrl}/psc-updates/${item.id}`;
-  const text = `📢 *New ${label}*\n\n${item.title}\n\n🔗 ${link}`;
+  const text = `📢 *New ${label}*\n\n${item.title}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const res = await fetch(url, {
@@ -195,7 +203,7 @@ export async function postPyqToTelegram(paper: {
     `🏛 ${examLabel}\n` +
     `${paper.description ? `${paper.description}\n\n` : ""}` +
     `❓ ${paper.questionCount} questions · 📊 ${marking}\n\n` +
-    `Practice the real paper free 👇\n🔗 ${link}`;
+    `Practice the real paper free 👇\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const res = await fetch(url, {
