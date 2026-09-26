@@ -13,23 +13,30 @@
  * What gets stored on the quiz row (`pdf_key`) is the B2 object key, e.g.
  * `pyq/some-slug/1727220000000-paper.pdf` — never a public URL.
  *
- * Required env vars (set in Vercel project settings):
- *   S3_ENDPOINT          e.g. https://s3.us-east-005.backblazeb2.com
- *   S3_ACCESS_KEY_ID     B2 application keyID (bucket-scoped, read+write)
- *   S3_SECRET_ACCESS_KEY B2 applicationKey (shown once at creation)
- *   S3_BUCKET_NAME       e.g. pyq-pdfs
+ * The B2 credentials are baked into this file as defaults (env vars with the
+ * same names take precedence when set), so no Vercel dashboard setup is needed.
+ *
+ * NOTE: this repo is public, so these values are visible to anyone on GitHub.
+ * The key is scoped to the pyq-pdfs bucket only (read+write). If it is ever
+ * abused, delete/rotate it in the Backblaze B2 dashboard under App Keys and
+ * update the values below.
  */
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024; // 50 MB per paper
 
+const S3_ENDPOINT =
+  process.env.S3_ENDPOINT || "https://s3.us-east-005.backblazeb2.com";
+const S3_ACCESS_KEY_ID =
+  process.env.S3_ACCESS_KEY_ID || "005312e7843b5d50000000001";
+const S3_SECRET_ACCESS_KEY =
+  process.env.S3_SECRET_ACCESS_KEY || "K005YX0SIuMDjOciPxRjo9N5ugamhQI";
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || "pyq-pdfs";
+
 export function isPdfStorageConfigured(): boolean {
   return Boolean(
-    process.env.S3_ENDPOINT &&
-      process.env.S3_ACCESS_KEY_ID &&
-      process.env.S3_SECRET_ACCESS_KEY &&
-      process.env.S3_BUCKET_NAME
+    S3_ENDPOINT && S3_ACCESS_KEY_ID && S3_SECRET_ACCESS_KEY && S3_BUCKET_NAME
   );
 }
 
@@ -45,18 +52,13 @@ function s3Region(endpoint: string): string {
 }
 
 function s3Client(): S3Client {
-  const endpoint = process.env.S3_ENDPOINT;
-  const accessKeyId = process.env.S3_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
-  if (!endpoint || !accessKeyId || !secretAccessKey) {
-    throw new Error(
-      "PDF storage is not configured. Set S3_ENDPOINT, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY."
-    );
-  }
   return new S3Client({
-    region: s3Region(endpoint),
-    endpoint,
-    credentials: { accessKeyId, secretAccessKey },
+    region: s3Region(S3_ENDPOINT),
+    endpoint: S3_ENDPOINT,
+    credentials: {
+      accessKeyId: S3_ACCESS_KEY_ID,
+      secretAccessKey: S3_SECRET_ACCESS_KEY,
+    },
     forcePathStyle: true,
   });
 }
@@ -77,14 +79,12 @@ export async function createPyqUploadUrl(
   sizeBytes: number
 ): Promise<PyqUploadGrant> {
   if (!isPdfStorageConfigured()) {
-    throw new Error(
-      "PDF storage is not configured. Add the S3 env vars in Vercel project settings."
-    );
+    throw new Error("PDF storage is not configured.");
   }
   if (!Number.isFinite(sizeBytes) || sizeBytes <= 0 || sizeBytes > MAX_PDF_BYTES) {
     throw new Error("PDF must be between 1 byte and 50 MB.");
   }
-  const bucket = process.env.S3_BUCKET_NAME!;
+  const bucket = S3_BUCKET_NAME;
   const slugPart = (quizSlug || "paper").toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 60) || "paper";
   const safeName =
     filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80) || "paper.pdf";
@@ -114,9 +114,7 @@ export async function createPyqDownloadUrl(
   expiresInSeconds = 3600
 ): Promise<string> {
   if (!isPdfStorageConfigured()) {
-    throw new Error(
-      "PDF storage is not configured. Add the S3 env vars in Vercel project settings."
-    );
+    throw new Error("PDF storage is not configured.");
   }
   if (!key || key.includes("..") || key.startsWith("/")) {
     throw new Error("Invalid PDF key.");
@@ -125,7 +123,7 @@ export async function createPyqDownloadUrl(
   return getSignedUrl(
     s3Client(),
     new GetObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME!,
+      Bucket: S3_BUCKET_NAME,
       Key: key,
       ResponseContentDisposition: `attachment; filename="${filename}"`,
     }),
