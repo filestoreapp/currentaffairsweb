@@ -29,7 +29,7 @@ export interface QuizFormInput {
   is_pyq: boolean;
   exam_name?: string;
   exam_year?: number | null;
-  pdf_url?: string | null;
+  pdf_key?: string | null;
   status: QuizStatus;
   questions: QuizQuestionInput[];
 }
@@ -59,7 +59,7 @@ export async function createQuiz(input: QuizFormInput) {
       is_pyq: isPyq,
       exam_name: isPyq ? input.exam_name || null : null,
       exam_year: isPyq ? input.exam_year || null : null,
-      pdf_url: isPyq ? input.pdf_url || null : null,
+      pdf_key: isPyq ? input.pdf_key || null : null,
       status: input.status,
     })
     .select()
@@ -109,7 +109,7 @@ export async function createQuiz(input: QuizFormInput) {
       description: quiz.description,
       examName: input.exam_name || null,
       examYear: input.exam_year || null,
-      pdfUrl: input.pdf_url || null,
+      hasPdf: Boolean(input.pdf_key),
       questionCount: input.questions.length,
       negativeMarking: input.negative_marking || 0,
     });
@@ -149,7 +149,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       is_pyq: isPyq,
       exam_name: isPyq ? input.exam_name || null : null,
       exam_year: isPyq ? input.exam_year || null : null,
-      pdf_url: isPyq ? input.pdf_url || null : null,
+      pdf_key: isPyq ? input.pdf_key || null : null,
       status: input.status,
     })
     .eq("id", id);
@@ -212,7 +212,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       description: input.description || null,
       examName: input.exam_name || null,
       examYear: input.exam_year || null,
-      pdfUrl: input.pdf_url || null,
+      hasPdf: Boolean(input.pdf_key),
       questionCount: input.questions.length,
       negativeMarking: input.negative_marking || 0,
     });
@@ -280,13 +280,15 @@ export async function submitMockAttempt(input: MockAttemptInput) {
  * Mint a presigned upload URL for a PYQ paper PDF. The admin's browser
  * PUTs the file straight to object storage (Backblaze B2), so large PDFs
  * never pass through Vercel's request-body limit. Auth-gated: only
- * logged-in admins can mint URLs.
+ * logged-in admins can mint URLs. Returns the object key to save on the
+ * quiz row — the bucket is private, so downloads go through the
+ * /api/pyq/download/[slug] route, not a public URL.
  */
 export async function getPyqPdfUploadUrl(
   quizSlug: string,
   filename: string,
   sizeBytes: number
-): Promise<{ uploadUrl: string; publicUrl: string }> {
+): Promise<{ uploadUrl: string; key: string }> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -299,5 +301,5 @@ export async function getPyqPdfUploadUrl(
     throw new Error("Only PDF files can be uploaded.");
   }
   const grant = await createPyqUploadUrl(quizSlug, filename, sizeBytes);
-  return { uploadUrl: grant.uploadUrl, publicUrl: grant.publicUrl };
+  return { uploadUrl: grant.uploadUrl, key: grant.key };
 }

@@ -376,9 +376,10 @@ create index if not exists quiz_attempts_mock_rank_idx
 alter table quizzes add column if not exists is_pyq boolean not null default false;
 alter table quizzes add column if not exists exam_name text;
 alter table quizzes add column if not exists exam_year int;
--- Optional PDF of the original question paper, hosted on Cloudflare R2
--- (uploaded from the admin quiz form in PYQ mode via a presigned URL).
-alter table quizzes add column if not exists pdf_url text;
+-- Optional PDF of the original question paper, hosted on Backblaze B2
+-- (private bucket; uploaded from the admin quiz form in PYQ mode via a
+-- presigned URL, downloaded via /api/pyq/download/[slug]).
+alter table quizzes add column if not exists pdf_key text;
 
 create index if not exists quizzes_is_pyq_idx on quizzes (is_pyq, status);
 create index if not exists quizzes_exam_year_idx on quizzes (exam_year desc);

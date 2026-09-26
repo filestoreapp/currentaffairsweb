@@ -1,21 +1,25 @@
 /**
  * S3-compatible object storage for PYQ question-paper PDFs.
- * Currently pointed at Backblaze B2 (10 GB free tier, no credit card required).
+ * Pointed at Backblaze B2 (10 GB free tier, no credit card required).
  *
- * Uploads go straight from the admin's browser to B2 using a presigned PUT URL
- * minted by `createPyqUploadUrl()` — the file bytes never pass through Vercel,
- * so the 4.5 MB serverless request-body limit doesn't apply. Downloads serve
- * directly from the bucket's public URL, so Vercel bandwidth isn't consumed.
+ * The bucket is PRIVATE — Backblaze demands a card on file for public
+ * buckets, so both directions go through presigned URLs minted here:
+ *  - uploads: `createPyqUploadUrl()` — the admin's browser PUTs the file
+ *    straight to B2, so the bytes never pass through Vercel (the 4.5 MB
+ *    serverless request-body limit doesn't apply).
+ *  - downloads: `createPyqDownloadUrl()` — the site redirects visitors to a
+ *    short-lived signed GET URL, so Vercel bandwidth isn't consumed.
+ *
+ * What gets stored on the quiz row (`pdf_key`) is the B2 object key, e.g.
+ * `pyq/some-slug/1727220000000-paper.pdf` — never a public URL.
  *
  * Required env vars (set in Vercel project settings):
- *   S3_ENDPOINT         e.g. https://s3.us-west-004.backblazeb2.com
- *   S3_ACCESS_KEY_ID    B2 application keyID (bucket-scoped, read+write)
+ *   S3_ENDPOINT          e.g. https://s3.us-east-005.backblazeb2.com
+ *   S3_ACCESS_KEY_ID     B2 application keyID (bucket-scoped, read+write)
  *   S3_SECRET_ACCESS_KEY B2 applicationKey (shown once at creation)
- *   S3_BUCKET_NAME      e.g. pyq-pdfs
- *   S3_PUBLIC_URL_BASE  e.g. https://f004.backblazeb2.com/file/pyq-pdfs
- *                       (bucket's friendly URL base, from the B2 bucket page)
+ *   S3_BUCKET_NAME       e.g. pyq-pdfs
  */
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024; // 50 MB per paper
@@ -25,8 +29,7 @@ export function isPdfStorageConfigured(): boolean {
     process.env.S3_ENDPOINT &&
       process.env.S3_ACCESS_KEY_ID &&
       process.env.S3_SECRET_ACCESS_KEY &&
-      process.env.S3_BUCKET_NAME &&
-      process.env.S3_PUBLIC_URL_BASE
+      process.env.S3_BUCKET_NAME
   );
 }
 
@@ -35,7 +38,7 @@ function s3Region(endpoint: string): string {
   const m = /s3\.([^.]+)\.backblazeb2\.com/i.exec(endpoint);
   if (!m) {
     throw new Error(
-      `Cannot determine S3 region from S3_ENDPOINT "${endpoint}". Expected a Backblaze B2 endpoint like https://s3.us-west-004.backblazeb2.com.`
+      `Cannot determine S3 region from S3_ENDPOINT "${endpoint}". Expected a Backblaze B2 endpoint like https://s3.us-east-005.backblazeb2.com.`
     );
   }
   return m[1];
@@ -58,25 +61,15 @@ function s3Client(): S3Client {
   });
 }
 
-/** Public download URL for an object key (bucket must allow public reads). */
-export function pdfPublicUrl(key: string): string {
-  const base = process.env.S3_PUBLIC_URL_BASE;
-  if (!base) {
-    throw new Error("PDF storage is not configured. Set S3_PUBLIC_URL_BASE.");
-  }
-  return `${base.replace(/\/$/, "")}/${key}`;
-}
-
 export interface PyqUploadGrant {
   uploadUrl: string;
-  publicUrl: string;
   key: string;
 }
 
 /**
  * Mint a short-lived presigned PUT URL for a PYQ paper PDF.
  * The browser PUTs the file directly to object storage; the returned
- * publicUrl is what gets saved on the quiz row.
+ * key is what gets saved on the quiz row (`pdf_key`).
  */
 export async function createPyqUploadUrl(
   quizSlug: string,
@@ -107,5 +100,35 @@ export async function createPyqUploadUrl(
     { expiresIn: 600 } // 10 minutes to complete the upload
   );
 
-  return { uploadUrl, publicUrl: pdfPublicUrl(key), key };
+  return { uploadUrl, key };
+}
+
+/**
+ * Mint a short-lived presigned GET URL for a stored PDF key.
+ * Served with Content-Disposition: attachment so browsers download it
+ * instead of rendering it. Used by the /api/pyq/download/[slug] route —
+ * never expose this to the client directly; always redirect through it.
+ */
+export async function createPyqDownloadUrl(
+  key: string,
+  expiresInSeconds = 3600
+): Promise<string> {
+  if (!isPdfStorageConfigured()) {
+    throw new Error(
+      "PDF storage is not configured. Add the S3 env vars in Vercel project settings."
+    );
+  }
+  if (!key || key.includes("..") || key.startsWith("/")) {
+    throw new Error("Invalid PDF key.");
+  }
+  const filename = key.split("/").pop() || "paper.pdf";
+  return getSignedUrl(
+    s3Client(),
+    new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key: key,
+      ResponseContentDisposition: `attachment; filename="${filename}"`,
+    }),
+    { expiresIn: expiresInSeconds }
+  );
 }
