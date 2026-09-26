@@ -79,7 +79,7 @@ export default function QuizForm({
     );
   }
 
-  /** Upload a PYQ paper PDF straight to R2 via a presigned URL (bypasses Vercel's request-body limit). */
+  /** Upload a PYQ paper PDF straight to object storage via a presigned URL (bypasses Vercel's request-body limit). */
   async function handlePdfSelect(file: File) {
     setError(null);
     if (!/\.pdf$/i.test(file.name) || file.type !== "application/pdf") {
@@ -345,7 +345,7 @@ export default function QuizForm({
                   Question paper PDF
                 </label>
                 <p className="mt-1 text-xs text-slate-400">
-                  Optional — the original paper, stored on Cloudflare R2 and
+                  Optional — the original paper, stored in cloud storage and
                   shown as a download button on the paper page.
                 </p>
                 {pdfUrl ? (
@@ -382,7 +382,7 @@ export default function QuizForm({
                     {pdfUploading ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Uploading to R2…
+                        Uploading…
                       </>
                     ) : (
                       <>Choose a PDF (max 50 MB)</>

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import slugify from "slugify";
 import type { QuizDifficulty, QuizStatus } from "@/lib/types";
 import { postMockToTelegram, postPyqToTelegram } from "@/lib/telegram";
-import { createPyqUploadUrl, isR2Configured } from "@/lib/r2";
+import { createPyqUploadUrl, isPdfStorageConfigured } from "@/lib/pdf-storage";
 
 export interface QuizQuestionInput {
   question: string;
@@ -277,9 +277,10 @@ export async function submitMockAttempt(input: MockAttemptInput) {
 }
 
 /**
- * Mint a presigned R2 upload URL for a PYQ paper PDF. The admin's browser
- * PUTs the file straight to R2, so large PDFs never pass through Vercel's
- * request-body limit. Auth-gated: only logged-in admins can mint URLs.
+ * Mint a presigned upload URL for a PYQ paper PDF. The admin's browser
+ * PUTs the file straight to object storage (Backblaze B2), so large PDFs
+ * never pass through Vercel's request-body limit. Auth-gated: only
+ * logged-in admins can mint URLs.
  */
 export async function getPyqPdfUploadUrl(
   quizSlug: string,
@@ -291,8 +292,8 @@ export async function getPyqPdfUploadUrl(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("You must be logged in to upload files.");
-  if (!isR2Configured()) {
-    throw new Error("R2 storage is not configured. Add the R2 env vars first.");
+  if (!isPdfStorageConfigured()) {
+    throw new Error("PDF storage is not configured. Add the S3 env vars first.");
   }
   if (!/\.pdf$/i.test(filename)) {
     throw new Error("Only PDF files can be uploaded.");
