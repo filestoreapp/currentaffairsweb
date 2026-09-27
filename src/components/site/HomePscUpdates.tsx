@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
+import { PSC_SOURCES } from "@/lib/psc-sources";
 import type { PscSourceKey } from "@/lib/types";
 import PscUpdateCard from "@/components/site/PscUpdateCard";
 

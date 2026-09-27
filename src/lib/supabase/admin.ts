@@ -5,8 +5,8 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
  * Server-only. Never import this from a Client Component, and never
  * expose SUPABASE_SERVICE_ROLE_KEY with a NEXT_PUBLIC_ prefix.
  *
- * Used by the PSC scraper (src/lib/psc-scraper) because it runs from a
- * cron route with no logged-in user / cookies to build a session from.
+ * Used by server-side code paths that have no logged-in user / cookies
+ * to build a session from (e.g. the manual publish-scheduled cron route).
  */
 export function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

@@ -2,14 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { generateThumbnailBuffer } from "@/lib/thumbnail";
-import { compressImage, uploadToImageCdn } from "@/lib/image-cdn";
+import { processAndUploadImage } from "@/lib/image-cdn";
 import { revalidatePath } from "next/cache";
 
 /**
- * Generates a branded thumbnail and uploads it to the `post-images` bucket,
- * returning its public URL. `keySeed` should be the post's slug when known
- * (stable path, easy to spot in storage) or any unique-ish string for posts
- * that haven't been saved yet.
+ * Generates a branded thumbnail and uploads it to the GitHub-backed
+ * image CDN, returning its jsDelivr URL. `keySeed` should be the post's
+ * slug when known (stable path, easy to spot in storage) or any
+ * unique-ish string for posts that haven't been saved yet.
  *
  * The storage path is stable per keySeed (no timestamp suffix) and the
  * upload uses `upsert: true`, so re-generating a thumbnail for the same
@@ -30,13 +30,13 @@ export async function generateAndUploadThumbnail({
   category?: string | null;
 }): Promise<string> {
   const buffer = await generateThumbnailBuffer({ title, category });
-  const compressed = await compressImage(Buffer.from(buffer));
 
   // Stable path per keySeed + upsert: re-generating overwrites the old
   // file instead of leaving orphans. The returned CDN URL is pinned to
   // the new commit SHA, so there's never a stale-cache problem.
+  // Compression + upload run on the Koyeb backend worker.
   const path = `auto-thumbnails/${keySeed}.webp`;
-  return uploadToImageCdn(compressed, path, { upsert: true });
+  return processAndUploadImage(Buffer.from(buffer), path, { upsert: true });
 }
 
 /**

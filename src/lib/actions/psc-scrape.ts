@@ -2,13 +2,25 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { runPscScrape, type ScrapeSummary } from "@/lib/psc-scraper/scrape";
+import { callWorker } from "@/lib/worker-client";
+
+export interface ScrapeSummary {
+  ranAt: string;
+  results: {
+    source: string;
+    label: string;
+    fetched: number;
+    inserted: number;
+    error: string | null;
+  }[];
+  totalInserted: number;
+}
 
 /**
  * Manual "Run scrape now" button on /admin/psc-updates. Requires an
- * authenticated admin session — this runs the scraper directly (with the
- * service-role client inside runPscScrape), it doesn't call the public
- * cron route, so it works even without CRON_SECRET configured.
+ * authenticated admin session, then hands the actual scrape to the
+ * Koyeb backend worker — keralapsc.gov.in pages are slow and flaky,
+ * and serverless timeouts made running the scraper on Vercel unreliable.
  */
 export async function runPscScrapeAction(): Promise<ScrapeSummary> {
   const supabase = await createClient();
@@ -17,7 +29,7 @@ export async function runPscScrapeAction(): Promise<ScrapeSummary> {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const summary = await runPscScrape();
+  const summary = await callWorker<ScrapeSummary>("psc-scrape");
   revalidatePath("/admin/psc-updates");
   revalidatePath("/psc-updates");
   return summary;

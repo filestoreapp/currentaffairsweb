@@ -11,7 +11,7 @@ import {
 } from "@/lib/stats";
 import { getQuizStatsForAdmin } from "@/lib/quizzes";
 import { getPscUpdateCountsBySource } from "@/lib/psc-updates";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
+import { PSC_SOURCES } from "@/lib/psc-sources";
 import VisitsChart from "@/components/admin/VisitsChart";
 import PostsPublishedChart from "@/components/admin/PostsPublishedChart";
 import {

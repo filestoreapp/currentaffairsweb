@@ -1,5 +1,5 @@
 import { getLatestPscUpdates, getPscUpdateCountsBySource } from "@/lib/psc-updates";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
+import { PSC_SOURCES } from "@/lib/psc-sources";
 import RunPscScrapeButton from "@/components/admin/RunPscScrapeButton";
 
 export default async function AdminPscUpdatesPage() {

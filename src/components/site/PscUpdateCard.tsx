@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { PscSourceKey, PscUpdate } from "@/lib/types";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
+import { PSC_SOURCES } from "@/lib/psc-sources";
 
 const SOURCE_STYLE: Record<
   PscSourceKey,

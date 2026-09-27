@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { postToTelegram } from "@/lib/telegram";
 import { generateAndUploadThumbnail } from "@/lib/actions/thumbnail";
-import { compressImage, datedImagePath, uploadToImageCdn } from "@/lib/image-cdn";
+import { datedImagePath, processAndUploadImage } from "@/lib/image-cdn";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
@@ -333,10 +333,10 @@ export async function uploadImage(formData: FormData) {
   const file = formData.get("file") as File;
   if (!file) throw new Error("No file provided");
 
-  // Compress on the way in, then store in the free GitHub-backed image
-  // repo served via jsDelivr (Supabase storage stays for legacy images).
+  // Compression + upload run on the Koyeb backend worker (see
+  // lib/image-cdn); images land in the free GitHub-backed repo served
+  // via jsDelivr.
   const input = Buffer.from(await file.arrayBuffer());
-  const compressed = await compressImage(input);
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.webp`;
-  return uploadToImageCdn(compressed, datedImagePath(filename));
+  return processAndUploadImage(input, datedImagePath(filename));
 }

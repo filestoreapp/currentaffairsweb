@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { RefreshCw } from "lucide-react";
-import { runPscScrapeAction } from "@/lib/actions/psc-scrape";
-import type { ScrapeSummary } from "@/lib/psc-scraper/scrape";
+import { runPscScrapeAction, type ScrapeSummary } from "@/lib/actions/psc-scrape";
 
 export default function RunPscScrapeButton() {
   const [isPending, startTransition] = useTransition();

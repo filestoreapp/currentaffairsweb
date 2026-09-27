@@ -1,5 +1,5 @@
 import { getPscUpdateById } from "@/lib/psc-updates";
-import { PSC_SOURCES } from "@/lib/psc-scraper/sources";
+import { PSC_SOURCES } from "@/lib/psc-sources";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
