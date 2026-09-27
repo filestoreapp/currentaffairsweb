@@ -197,12 +197,39 @@ export async function extractInstagram(url: string): Promise<ExtractResult> {
     throw new Error("Could not read this Instagram post.");
   }
   const data = JSON.parse(firstJson);
-  const formats: IgFormat[] = (data.formats ?? []).filter(
-    (f: IgFormat) =>
-      f.url && f.ext === "mp4" && f.vcodec && f.vcodec !== "none" && f.acodec && f.acodec !== "none"
+  const allFormats: IgFormat[] = data.formats ?? [];
+  // Tier 1: progressive mp4 (video+audio in one file). Tier 2: any combined
+  // stream regardless of container.
+  const progressive = allFormats.filter(
+    (f) =>
+      f.url &&
+      f.ext === "mp4" &&
+      f.vcodec &&
+      f.vcodec !== "none" &&
+      f.acodec &&
+      f.acodec !== "none"
   );
+  const combined = allFormats.filter(
+    (f) => f.url && f.vcodec && f.vcodec !== "none" && f.acodec && f.acodec !== "none"
+  );
+  const formats = progressive.length ? progressive : combined;
   if (!formats.length) {
-    throw new Error("No downloadable video found in this post.");
+    const summary = allFormats
+      .slice(0, 25)
+      .map((f) => ({
+        id: (f as { format_id?: string }).format_id,
+        ext: f.ext,
+        v: f.vcodec,
+        a: f.acodec,
+        h: f.height,
+        u: !!f.url,
+      }));
+    const err = new Error(
+      `No downloadable video found in this post. (debug: ${
+        allFormats.length
+      } formats: ${JSON.stringify(summary)})`
+    );
+    throw err;
   }
   formats.sort((a, b) => (b.height || 0) - (a.height || 0));
   const best = formats[0];
