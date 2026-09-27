@@ -163,11 +163,7 @@ export default function QuizForm({
         if (quiz) {
           await updateQuiz(quiz.id, input);
         } else {
-          // TEMPORARY DIAGNOSTIC: createQuiz returns {ok:false,error} instead of throwing.
-          const res = (await createQuiz(input)) as unknown as
-            | { ok: false; error: string }
-            | undefined;
-          if (res && res.ok === false) setError(`DIAGNOSTIC: ${res.error}`);
+          await createQuiz(input);
         }
       } catch (err) {
         setError((err as Error).message);
