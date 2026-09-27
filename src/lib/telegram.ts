@@ -8,6 +8,22 @@ import type { Post, PscUpdate } from "@/lib/types";
 const CHANNEL_LINK = "https://t.me/Daily_CurrentAffairs_Malayalam";
 const CHANNEL_FOOTER = `\n\n📢 Join our channel: ${CHANNEL_LINK}`;
 
+/**
+ * Escape text for Telegram's HTML parse mode. We use HTML (not Markdown)
+ * because Markdown treats underscores as italic markers — which mangled
+ * the t.me/Daily_CurrentAffairs_Malayalam link into
+ * t.me/DailyCurrentAffairsMalayalam in the rendered message.
+ */
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/** Site base URL with no trailing slash (NEXT_PUBLIC_SITE_URL may end with one, producing "//" in links). */
+function siteBase(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  return raw.replace(/\/+$/, "");
+}
+
 const SOURCE_LABELS: Record<PscUpdate["source"], string> = {
   notifications: "Notification",
   examination_notification: "Examination Notification",
@@ -48,9 +64,8 @@ export async function postToTelegram(post: Post) {
     return { skipped: true };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-  const link = `${siteUrl}/current-affairs/${post.slug}`;
-  const caption = `📢 *${post.title}*\n\n${post.excerpt ?? ""}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
+  const link = `${siteBase()}/current-affairs/${post.slug}`;
+  const caption = `📢 <b>${esc(post.title)}</b>\n\n${esc(post.excerpt ?? "")}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   // Every post now gets a cover image (either uploaded, or an
   // auto-generated branded thumbnail) — send it as a photo with the post
@@ -63,12 +78,12 @@ export async function postToTelegram(post: Post) {
         chat_id: channelId,
         photo: post.cover_image,
         caption,
-        parse_mode: "Markdown",
+        parse_mode: "HTML",
       }
     : {
         chat_id: channelId,
         text: caption,
-        parse_mode: "Markdown",
+        parse_mode: "HTML",
       };
 
   const url = `https://api.telegram.org/bot${token}/${endpoint}`;
@@ -109,15 +124,14 @@ export async function postMockToTelegram(mock: {
     return { skipped: true };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const link = `${siteUrl}/mock-tests/${mock.slug}`;
+  const link = `${siteBase()}/mock-tests/${mock.slug}`;
   const marking =
     mock.negativeMarking > 0
       ? `+1 for correct, −${mock.negativeMarking} for wrong`
       : "+1 for correct, no negative marking";
   const text =
-    `📝 *New Mock Test: ${mock.title}*\n\n` +
-    `${mock.description ? `${mock.description}\n\n` : ""}` +
+    `📝 <b>New Mock Test: ${esc(mock.title)}</b>\n\n` +
+    `${mock.description ? `${esc(mock.description)}\n\n` : ""}` +
     `❓ ${mock.questionCount} questions` +
     `${mock.durationMinutes ? ` · ⏱ ${mock.durationMinutes} minutes` : ""}\n` +
     `📊 ${marking}\n\n` +
@@ -127,7 +141,7 @@ export async function postMockToTelegram(mock: {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "Markdown" }),
+    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "HTML" }),
   });
 
   if (!res.ok) {
@@ -148,15 +162,14 @@ export async function postPscUpdateToTelegram(item: PscUpdate) {
   }
 
   const label = SOURCE_LABELS[item.source] ?? item.source;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const link = `${siteUrl}/psc-updates/${item.id}`;
-  const text = `📢 *New ${label}*\n\n${item.title}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
+  const link = `${siteBase()}/psc-updates/${item.id}`;
+  const text = `📢 <b>New ${esc(label)}</b>\n\n${esc(item.title)}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "Markdown" }),
+    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "HTML" }),
   });
 
   if (!res.ok) {
@@ -191,7 +204,7 @@ export async function postPyqToTelegram(paper: {
     return { skipped: true };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = siteBase();
   const link = `${siteUrl}/pyqs/${paper.slug}`;
   const examLabel =
     [paper.examName, paper.examYear].filter(Boolean).join(" ") || "Kerala PSC";
@@ -200,9 +213,9 @@ export async function postPyqToTelegram(paper: {
       ? `+1 for correct, −${paper.negativeMarking} for wrong`
       : "+1 for correct, no negative marking";
   const text =
-    `📜 *New PYQ Paper: ${paper.title}*\n\n` +
-    `🏛 ${examLabel}\n` +
-    `${paper.description ? `${paper.description}\n\n` : ""}` +
+    `📜 <b>New PYQ Paper: ${esc(paper.title)}</b>\n\n` +
+    `🏛 ${esc(examLabel)}\n` +
+    `${paper.description ? `${esc(paper.description)}\n\n` : ""}` +
     `❓ ${paper.questionCount} questions · 📊 ${marking}\n\n` +
     `Practice the real paper free 👇\n🔗 ${link}` +
     `${paper.hasPdf ? `\n\n📄 Original question paper (PDF):\n${siteUrl}/api/pyq/download/${paper.slug}` : ""}` +
@@ -212,7 +225,7 @@ export async function postPyqToTelegram(paper: {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "Markdown" }),
+    body: JSON.stringify({ chat_id: channelId, text, parse_mode: "HTML" }),
   });
 
   if (!res.ok) {
