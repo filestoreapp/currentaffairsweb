@@ -35,20 +35,6 @@ export interface QuizFormInput {
 }
 
 export async function createQuiz(input: QuizFormInput) {
-  // TEMPORARY DIAGNOSTIC (2026-09-27): catch and return errors to surface
-  // the real failure behind the React #441 crash. Revert after diagnosis.
-  try {
-    return await createQuizInner(input);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    const digest = (err as { digest?: string })?.digest;
-    // Let Next.js redirects through — they are not errors.
-    if (digest === "NEXT_REDIRECT") throw err;
-    return { ok: false as const, error: `[${digest ?? "no-digest"}] ${msg}` };
-  }
-}
-
-async function createQuizInner(input: QuizFormInput) {
   const supabase = await createClient();
   const slug = input.slug
     ? slugify(input.slug, { lower: true, strict: true })
