@@ -366,7 +366,7 @@ export default function QuizForm({
                     <input
                       type="file"
                       accept="application/pdf,.pdf"
-                      className="hidden"
+                      className="sr-only"
                       disabled={pdfUploading}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
