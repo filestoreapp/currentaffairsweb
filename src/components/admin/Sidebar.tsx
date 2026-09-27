@@ -17,6 +17,7 @@ import {
   Gauge,
   Menu,
   X,
+  Newspaper,
 } from "lucide-react";
 
 const SECTIONS = [
@@ -46,6 +47,7 @@ const SECTIONS = [
     title: "Automation",
     links: [
       { href: "/admin/psc-updates", label: "PSC Auto-Updates", icon: RefreshCw },
+      { href: "/admin/digest", label: "Daily Digest", icon: Newspaper },
     ],
   },
 ];
