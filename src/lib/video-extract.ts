@@ -198,38 +198,19 @@ export async function extractInstagram(url: string): Promise<ExtractResult> {
   }
   const data = JSON.parse(firstJson);
   const allFormats: IgFormat[] = data.formats ?? [];
-  // Tier 1: progressive mp4 (video+audio in one file). Tier 2: any combined
-  // stream regardless of container.
-  const progressive = allFormats.filter(
-    (f) =>
-      f.url &&
-      f.ext === "mp4" &&
-      f.vcodec &&
-      f.vcodec !== "none" &&
-      f.acodec &&
-      f.acodec !== "none"
-  );
-  const combined = allFormats.filter(
-    (f) => f.url && f.vcodec && f.vcodec !== "none" && f.acodec && f.acodec !== "none"
-  );
+  // A format is "combined" (single file with video+audio) when neither codec
+  // is explicitly 'none'. Instagram's progressive mp4s (ids 1/2/3) sometimes
+  // omit codec fields entirely — treat missing as acceptable, since the
+  // DASH-split entries always mark their missing side as 'none'.
+  const isCombined = (f: IgFormat) =>
+    !!f.url &&
+    (f.vcodec ?? "unknown") !== "none" &&
+    (f.acodec ?? "unknown") !== "none";
+  const progressive = allFormats.filter((f) => f.ext === "mp4" && isCombined(f));
+  const combined = allFormats.filter(isCombined);
   const formats = progressive.length ? progressive : combined;
   if (!formats.length) {
-    const summary = allFormats
-      .slice(0, 25)
-      .map((f) => ({
-        id: (f as { format_id?: string }).format_id,
-        ext: f.ext,
-        v: f.vcodec,
-        a: f.acodec,
-        h: f.height,
-        u: !!f.url,
-      }));
-    const err = new Error(
-      `No downloadable video found in this post. (debug: ${
-        allFormats.length
-      } formats: ${JSON.stringify(summary)})`
-    );
-    throw err;
+    throw new Error("No downloadable video found in this post.");
   }
   formats.sort((a, b) => (b.height || 0) - (a.height || 0));
   const best = formats[0];
