@@ -2,3 +2,6 @@ node_modules/
 .next/
 *.tsbuildinfo
 .DS_Store
+# yt-dlp standalone binary for the video downloader (fetched at install time
+# by scripts/fetch-ytdlp.mjs, bundled into the serverless function on Vercel)
+bin/
