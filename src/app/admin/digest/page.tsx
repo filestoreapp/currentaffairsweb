@@ -9,8 +9,9 @@ export const dynamic = "force-dynamic";
 const NEWS_SOURCES = [
   { name: "Mathrubhumi", url: "https://www.mathrubhumi.com/" },
   { name: "Malayala Manorama", url: "https://www.manoramaonline.com/" },
-  { name: "Deshabhimani", url: "https://www.deshabhimani.com/" },
-  { name: "Madhyamam", url: "https://www.madhyamam.com/" },
+  { name: "TwentyFour News", url: "https://www.twentyfournews.com/" },
+  { name: "Reporter TV", url: "https://reporterlive.com/" },
+  { name: "Asianet News", url: "https://www.asianetnews.com/" },
 ];
 
 function statusBadge(status: string) {
@@ -71,7 +72,7 @@ export default async function AdminDigestPage() {
       </div>
 
       <h2 className="mt-8 text-lg font-bold">News sources</h2>
-      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {NEWS_SOURCES.map((s) => (
           <a
             key={s.name}
