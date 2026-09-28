@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Send, ClipboardList, ScrollText, ListChecks, Trophy } from "lucide-react";
+import { Send, ClipboardList, ScrollText, ListChecks, Trophy, Rss } from "lucide-react";
 
 const EXAM_LINKS = [
   { href: "/mock-tests", label: "Mock Tests", icon: ClipboardList },
@@ -90,6 +90,12 @@ export default function Footer() {
               New posts, quiz alerts and PSC notifications, delivered as they
               happen.
             </p>
+            <a
+              href="/rss.xml"
+              className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-white"
+            >
+              <Rss size={14} className="text-orange-400" /> RSS feed
+            </a>
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts, getAllCategories } from "@/lib/posts";
 import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
+import { getLatestPscUpdates } from "@/lib/psc-updates";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -12,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let mocks: Awaited<ReturnType<typeof getPublishedMocks>> = [];
   let pyqs: Awaited<ReturnType<typeof getPublishedPyqs>> = [];
   let quizzes: Awaited<ReturnType<typeof getPublishedQuizzes>> = [];
+  let pscUpdates: Awaited<ReturnType<typeof getLatestPscUpdates>> = [];
   try {
     const result = await getPublishedPosts({ perPage: 1000 });
     posts = result.posts;
@@ -19,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     mocks = await getPublishedMocks();
     pyqs = await getPublishedPyqs();
     quizzes = await getPublishedQuizzes();
+    pscUpdates = await getLatestPscUpdates({ limit: 1000 });
   } catch (err) {
     console.error("sitemap: failed to fetch posts/categories", err);
   }
@@ -35,6 +38,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/privacy`, lastModified: new Date() },
     { url: `${siteUrl}/faq`, lastModified: new Date() },
     { url: `${siteUrl}/exam-calendar`, lastModified: new Date() },
+    { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
+    ...pscUpdates.map((u) => ({
+      url: `${siteUrl}/psc-updates/${u.id}`,
+      lastModified: new Date(u.published_on ?? u.scraped_at),
+    })),
     ...mocks.map((m) => ({
       url: `${siteUrl}/mock-tests/${m.slug}`,
       lastModified: new Date(m.created_at),
