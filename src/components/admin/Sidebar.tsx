@@ -15,6 +15,7 @@ import {
   BarChart3,
   RefreshCw,
   Gauge,
+  GraduationCap,
   Menu,
   X,
   Newspaper,
@@ -40,6 +41,7 @@ const SECTIONS = [
     title: "Exam Prep",
     links: [
       { href: "/admin/quizzes", label: "Quizzes & Mocks", icon: ClipboardList },
+      { href: "/admin/exams", label: "Exams", icon: GraduationCap },
       { href: "/admin/statistics", label: "Statistics", icon: BarChart3 },
     ],
   },

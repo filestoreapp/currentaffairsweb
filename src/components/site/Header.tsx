@@ -6,6 +6,7 @@ import NavLinks from "@/components/site/NavLinks";
 const PRIMARY_LINKS = [
   { href: "/", label: "Home" },
   { href: "/current-affairs", label: "Current Affairs" },
+  { href: "/exams", label: "Exams" },
   { href: "/quiz", label: "Quiz" },
   { href: "/mock-tests", label: "Mock Tests" },
   { href: "/pyqs", label: "PYQ Papers" },

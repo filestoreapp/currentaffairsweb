@@ -79,11 +79,40 @@ export interface Quiz {
   exam_name: string | null;
   exam_year: number | null;
   pdf_key: string | null;
+  exam_slug: string | null;
   status: QuizStatus;
   created_at: string;
   updated_at: string;
   questions?: QuizQuestion[];
   attempt_count?: number;
+}
+
+export interface ExamSyllabusSection {
+  section: string;
+  topics: string[];
+}
+
+export interface Exam {
+  id: string;
+  slug: string;
+  name: string;
+  short_name: string;
+  department: string | null;
+  category_no: string | null;
+  qualification: string | null;
+  age_limit: string | null;
+  pay_scale: string | null;
+  vacancy: string | null;
+  notification_date: string | null;
+  admit_card_date: string | null;
+  exam_date: string | null;
+  result_date: string | null;
+  status: "upcoming" | "ongoing" | "completed";
+  description: string | null;
+  syllabus: ExamSyllabusSection[];
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface QuizAttempt {

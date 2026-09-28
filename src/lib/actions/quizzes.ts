@@ -30,6 +30,7 @@ export interface QuizFormInput {
   exam_name?: string;
   exam_year?: number | null;
   pdf_key?: string | null;
+  exam_slug?: string | null;
   status: QuizStatus;
   questions: QuizQuestionInput[];
 }
@@ -60,6 +61,7 @@ export async function createQuiz(input: QuizFormInput) {
       exam_name: isPyq ? input.exam_name || null : null,
       exam_year: isPyq ? input.exam_year || null : null,
       pdf_key: isPyq ? input.pdf_key || null : null,
+      exam_slug: input.exam_slug?.trim() || null,
       status: input.status,
     })
     .select()
@@ -85,6 +87,7 @@ export async function createQuiz(input: QuizFormInput) {
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
   revalidatePath("/pyqs");
+  revalidatePath("/exams");
 
   // Announce newly published mock tests on Telegram so followers know
   // a fresh full-length test is available.
@@ -150,6 +153,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       exam_name: isPyq ? input.exam_name || null : null,
       exam_year: isPyq ? input.exam_year || null : null,
       pdf_key: isPyq ? input.pdf_key || null : null,
+      exam_slug: input.exam_slug?.trim() || null,
       status: input.status,
     })
     .eq("id", id);
@@ -177,6 +181,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
   revalidatePath("/pyqs");
+  revalidatePath("/exams");
   revalidatePath(`/quiz/${slug}`);
   revalidatePath(`/mock-tests/${slug}`);
   revalidatePath(`/pyqs/${slug}`);
