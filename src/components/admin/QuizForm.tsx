@@ -48,6 +48,7 @@ export default function QuizForm({
   );
   const [pdfKey, setPdfKey] = useState(quiz?.pdf_key ?? "");
   const [pdfUploading, setPdfUploading] = useState(false);
+  const [examSlug, setExamSlug] = useState(quiz?.exam_slug ?? "");
   const [negativeMarking, setNegativeMarking] = useState(
     quiz?.negative_marking ? String(quiz.negative_marking) : "0"
   );
@@ -154,6 +155,7 @@ export default function QuizForm({
       exam_name: isPyq ? examName : "",
       exam_year: isPyq && examYear ? Number(examYear) : null,
       pdf_key: isPyq ? pdfKey || null : null,
+      exam_slug: examSlug || null,
       status,
       questions,
     };
@@ -257,6 +259,16 @@ export default function QuizForm({
                 </option>
               ))}
             </select>
+
+            <label className="mt-4 block text-sm font-medium text-slate-700">
+              Exam hub tag (optional)
+            </label>
+            <input
+              value={examSlug}
+              onChange={(e) => setExamSlug(e.target.value)}
+              placeholder="e.g. ldc — shows this on the exam hub page"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            />
 
             <label className="mt-4 block text-sm font-medium text-slate-700">
               Time limit — minutes (optional)
