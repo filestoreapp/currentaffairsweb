@@ -6,7 +6,7 @@ import "./globals.css";
 // Google Analytics 4 Measurement ID — paste yours here
 // (Google Analytics → Admin → Data Streams → Measurement ID, looks like G-XXXXXXXXXX).
 // The ID is public by design (it ships in the page source), so hardcoding is fine.
-const GA_MEASUREMENT_ID = "";
+const GA_MEASUREMENT_ID = "G-SYKQ45D0KZ";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
