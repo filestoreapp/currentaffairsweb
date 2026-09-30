@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans_Malayalam } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
+
+// Google Analytics 4 Measurement ID — paste yours here
+// (Google Analytics → Admin → Data Streams → Measurement ID, looks like G-XXXXXXXXXX).
+// The ID is public by design (it ships in the page source), so hardcoding is fine.
+const GA_MEASUREMENT_ID = "";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -97,6 +103,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         {children}
+        {GA_MEASUREMENT_ID ? <GoogleAnalytics gaId={GA_MEASUREMENT_ID} /> : null}
       </body>
     </html>
   );

@@ -56,6 +56,21 @@ const SECTIONS: { heading: string; body: React.ReactNode }[] = [
           your own device).
         </p>
         <p>
+          We use <strong>Google Analytics</strong> to understand how visitors
+          use the site (pages viewed, time spent, general location). Google
+          Analytics sets cookies on your device for this purpose. You can opt
+          out with the{" "}
+          <a
+            href="https://tools.google.com/dlpage/gaoptout"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-indigo-600 hover:underline"
+          >
+            Google Analytics opt-out browser add-on
+          </a>
+          .
+        </p>
+        <p>
           We use <strong>Google AdSense</strong> to show ads. Google and its
           partners use cookies — including the DoubleClick cookie — to serve
           ads based on your prior visits to this and other websites. You can
