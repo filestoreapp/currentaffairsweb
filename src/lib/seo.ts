@@ -3,8 +3,11 @@ import type { Quiz } from "./types";
 
 export const DEFAULT_OG_IMAGE = "/og-default.png";
 
+// Canonical base URL pinned to the custom domain (2026-10-02): the Vercel
+// dashboard env var still holds the old vercel.app URL and cannot be
+// updated without dashboard access. Revert to env-based when available.
 export function siteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  return "https://www.psccurrentaffairs.online";
 }
 
 /** Shared Open Graph / Twitter / canonical block for quiz-type pages. */

@@ -20,7 +20,7 @@ function esc(s: string): string {
 
 /** Site base URL with no trailing slash (NEXT_PUBLIC_SITE_URL may end with one, producing "//" in links). */
 function siteBase(): string {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const raw = "https://www.psccurrentaffairs.online";
   return raw.replace(/\/+$/, "");
 }
 

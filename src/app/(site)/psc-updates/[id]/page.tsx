@@ -34,7 +34,7 @@ export default async function PscUpdateDetailPage({
   if (!update) notFound();
 
   const label = PSC_SOURCES.find((s) => s.key === update.source)?.label ?? update.source;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = "https://www.psccurrentaffairs.online";
   const pageUrl = `${siteUrl}/psc-updates/${update.id}`;
   const officialLink = update.pdf_url || update.source_url;
 

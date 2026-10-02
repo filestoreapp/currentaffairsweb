@@ -20,7 +20,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = "https://www.psccurrentaffairs.online";
   const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
   const title = post.meta_title || post.title;
   const desc = post.meta_description || post.excerpt || undefined;
@@ -79,7 +79,7 @@ export default async function PostPage({
   ]);
   const relatedPosts = related.posts.filter((p) => p.id !== post.id).slice(0, 3);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = "https://www.psccurrentaffairs.online";
   const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
 
   const publisher = {

@@ -25,7 +25,7 @@ function stripHtml(html: string): string {
  */
 export async function GET() {
   const siteUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    "https://www.psccurrentaffairs.online"
   ).replace(/\/$/, "");
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "PSC Current Affairs";
 

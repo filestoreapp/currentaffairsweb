@@ -5,7 +5,7 @@ import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { getPublishedExams } from "@/lib/exams";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = "https://www.psccurrentaffairs.online";
 
   // If Supabase is unreachable at build time, still ship a minimal sitemap
   // rather than failing the whole deploy over this one route.
