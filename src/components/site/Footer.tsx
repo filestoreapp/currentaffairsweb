@@ -27,7 +27,7 @@ export default function Footer() {
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-sm text-white">
                 PC
               </span>
-              PSC Current Affairs
+              PSC Current Affairs<span className="text-sm font-bold text-slate-500">.online</span>
             </p>
             <p className="mt-3 max-w-xs leading-relaxed text-slate-400">
               Daily Kerala PSC current affairs, mock tests, PYQ papers and

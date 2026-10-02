@@ -29,7 +29,7 @@ export default async function Header() {
             PC
           </span>
           <span className="hidden text-xl font-extrabold tracking-tight text-slate-900 sm:inline">
-            PSC<span className="text-indigo-600">Current</span>Affairs
+            PSC<span className="text-indigo-600">Current</span>Affairs<span className="text-sm font-bold text-slate-400">.online</span>
           </span>
         </Link>
 
