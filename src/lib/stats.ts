@@ -19,17 +19,35 @@ export async function getTotalPostViews() {
   return (data ?? []).reduce((sum, p) => sum + (p.views ?? 0), 0);
 }
 
-export async function getVisitsOverTime(days = 30) {
+async function fetchAllPageViews(since: string) {
+  // PostgREST silently caps a single query at 1000 rows. The site passed that
+  // long ago, so every unbounded page_views read must page through all rows.
   const supabase = await createClient();
+  const PAGE = 1000;
+  const rows: { created_at: string; path: string }[] = [];
+  let from = 0;
+  for (;;) {
+    const { data, error } = await supabase
+      .from("page_views")
+      .select("created_at, path")
+      .gte("created_at", since)
+      .order("created_at", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    const batch = data ?? [];
+    rows.push(...batch);
+    if (batch.length < PAGE) break;
+    from += PAGE;
+  }
+  return rows;
+}
+
+export async function getVisitsOverTime(days = 30) {
   const since = new Date();
   since.setDate(since.getDate() - (days - 1));
   since.setHours(0, 0, 0, 0);
 
-  const { data, error } = await supabase
-    .from("page_views")
-    .select("created_at")
-    .gte("created_at", since.toISOString());
-  if (error) throw error;
+  const data = await fetchAllPageViews(since.toISOString());
 
   // Build a zero-filled map for the last N days, then count into it.
   const counts = new Map<string, number>();
@@ -39,7 +57,7 @@ export async function getVisitsOverTime(days = 30) {
     counts.set(d.toISOString().slice(0, 10), 0);
   }
 
-  for (const row of data ?? []) {
+  for (const row of data) {
     const day = row.created_at.slice(0, 10);
     if (counts.has(day)) counts.set(day, (counts.get(day) ?? 0) + 1);
   }
@@ -101,19 +119,14 @@ export async function getViewsByCategory() {
 
 /** Most-visited paths (from page_views) over the last `days` days, for the "Top Pages" list. */
 export async function getTopPages(days = 30, limit = 8) {
-  const supabase = await createClient();
   const since = new Date();
   since.setDate(since.getDate() - (days - 1));
   since.setHours(0, 0, 0, 0);
 
-  const { data, error } = await supabase
-    .from("page_views")
-    .select("path")
-    .gte("created_at", since.toISOString());
-  if (error) throw error;
+  const data = await fetchAllPageViews(since.toISOString());
 
   const counts = new Map<string, number>();
-  for (const row of data ?? []) {
+  for (const row of data) {
     counts.set(row.path, (counts.get(row.path) ?? 0) + 1);
   }
 
