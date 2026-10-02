@@ -73,6 +73,10 @@ export const metadata: Metadata = {
     images: [ogImage.url],
   },
   robots: { index: true, follow: true },
+  other: {
+    // AdSense site-ownership verification (2026-10-02)
+    "google-adsense-account": "ca-pub-8237109269595968",
+  },
 };
 
 const websiteJsonLd = {
