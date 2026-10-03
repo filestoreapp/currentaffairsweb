@@ -1,6 +1,10 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  createExamDocUploadUrl,
+  isPdfStorageConfigured,
+} from "@/lib/pdf-storage";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
@@ -13,6 +17,8 @@ export interface ExamFormInput {
   department?: string | null;
   category_no?: string | null;
   question_paper_code?: string | null;
+  notification_pdf_key?: string | null;
+  question_paper_pdf_key?: string | null;
   qualification?: string | null;
   age_limit?: string | null;
   pay_scale?: string | null;
@@ -36,6 +42,8 @@ function toRow(input: ExamFormInput) {
     department: emptyToNull(input.department),
     category_no: emptyToNull(input.category_no),
     question_paper_code: emptyToNull(input.question_paper_code),
+    notification_pdf_key: emptyToNull(input.notification_pdf_key),
+    question_paper_pdf_key: emptyToNull(input.question_paper_pdf_key),
     qualification: emptyToNull(input.qualification),
     age_limit: emptyToNull(input.age_limit),
     pay_scale: emptyToNull(input.pay_scale),
@@ -93,4 +101,33 @@ export async function deleteExam(id: string) {
   const { error } = await supabase.from("exams").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidateExams();
+}
+
+/**
+ * Mint a presigned PUT URL for an exam-hub document (notification / question
+ * paper PDF). Auth-gated: only logged-in admins can mint URLs. Returns the
+ * object key to save on the exams row — downloads go through the
+ * /api/exams/download/[slug]/[kind] route, not a public URL.
+ */
+export async function getExamDocUploadUrl(
+  examSlug: string,
+  kind: "notification" | "paper",
+  filename: string,
+  sizeBytes: number
+): Promise<{ uploadUrl: string; key: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("You must be logged in to upload files.");
+  if (!isPdfStorageConfigured()) {
+    throw new Error("PDF storage is not configured. Add the S3 env vars first.");
+  }
+  if (!/\.pdf$/i.test(filename)) {
+    throw new Error("Only PDF files can be uploaded.");
+  }
+  if (kind !== "notification" && kind !== "paper") {
+    throw new Error("Invalid document kind.");
+  }
+  return createExamDocUploadUrl(examSlug, kind, filename, sizeBytes);
 }

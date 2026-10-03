@@ -11,6 +11,8 @@ create table if not exists exams (
   department text,
   category_no text,
   question_paper_code text,
+  notification_pdf_key text,
+  question_paper_pdf_key text,
   qualification text,
   age_limit text,
   pay_scale text,
@@ -31,6 +33,8 @@ create table if not exists exams (
 -- Question Paper Code (e.g. 87/2026): assigned by Kerala PSC when the
 -- written exam is scheduled; shown on the exam hub next to Category No.
 alter table exams add column if not exists question_paper_code text;
+alter table exams add column if not exists notification_pdf_key text;
+alter table exams add column if not exists question_paper_pdf_key text;
 
 drop trigger if exists exams_set_updated_at on exams;
 create trigger exams_set_updated_at

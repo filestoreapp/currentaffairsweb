@@ -11,6 +11,7 @@ import {
   FileText,
   ClipboardList,
   Target,
+  Download,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -200,6 +201,59 @@ export default async function ExamHubPage({
         <Fact label="Question Paper Code" value={exam.question_paper_code} />
         <Fact label="Department" value={exam.department} />
       </div>
+
+      {/* Documents */}
+      {(exam.notification_pdf_key || exam.question_paper_pdf_key) && (
+        <section className="mt-10">
+          <SectionTitle icon={FileText}>Documents</SectionTitle>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {exam.notification_pdf_key && (
+              <a
+                href={`/api/exams/download/${exam.slug}/notification`}
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-md"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+                  <FileText size={18} />
+                </span>
+                <span>
+                  <span className="block font-semibold text-slate-800 group-hover:text-indigo-700">
+                    Notification PDF
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    Official PSC notification — tap to download
+                  </span>
+                </span>
+                <Download
+                  size={16}
+                  className="ml-auto shrink-0 text-slate-400 group-hover:text-indigo-600"
+                />
+              </a>
+            )}
+            {exam.question_paper_pdf_key && (
+              <a
+                href={`/api/exams/download/${exam.slug}/paper`}
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-md"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                  <FileText size={18} />
+                </span>
+                <span>
+                  <span className="block font-semibold text-slate-800 group-hover:text-indigo-700">
+                    Question Paper
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    Original exam paper — tap to download
+                  </span>
+                </span>
+                <Download
+                  size={16}
+                  className="ml-auto shrink-0 text-slate-400 group-hover:text-indigo-600"
+                />
+              </a>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Important dates */}
       {dates.length > 0 && (

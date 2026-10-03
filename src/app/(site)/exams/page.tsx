@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getPublishedExams } from "@/lib/exams";
-import { GraduationCap, ChevronRight, Building2 } from "lucide-react";
+import { GraduationCap, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default async function ExamsIndexPage() {
             Kerala PSC Exams
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            One hub per exam — syllabus, dates, mocks, PYQs and notifications.
+            One hub per exam — exam codes, syllabus, dates, documents, mocks and notifications.
           </p>
         </div>
       </div>
@@ -45,49 +45,58 @@ export default async function ExamsIndexPage() {
           </p>
         </div>
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {exams.map((exam) => (
-            <Link
-              key={exam.id}
-              href={`/exams/${exam.slug}`}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-lg"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="inline-flex rounded-lg bg-indigo-100 px-2.5 py-1 text-xs font-extrabold tracking-wide text-indigo-700">
-                  {exam.short_name}
-                </span>
-                <span
-                  className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${STATUS_STYLE[exam.status] ?? STATUS_STYLE.upcoming}`}
-                >
-                  {exam.status}
-                </span>
-              </div>
-              <h2 className="mt-3 font-bold text-slate-900 group-hover:text-indigo-700">
-                {exam.name}
-              </h2>
-              {exam.department && (
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
-                  <Building2 size={12} /> {exam.department}
-                </p>
-              )}
-              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                {exam.qualification && <span>🎓 {exam.qualification}</span>}
-                {exam.exam_date && (
-                  <span>
-                    📅{" "}
-                    {new Date(exam.exam_date).toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
-                )}
-              </div>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600">
-                Open exam hub <ChevronRight size={15} />
-              </span>
-            </Link>
-          ))}
+                <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <table className="w-full min-w-[560px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500">
+                <th className="px-4 py-3 font-bold">Exam</th>
+                <th className="px-4 py-3 font-bold">Exam Code</th>
+                <th className="px-4 py-3 font-bold">Status</th>
+                <th className="w-12 px-4 py-3">
+                  <span className="sr-only">Open</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {exams.map((exam) => (
+                <tr key={exam.id} className="relative transition hover:bg-indigo-50/50">
+                  <td className="px-4 py-3.5">
+                    <Link
+                      href={`/exams/${exam.slug}`}
+                      className="before:absolute before:inset-0"
+                      aria-label={`${exam.name} — open exam hub`}
+                    >
+                      <span className="mr-2 inline-flex rounded-lg bg-indigo-100 px-2 py-0.5 align-middle text-xs font-extrabold tracking-wide text-indigo-700">
+                        {exam.short_name}
+                      </span>
+                      <span className="font-semibold text-slate-900">
+                        {exam.name}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3.5">
+                    {exam.question_paper_code ? (
+                      <span className="font-mono text-[13px] font-semibold text-slate-700">
+                        {exam.question_paper_code}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3.5">
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${STATUS_STYLE[exam.status] ?? STATUS_STYLE.upcoming}`}
+                    >
+                      {exam.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3.5">
+                    <ChevronRight size={16} className="ml-auto text-slate-300" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

@@ -103,6 +103,46 @@ export async function createPyqUploadUrl(
   return { uploadUrl, key };
 }
 
+
+/**
+ * Mint a short-lived presigned PUT URL for an exam-hub document PDF
+ * (notification or question paper). Stored under
+ * `exams/<exam-slug>/<kind>/<timestamp>-<name>.pdf` in the same private
+ * B2 bucket as PYQ PDFs; downloads go through
+ * /api/exams/download/[slug]/[kind].
+ */
+export async function createExamDocUploadUrl(
+  examSlug: string,
+  kind: "notification" | "paper",
+  filename: string,
+  sizeBytes: number
+): Promise<PyqUploadGrant> {
+  if (!isPdfStorageConfigured()) {
+    throw new Error("PDF storage is not configured.");
+  }
+  if (!Number.isFinite(sizeBytes) || sizeBytes <= 0 || sizeBytes > MAX_PDF_BYTES) {
+    throw new Error("PDF must be between 1 byte and 50 MB.");
+  }
+  const slugPart =
+    (examSlug || "exam").toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 60) ||
+    "exam";
+  const safeName =
+    filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80) || "document.pdf";
+  const key = `exams/${slugPart}/${kind}/${Date.now()}-${safeName}`;
+
+  const uploadUrl = await getSignedUrl(
+    s3Client(),
+    new PutObjectCommand({
+      Bucket: S3_BUCKET_NAME,
+      Key: key,
+      ContentType: "application/pdf",
+    }),
+    { expiresIn: 600 } // 10 minutes to complete the upload
+  );
+
+  return { uploadUrl, key };
+}
+
 /**
  * Mint a short-lived presigned GET URL for a stored PDF key.
  * Served with Content-Disposition: attachment so browsers download it
