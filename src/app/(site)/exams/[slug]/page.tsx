@@ -192,6 +192,7 @@ export default async function ExamHubPage({
         <Fact label="Pay Scale" value={exam.pay_scale} />
         <Fact label="Vacancy" value={exam.vacancy} />
         <Fact label="Category No" value={exam.category_no} />
+        <Fact label="Question Paper Code" value={exam.question_paper_code} />
         <Fact label="Department" value={exam.department} />
       </div>
 

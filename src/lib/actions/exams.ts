@@ -34,6 +34,7 @@ function toRow(input: ExamFormInput) {
     short_name: input.short_name.trim(),
     department: emptyToNull(input.department),
     category_no: emptyToNull(input.category_no),
+    question_paper_code: emptyToNull(input.question_paper_code),
     qualification: emptyToNull(input.qualification),
     age_limit: emptyToNull(input.age_limit),
     pay_scale: emptyToNull(input.pay_scale),

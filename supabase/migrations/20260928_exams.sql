@@ -27,6 +27,10 @@ create table if not exists exams (
   updated_at timestamptz not null default now()
 );
 
+-- Question Paper Code (e.g. 87/2026): assigned by Kerala PSC when the
+-- written exam is scheduled; shown on the exam hub next to Category No.
+alter table exams add column if not exists question_paper_code text;
+
 drop trigger if exists exams_set_updated_at on exams;
 create trigger exams_set_updated_at
 before update on exams

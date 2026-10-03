@@ -157,6 +157,14 @@ export default function ExamForm({ exam }: { exam?: Exam | null }) {
             placeholder="611/2024 — auto-links PSC notifications"
           />
         </Field>
+        <Field label="Question paper code">
+          <input
+            className={inputCls}
+            value={questionPaperCode}
+            onChange={(e) => setQuestionPaperCode(e.target.value)}
+            placeholder="87/2026 — assigned by PSC when the exam is scheduled"
+          />
+        </Field>
         <Field label="Status">
           <select
             className={inputCls}
