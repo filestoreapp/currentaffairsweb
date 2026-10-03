@@ -37,6 +37,9 @@ export default function ExamForm({ exam }: { exam?: Exam | null }) {
   const [slug, setSlug] = useState(exam?.slug ?? "");
   const [department, setDepartment] = useState(exam?.department ?? "");
   const [categoryNo, setCategoryNo] = useState(exam?.category_no ?? "");
+  const [questionPaperCode, setQuestionPaperCode] = useState(
+    exam?.question_paper_code ?? ""
+  );
   const [qualification, setQualification] = useState(exam?.qualification ?? "");
   const [ageLimit, setAgeLimit] = useState(exam?.age_limit ?? "");
   const [payScale, setPayScale] = useState(exam?.pay_scale ?? "");
@@ -87,6 +90,7 @@ export default function ExamForm({ exam }: { exam?: Exam | null }) {
         slug: slug || undefined,
         department,
         category_no: categoryNo,
+        question_paper_code: questionPaperCode,
         qualification,
         age_limit: ageLimit,
         pay_scale: payScale,

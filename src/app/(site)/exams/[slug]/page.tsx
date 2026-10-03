@@ -171,6 +171,11 @@ export default async function ExamHubPage({
               Category No. {exam.category_no}
             </span>
           )}
+          {exam.question_paper_code && (
+            <span className="inline-flex rounded-lg bg-white/20 px-2.5 py-1 text-xs font-semibold">
+              Question Paper Code {exam.question_paper_code}
+            </span>
+          )}
         </div>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
           {exam.name}

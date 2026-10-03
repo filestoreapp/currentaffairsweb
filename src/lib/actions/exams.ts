@@ -12,6 +12,7 @@ export interface ExamFormInput {
   slug?: string;
   department?: string | null;
   category_no?: string | null;
+  question_paper_code?: string | null;
   qualification?: string | null;
   age_limit?: string | null;
   pay_scale?: string | null;

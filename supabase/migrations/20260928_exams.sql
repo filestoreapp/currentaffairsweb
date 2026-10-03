@@ -10,6 +10,7 @@ create table if not exists exams (
   short_name text not null,
   department text,
   category_no text,
+  question_paper_code text,
   qualification text,
   age_limit text,
   pay_scale text,
