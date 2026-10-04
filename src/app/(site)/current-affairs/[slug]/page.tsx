@@ -9,6 +9,8 @@ import PostViewTracker from "@/components/site/PostViewTracker";
 import ShareButtons from "@/components/site/ShareButtons";
 import PostCard from "@/components/site/PostCard";
 import { ClipboardList, Clock, ChevronRight, Tag } from "lucide-react";
+import { postPublicPath } from "@/lib/series-paths";
+
 
 export const revalidate = 300; // 5 min — no cookies used now, so this can ISR
 
@@ -21,7 +23,7 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
   if (!post) return {};
   const siteUrl = "https://www.psccurrentaffairs.online";
-  const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
+  const postUrl = `${siteUrl}${postPublicPath(post.slug)}`;
   const title = post.meta_title || post.title;
   const desc = post.meta_description || post.excerpt || undefined;
   const images = post.cover_image ? [post.cover_image] : ["/og-default.png"];
@@ -80,7 +82,7 @@ export default async function PostPage({
   const relatedPosts = related.posts.filter((p) => p.id !== post.id).slice(0, 3);
 
   const siteUrl = "https://www.psccurrentaffairs.online";
-  const postUrl = `${siteUrl}/current-affairs/${post.slug}`;
+  const postUrl = `${siteUrl}${postPublicPath(post.slug)}`;
 
   const publisher = {
     "@type": "Organization",

@@ -1,4 +1,6 @@
 import { getPublishedPosts } from "@/lib/posts";
+import { postPublicPath } from "@/lib/series-paths";
+
 
 export const revalidate = 3600;
 
@@ -38,7 +40,7 @@ export async function GET() {
 
   const items = posts
     .map((p) => {
-      const url = `${siteUrl}/current-affairs/${p.slug}`;
+      const url = `${siteUrl}${postPublicPath(p.slug)}`;
       const pubDate = p.published_at ? new Date(p.published_at).toUTCString() : new Date().toUTCString();
       const desc = stripHtml(p.excerpt || p.meta_description || "").slice(0, 400);
       return [

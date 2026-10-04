@@ -2,11 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 import type { Post } from "@/lib/types";
+import { postPublicPath } from "@/lib/series-paths";
 
 export default function PostCard({ post }: { post: Post }) {
   return (
     <Link
-      href={`/current-affairs/${post.slug}`}
+      href={postPublicPath(post.slug)}
       className="card-hover group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white"
     >
       <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-indigo-100 via-slate-100 to-violet-100">

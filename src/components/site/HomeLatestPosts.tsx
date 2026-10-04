@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getPublishedPosts } from "@/lib/posts";
 import PostCard from "@/components/site/PostCard";
+import { postPublicPath } from "@/lib/series-paths";
 
 const PER_PAGE = 9;
 
@@ -34,7 +35,7 @@ export default async function HomeLatestPosts({
         <>
           {posts[0] && (
             <Link
-              href={`/current-affairs/${posts[0].slug}`}
+              href={postPublicPath(posts[0].slug)}
               className="card-hover group mt-6 grid overflow-hidden rounded-2xl border border-slate-200 bg-white sm:grid-cols-2"
             >
               <div className="relative min-h-56 overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 sm:min-h-72">

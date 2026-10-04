@@ -1,4 +1,6 @@
 import type { Post, PscUpdate } from "@/lib/types";
+import { postPublicPath } from "@/lib/series-paths";
+
 
 /**
  * The public username of the channel these posts land in, appended to every
@@ -64,7 +66,7 @@ export async function postToTelegram(post: Post) {
     return { skipped: true };
   }
 
-  const link = `${siteBase()}/current-affairs/${post.slug}`;
+  const link = `${siteBase()}${postPublicPath(post.slug)}`;
   const caption = `📢 <b>${esc(post.title)}</b>\n\n${esc(post.excerpt ?? "")}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   // Every post now gets a cover image (either uploaded, or an

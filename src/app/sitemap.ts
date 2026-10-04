@@ -3,6 +3,8 @@ import { getPublishedPosts, getAllCategories } from "@/lib/posts";
 import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { getPublishedExams } from "@/lib/exams";
+import { postPublicPath } from "@/lib/series-paths";
+
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = "https://www.psccurrentaffairs.online";
@@ -68,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(c.created_at),
     })),
     ...posts.map((p) => ({
-      url: `${siteUrl}/current-affairs/${p.slug}`,
+      url: `${siteUrl}${postPublicPath(p.slug)}`,
       lastModified: new Date(p.updated_at),
     })),
   ];
