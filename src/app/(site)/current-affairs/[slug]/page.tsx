@@ -56,6 +56,45 @@ function readingTime(html: string): number {
   return Math.max(1, Math.round(words / 200));
 }
 
+type TocHeading = { id: string; text: string };
+
+function slugifyHeading(text: string): string {
+  return (
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/[\s-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section"
+  );
+}
+
+// Extract <h2> headings for the table of contents and inject anchor ids.
+// Returns the (possibly modified) html plus the heading list in order.
+function extractHeadings(html: string): { html: string; headings: TocHeading[] } {
+  const headings: TocHeading[] = [];
+  const seen = new Set<string>();
+  const out = html.replace(
+    /<h2([^>]*)>([\s\S]*?)<\/h2>/gi,
+    (m, attrs: string, inner: string) => {
+      const text = inner.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+      if (!text) return m;
+      const existing = /\sid\s*=\s*["']([^"']+)["']/i.exec(attrs);
+      let id = existing ? existing[1] : slugifyHeading(text);
+      if (!existing) {
+        const base = id;
+        let n = 2;
+        while (seen.has(id)) id = `${base}-${n++}`;
+      }
+      seen.add(id);
+      headings.push({ id, text });
+      if (existing) return m;
+      return `<h2${attrs} id="${id}" style="scroll-margin-top:96px">${inner}</h2>`;
+    }
+  );
+  return { html: out, headings };
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -80,6 +119,8 @@ export default async function PostPage({
       : getPublishedPosts({ perPage: 4 }),
   ]);
   const relatedPosts = related.posts.filter((p) => p.id !== post.id).slice(0, 3);
+  const { html: contentHtml, headings } = extractHeadings(post.content_html);
+  const showToc = headings.length >= 3;
 
   const siteUrl = "https://www.psccurrentaffairs.online";
   const postUrl = `${siteUrl}${postPublicPath(post.slug)}`;
@@ -213,9 +254,35 @@ export default async function PostPage({
           </div>
         )}
 
+        {showToc && (
+          <nav
+            aria-label="Table of contents"
+            className="mt-8 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5"
+          >
+            <p className="text-sm font-extrabold uppercase tracking-wide text-indigo-900">
+              In this article
+            </p>
+            <ol className="mt-3 space-y-2">
+              {headings.map((h, i) => (
+                <li key={h.id} className="flex items-start gap-2.5 text-[15px]">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-[11px] font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <a
+                    href={`#${h.id}`}
+                    className="font-medium leading-snug text-slate-700 hover:text-indigo-700 hover:underline"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div
           className="prose prose-slate mt-8 max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-indigo-600 prose-img:rounded-2xl"
-          dangerouslySetInnerHTML={{ __html: post.content_html }}
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
 
         {post.tags && post.tags.length > 0 && (
