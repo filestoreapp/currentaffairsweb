@@ -88,6 +88,8 @@ export const metadata: Metadata = {
   other: {
     // AdSense site-ownership verification (2026-10-02)
     "google-adsense-account": "ca-pub-8237109269595968",
+    // Google Search Console site verification (2026-10-05)
+    "google-site-verification": "DnWIUiJzxkIidUfURfxQDRkEBhBpySvI2WD25FNBX7Q",
   },
 };
 
