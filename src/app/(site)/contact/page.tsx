@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 // TODO: set the inbox address that contact-form messages should go to.
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "contact@psccurrentaffairs.online";
 
 export default function ContactPage() {
   const telegramUrl =
