@@ -1,14 +1,23 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { isSeriesSlug } from "./lib/series-paths";
 
-export async function proxy(request: NextRequest) {
-  return await updateSession(request);
+/**
+ * 301 the legacy /current-affairs/<series-slug> URLs to their clean
+ * top-level form /<series-slug> (freedom-fighter series only).
+ */
+export default function proxy(req: NextRequest) {
+  const slug = req.nextUrl.pathname
+    .slice("/current-affairs/".length)
+    .split("/")[0];
+  if (slug && isSeriesSlug(slug)) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/${slug}`;
+    return NextResponse.redirect(url, 301);
+  }
+  return NextResponse.next();
 }
 
 export const config = {
-  // Only /admin routes need the auth-cookie check. Running it on every
-  // public page (posts, quizzes, search, PSC updates) added an extra
-  // Supabase round-trip to requests that never needed a session at all,
-  // and forced those pages to skip static/ISR caching.
-  matcher: ["/admin/:path*"],
+  matcher: "/current-affairs/:slug*",
 };
