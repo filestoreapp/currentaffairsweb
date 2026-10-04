@@ -27,9 +27,17 @@ export async function generateMetadata({
   const title = post.meta_title || post.title;
   const desc = post.meta_description || post.excerpt || undefined;
   const images = post.cover_image ? [post.cover_image] : ["/og-default.png"];
+  const keywords = [
+    ...(post.tags ?? []),
+    ...(post.category ? [post.category.name, `Kerala PSC ${post.category.name}`] : []),
+    "Kerala PSC",
+    "PSC current affairs",
+    "Kerala PSC study material",
+  ];
   return {
     title,
     description: desc,
+    keywords,
     alternates: { canonical: postUrl },
     openGraph: {
       title,

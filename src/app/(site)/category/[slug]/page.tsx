@@ -19,6 +19,15 @@ export async function generateMetadata({
     description:
       category.description ||
       `Free Kerala PSC ${category.name} current affairs, quizzes and study material.`,
+    keywords: [
+      category.name,
+      `Kerala PSC ${category.name}`,
+      `${category.name} study material`,
+      `${category.name} quiz`,
+      "Kerala PSC",
+      "PSC current affairs",
+      "Kerala PSC mock test",
+    ],
   };
 }
 
