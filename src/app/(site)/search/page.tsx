@@ -2,6 +2,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { searchSite } from "@/lib/search";
 import { FileText, ClipboardList, Bell } from "lucide-react";
+import { postPublicPath } from "@/lib/series-paths";
 
 export const metadata = { title: "Search" };
 
@@ -49,7 +50,7 @@ export default async function SearchPage({
                 {results.posts.map((post) => (
                   <li key={post.id}>
                     <Link
-                      href={`/current-affairs/${post.slug}`}
+                      href={postPublicPath(post.slug)}
                       className="block px-5 py-3 hover:bg-slate-50"
                     >
                       <p className="font-medium text-slate-800">{post.title}</p>
