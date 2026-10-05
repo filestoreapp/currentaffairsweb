@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getPublishedExams } from "@/lib/exams";
 import { getPublishedPyqs, getPyqYears } from "@/lib/quizzes";
-import { getLatestPscAnnouncements } from "@/lib/psc-latest";
 import type { Quiz } from "@/lib/types";
 import {
   GraduationCap,
@@ -11,8 +10,6 @@ import {
   Clock,
   Users,
   Landmark,
-  Megaphone,
-  Download,
 } from "lucide-react";
 import type { Metadata } from "next";
 import ExamHubPapers from "@/components/site/ExamHubPapers";
@@ -83,11 +80,10 @@ export default async function ExamsIndexPage({
   searchParams: Promise<{ year?: string }>;
 }) {
   const { year } = await searchParams;
-  const [exams, papers, years, announcements] = await Promise.all([
+  const [exams, papers, years] = await Promise.all([
     getPublishedExams(),
     getPublishedPyqs(),
     getPyqYears(),
-    getLatestPscAnnouncements(),
   ]);
 
   const hubSlugs = new Set(exams.map((e) => e.slug));
@@ -183,69 +179,6 @@ export default async function ExamsIndexPage({
             </div>
           ))}
         </div>
-      )}
-
-      {/* Latest announcements from keralapsc.gov.in */}
-      {announcements.length > 0 && (
-        <section className="mt-14">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white">
-              <Megaphone size={22} />
-            </span>
-            <div>
-              <h2 className="text-2xl font-extrabold tracking-tight">
-                Latest from Kerala PSC
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Fresh announcements from keralapsc.gov.in — ranked lists,
-                short lists, admission tickets and more.
-              </p>
-            </div>
-          </div>
-          <div className="mt-6 divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-            {announcements.map((a, i) => (
-              <div
-                key={`${a.sl}-${i}`}
-                className="flex items-start gap-3 px-4 py-3.5"
-              >
-                <span
-                  className={`mt-0.5 inline-flex shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${
-                    a.type.toLowerCase().includes("ranked")
-                      ? "bg-emerald-100 text-emerald-700"
-                      : a.type.toLowerCase().includes("short")
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-amber-100 text-amber-700"
-                  }`}
-                >
-                  {a.type}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-slate-800">
-                    {a.title}
-                  </p>
-                  {a.details && (
-                    <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">
-                      {a.details}
-                    </p>
-                  )}
-                </div>
-                {a.fileUrl && (
-                  <a
-                    href={a.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-indigo-100 hover:text-indigo-700"
-                  >
-                    <Download size={12} /> PDF
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-slate-400">
-            Source: keralapsc.gov.in/latest · refreshed hourly
-          </p>
-        </section>
       )}
 
       {/* Papers not linked to any exam hub */}
