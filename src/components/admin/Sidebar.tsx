@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Gauge,
   GraduationCap,
+  Hash,
   Menu,
   X,
   Newspaper,
@@ -42,6 +43,7 @@ const SECTIONS = [
     links: [
       { href: "/admin/quizzes", label: "Quizzes & Mocks", icon: ClipboardList },
       { href: "/admin/exams", label: "Exams", icon: GraduationCap },
+      { href: "/admin/psc-categories", label: "PSC Categories", icon: Hash },
       { href: "/admin/statistics", label: "Statistics", icon: BarChart3 },
     ],
   },
