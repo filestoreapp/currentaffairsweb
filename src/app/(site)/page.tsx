@@ -30,7 +30,7 @@ const FEATURES = [
     soft: "bg-indigo-50 text-indigo-600",
   },
   {
-    href: "/pyqs",
+    href: "/exams#pyq-papers",
     icon: ScrollText,
     title: "PYQ Papers",
     titleMl: "പഴയ ചോദ്യപേപ്പറുകൾ",
