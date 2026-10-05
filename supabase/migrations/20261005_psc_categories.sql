@@ -16,6 +16,7 @@ create table if not exists psc_categories (
   details text,
   source_url text,
   paper_sections jsonb not null default '[]',
+  exam_slug text,
   is_published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -23,6 +24,7 @@ create table if not exists psc_categories (
 
 create index if not exists psc_categories_slug_idx on psc_categories (slug);
 create index if not exists psc_categories_exam_date_idx on psc_categories (exam_date);
+create index if not exists psc_categories_exam_slug_idx on psc_categories (exam_slug);
 
 drop trigger if exists psc_categories_set_updated_at on psc_categories;
 create trigger psc_categories_set_updated_at
