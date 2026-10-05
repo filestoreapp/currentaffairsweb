@@ -31,6 +31,12 @@ export default function ContactForm({ to }: { to: string }) {
       <p className="mt-1 text-sm text-slate-500">
         This opens your email app — nothing is stored on our servers.
       </p>
+      <a
+        href={`mailto:${to}`}
+        className="mt-2 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-800"
+      >
+        {to}
+      </a>
       <div className="mt-5 space-y-4">
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-slate-700">
