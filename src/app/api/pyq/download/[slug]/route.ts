@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
  * Vercel, so no serverless bandwidth is consumed.
  */
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -28,7 +28,35 @@ export async function GET(
 
   // getPyqBySlug only returns published PYQ papers — drafts stay hidden.
   const paper = await getPyqBySlug(slug);
-  if (!paper?.pdf_key) {
+  if (!paper) {
+    return NextResponse.json(
+      { error: "Paper or PDF not found." },
+      { status: 404 }
+    );
+  }
+
+  // Section download: ?section=<index>&kind=question|answer
+  const { searchParams } = new URL(req.url);
+  const sectionParam = searchParams.get("section");
+  let key: string | null = paper.pdf_key;
+  if (sectionParam !== null) {
+    const sections = (paper.paper_sections ?? []) as {
+      label: string;
+      question_key: string | null;
+      answer_key: string | null;
+    }[];
+    const sec = sections[Number(sectionParam)];
+    if (!sec) {
+      return NextResponse.json(
+        { error: "Section not found." },
+        { status: 404 }
+      );
+    }
+    key =
+      searchParams.get("kind") === "answer" ? sec.answer_key : sec.question_key;
+  }
+
+  if (!key) {
     return NextResponse.json(
       { error: "Paper or PDF not found." },
       { status: 404 }
@@ -36,7 +64,7 @@ export async function GET(
   }
 
   try {
-    const url = await createPyqDownloadUrl(paper.pdf_key);
+    const url = await createPyqDownloadUrl(key);
     return NextResponse.redirect(url, 307);
   } catch (err) {
     return NextResponse.json(
