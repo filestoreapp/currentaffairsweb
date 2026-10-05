@@ -4,6 +4,7 @@ import {
   getPscCategoryBySlug,
   getPscCategorySlugs,
 } from "@/lib/psc-categories";
+import { getExamBySlug } from "@/lib/exams";
 import Countdown from "@/components/site/Countdown";
 import PaperSectionsList from "@/components/site/PaperSectionsList";
 import { ChevronLeft, ExternalLink, Building2, ScrollText } from "lucide-react";
@@ -51,6 +52,7 @@ export default async function PscCategoryPage({
   const { slug } = await params;
   const cat = await getPscCategoryBySlug(slug);
   if (!cat) notFound();
+  const hub = cat.exam_slug ? await getExamBySlug(cat.exam_slug) : null;
 
   const facts: [string, string | null][] = [
     ["Category number", cat.cat_no],
@@ -80,6 +82,14 @@ export default async function PscCategoryPage({
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
               {cat.announcement_type}
             </span>
+          )}
+          {hub && (
+            <Link
+              href={`/exams/${hub.slug}`}
+              className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700 hover:bg-indigo-200"
+            >
+              Part of {hub.short_name}
+            </Link>
           )}
         </div>
         <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExamBySlug, getExamRelatedContent } from "@/lib/exams";
+import { getPscCategoriesByExamSlug } from "@/lib/psc-categories";
 import type { Exam, Quiz, PscUpdate } from "@/lib/types";
 import {
   ChevronRight,
@@ -12,6 +13,7 @@ import {
   ClipboardList,
   Target,
   Download,
+  Hash,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -106,6 +108,7 @@ export default async function ExamHubPage({
   if (!exam) notFound();
 
   const related = await getExamRelatedContent(exam);
+  const hubCategories = await getPscCategoriesByExamSlug(slug);
 
   const dates: { label: string; value: string | null }[] = [
     { label: "Notification", value: fmtDate(exam.notification_date) },
@@ -270,6 +273,38 @@ export default async function ExamHubPage({
                 </p>
                 <p className="mt-1 font-bold text-slate-800">{d.value}</p>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Categories merged into this hub */}
+      {hubCategories.length > 0 && (
+        <section className="mt-10">
+          <SectionTitle icon={Hash}>Categories</SectionTitle>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {hubCategories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/psc-categories/${c.slug}`}
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-md"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                  <Hash size={18} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-semibold text-slate-800 group-hover:text-indigo-700">
+                    Category {c.cat_no}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-slate-500">
+                    {c.post_name}
+                  </span>
+                </span>
+                <ChevronRight
+                  size={16}
+                  className="ml-auto shrink-0 text-slate-400 group-hover:text-indigo-600"
+                />
+              </Link>
             ))}
           </div>
         </section>

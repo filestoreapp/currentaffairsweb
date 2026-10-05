@@ -15,6 +15,7 @@ export interface PscCategory {
   details: string | null;
   source_url: string | null;
   paper_sections: PaperSection[];
+  exam_slug: string | null;
   is_published: boolean;
   created_at: string;
   updated_at: string;
@@ -68,6 +69,24 @@ export async function getPscCategorySlugs(): Promise<string[]> {
       .eq("is_published", true);
     if (error) throw error;
     return (data ?? []).map((r) => (r as { slug: string }).slug);
+  } catch {
+    return [];
+  }
+}
+
+export async function getPscCategoriesByExamSlug(
+  examSlug: string
+): Promise<PscCategory[]> {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("psc_categories")
+      .select(SELECT)
+      .eq("exam_slug", examSlug)
+      .eq("is_published", true)
+      .order("cat_no", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as PscCategory[];
   } catch {
     return [];
   }

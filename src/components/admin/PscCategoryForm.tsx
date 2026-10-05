@@ -18,16 +18,29 @@ export interface PscCategoryEditable {
   list_no: string | null;
   list_date: string | null;
   exam_date: string | null;
+  exam_slug: string | null;
   details: string | null;
   source_url: string | null;
   paper_sections: PaperSection[];
   is_published: boolean;
 }
 
+export interface ExamHubOption {
+  slug: string;
+  name: string;
+  short_name: string;
+}
+
 const inputCls =
   "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
 
-export default function PscCategoryForm({ initial }: { initial?: PscCategoryEditable }) {
+export default function PscCategoryForm({
+  initial,
+  exams,
+}: {
+  initial?: PscCategoryEditable;
+  exams: ExamHubOption[];
+}) {
   const [catNo, setCatNo] = useState(initial?.cat_no ?? "");
   const [postName, setPostName] = useState(initial?.post_name ?? "");
   const [department, setDepartment] = useState(initial?.department ?? "");
@@ -37,6 +50,7 @@ export default function PscCategoryForm({ initial }: { initial?: PscCategoryEdit
   const [listNo, setListNo] = useState(initial?.list_no ?? "");
   const [listDate, setListDate] = useState(initial?.list_date ?? "");
   const [examDate, setExamDate] = useState(initial?.exam_date ?? "");
+  const [examSlug, setExamSlug] = useState(initial?.exam_slug ?? "");
   const [details, setDetails] = useState(initial?.details ?? "");
   const [sourceUrl, setSourceUrl] = useState(initial?.source_url ?? "");
   const [sections, setSections] = useState<PaperSection[]>(
@@ -62,6 +76,7 @@ export default function PscCategoryForm({ initial }: { initial?: PscCategoryEdit
       list_no: listNo,
       list_date: listDate || null,
       exam_date: examDate || null,
+      exam_slug: examSlug || null,
       details,
       source_url: sourceUrl,
       paper_sections: sections,
@@ -136,7 +151,27 @@ export default function PscCategoryForm({ initial }: { initial?: PscCategoryEdit
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-slate-700">
+            Exam hub
+          </label>
+          <select
+            value={examSlug}
+            onChange={(e) => setExamSlug(e.target.value)}
+            className={inputCls}
+          >
+            <option value="">— No hub —</option>
+            {exams.map((e) => (
+              <option key={e.slug} value={e.slug}>
+                {e.short_name} — {e.name}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-slate-400">
+            Merges this category into the hub page.
+          </p>
+        </div>
         <div>
           <label className="block text-sm font-medium text-slate-700">
             List number

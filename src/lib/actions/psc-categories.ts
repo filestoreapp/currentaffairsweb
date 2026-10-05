@@ -13,6 +13,7 @@ export interface PscCategoryFormInput {
   list_no?: string | null;
   list_date?: string | null;
   exam_date?: string | null;
+  exam_slug?: string | null;
   details?: string | null;
   source_url?: string | null;
   paper_sections: PaperSection[];
@@ -34,6 +35,7 @@ function toRow(input: PscCategoryFormInput) {
     list_no: emptyToNull(input.list_no),
     list_date: emptyToNull(input.list_date),
     exam_date: emptyToNull(input.exam_date),
+    exam_slug: emptyToNull(input.exam_slug),
     details: emptyToNull(input.details),
     source_url: emptyToNull(input.source_url),
     paper_sections: input.paper_sections ?? [],
@@ -117,6 +119,17 @@ async function fetchLatestAnnouncements(): Promise<LatestAnnouncement[]> {
   return items;
 }
 
+/** Conservative keyword match from an announcement title to an exam hub slug. */
+function matchExamSlug(title: string): string | null {
+  const t = title.toLowerCase();
+  if (t.includes("police constable")) return "police-constable";
+  if (t.includes("university assistant") || t.includes("assistant - universities"))
+    return "university-assistant";
+  if (t.includes("lower division clerk")) return "ldc";
+  if (t.includes("last grade")) return "lgs";
+  return null;
+}
+
 /** Import announcements from the PSC "Latest" page. Upserts by cat_no. Returns counts. */
 export async function importPscCategoriesFromLatest(): Promise<{
   inserted: number;
@@ -144,6 +157,7 @@ export async function importPscCategoriesFromLatest(): Promise<{
     const listNo =
       item.details.match(/(?:Ranked List|Short List|S\/L|SL)[^.]*?No\.?\s*:?\s*([A-Za-z0-9\-/.]+)/i)?.[1]?.replace(/[.,]+$/, "") ?? null;
     const listDate = parseDate(item.details);
+    const examSlug = matchExamSlug(item.title);
 
     const row = {
       cat_no: catNo,
@@ -159,28 +173,34 @@ export async function importPscCategoriesFromLatest(): Promise<{
 
     const { data: existing } = await supabase
       .from("psc_categories")
-      .select("id")
+      .select("id, exam_slug")
       .eq("cat_no", catNo)
       .maybeSingle();
 
     if (existing) {
       // Don't overwrite hand-set exam dates / papers / edits on re-import.
+      // Only fill exam_slug when it's still empty and we found a match.
+      const update: Record<string, unknown> = {
+        post_name: row.post_name,
+        announcement_type: row.announcement_type,
+        list_no: row.list_no,
+        list_date: row.list_date,
+        details: row.details,
+        source_url: row.source_url,
+      };
+      if (!(existing as { exam_slug: string | null }).exam_slug && examSlug) {
+        update.exam_slug = examSlug;
+      }
       const { error } = await supabase
         .from("psc_categories")
-        .update({
-          post_name: row.post_name,
-          announcement_type: row.announcement_type,
-          list_no: row.list_no,
-          list_date: row.list_date,
-          details: row.details,
-          source_url: row.source_url,
-        })
+        .update(update)
         .eq("id", (existing as { id: string }).id);
       if (error) throw new Error(error.message);
       updated++;
     } else {
       const { error } = await supabase.from("psc_categories").insert({
         ...row,
+        exam_slug: examSlug,
         paper_sections: [],
       });
       if (error) throw new Error(error.message);
