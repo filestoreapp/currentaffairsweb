@@ -86,7 +86,7 @@ export async function createQuiz(input: QuizFormInput) {
   revalidatePath("/admin/quizzes");
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
-  revalidatePath("/pyqs");
+  revalidatePath("/exams");
   revalidatePath("/exams");
 
   // Announce newly published mock tests on Telegram so followers know
@@ -180,7 +180,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
   revalidatePath("/admin/quizzes");
   revalidatePath("/quiz");
   revalidatePath("/mock-tests");
-  revalidatePath("/pyqs");
+  revalidatePath("/exams");
   revalidatePath("/exams");
   revalidatePath(`/quiz/${slug}`);
   revalidatePath(`/mock-tests/${slug}`);

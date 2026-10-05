@@ -14,7 +14,7 @@ const QUICK_LINKS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/quiz", label: "Daily Quizzes", icon: Trophy },
   { href: "/mock-tests", label: "Mock Tests", icon: ClipboardList },
-  { href: "/pyqs", label: "PYQ Papers", icon: ScrollText },
+  { href: "/exams#pyq-papers", label: "PYQ Papers", icon: ScrollText },
   { href: "/current-affairs", label: "Current Affairs", icon: Newspaper },
   { href: "/psc-updates", label: "PSC Notifications", icon: BellRing },
   { href: "/syllabus", label: "Syllabus Tracker", icon: BookOpen },
