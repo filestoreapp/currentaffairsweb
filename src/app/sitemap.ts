@@ -3,6 +3,7 @@ import { getPublishedPosts, getAllCategories } from "@/lib/posts";
 import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { getPublishedExams } from "@/lib/exams";
+import { getPublishedPscCategories } from "@/lib/psc-categories";
 import { postPublicPath } from "@/lib/series-paths";
 
 
@@ -18,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let quizzes: Awaited<ReturnType<typeof getPublishedQuizzes>> = [];
   let pscUpdates: Awaited<ReturnType<typeof getLatestPscUpdates>> = [];
   let exams: Awaited<ReturnType<typeof getPublishedExams>> = [];
+  let pscCats: Awaited<ReturnType<typeof getPublishedPscCategories>> = [];
   try {
     const result = await getPublishedPosts({ perPage: 1000 });
     posts = result.posts;
@@ -27,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     quizzes = await getPublishedQuizzes();
     pscUpdates = await getLatestPscUpdates({ limit: 1000 });
     exams = await getPublishedExams();
+    pscCats = await getPublishedPscCategories();
   } catch (err) {
     console.error("sitemap: failed to fetch posts/categories", err);
   }
@@ -44,6 +47,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/exam-calendar`, lastModified: new Date() },
     { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
     { url: `${siteUrl}/exams`, lastModified: new Date() },
+    { url: `${siteUrl}/psc-categories`, lastModified: new Date() },
+    ...pscCats.map((c) => ({
+      url: `${siteUrl}/psc-categories/${c.slug}`,
+      lastModified: new Date(c.updated_at),
+    })),
     ...exams.map((e) => ({
       url: `${siteUrl}/exams/${e.slug}`,
       lastModified: new Date(e.updated_at),
