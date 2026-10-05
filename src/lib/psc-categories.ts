@@ -22,39 +22,55 @@ export interface PscCategory {
 
 const SELECT = "*";
 
+// ---- Public (anon, cacheable) helpers ----
+// These degrade to empty results when the `psc_categories` table doesn't
+// exist yet (migration not run), so the site never 500s.
+
 export async function getPublishedPscCategories(): Promise<PscCategory[]> {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase
-    .from("psc_categories")
-    .select(SELECT)
-    .eq("is_published", true)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as PscCategory[];
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("psc_categories")
+      .select(SELECT)
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as PscCategory[];
+  } catch {
+    return [];
+  }
 }
 
 export async function getPscCategoryBySlug(
   slug: string
 ): Promise<PscCategory | null> {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase
-    .from("psc_categories")
-    .select(SELECT)
-    .eq("slug", slug)
-    .eq("is_published", true)
-    .maybeSingle();
-  if (error) throw error;
-  return (data ?? null) as PscCategory | null;
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("psc_categories")
+      .select(SELECT)
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+    if (error) throw error;
+    return (data ?? null) as PscCategory | null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getPscCategorySlugs(): Promise<string[]> {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase
-    .from("psc_categories")
-    .select("slug")
-    .eq("is_published", true);
-  if (error) throw error;
-  return (data ?? []).map((r) => (r as { slug: string }).slug);
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("psc_categories")
+      .select("slug")
+      .eq("is_published", true);
+    if (error) throw error;
+    return (data ?? []).map((r) => (r as { slug: string }).slug);
+  } catch {
+    return [];
+  }
 }
 
 // ---- Admin (authenticated) helpers ----
