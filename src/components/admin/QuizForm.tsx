@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createQuiz, updateQuiz, getPyqPdfUploadUrl, type QuizQuestionInput } from "@/lib/actions/quizzes";
 import QuizExcelImport from "./QuizExcelImport";
-import type { Category, Post, Quiz, QuizDifficulty, QuizStatus } from "@/lib/types";
+import type { Category, Post, Quiz, QuizDifficulty, QuizStatus, PaperSection } from "@/lib/types";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
 function emptyQuestion(): QuizQuestionInput {
@@ -46,8 +46,14 @@ export default function QuizForm({
   const [examYear, setExamYear] = useState(
     quiz?.exam_year ? String(quiz.exam_year) : ""
   );
-  const [pdfKey, setPdfKey] = useState(quiz?.pdf_key ?? "");
-  const [pdfUploading, setPdfUploading] = useState(false);
+  const [sections, setSections] = useState<PaperSection[]>(
+    quiz?.paper_sections && quiz.paper_sections.length > 0
+      ? quiz.paper_sections
+      : quiz?.pdf_key
+        ? [{ label: "Section A", question_key: quiz.pdf_key, answer_key: null }]
+        : []
+  );
+  const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
   const [examSlug, setExamSlug] = useState(quiz?.exam_slug ?? "");
   const [negativeMarking, setNegativeMarking] = useState(
     quiz?.negative_marking ? String(quiz.negative_marking) : "0"
@@ -80,8 +86,12 @@ export default function QuizForm({
     );
   }
 
-  /** Upload a PYQ paper PDF straight to object storage via a presigned URL (bypasses Vercel's request-body limit). */
-  async function handlePdfSelect(file: File) {
+  /** Upload a PYQ section PDF (question paper or answer key) straight to object storage via a presigned URL (bypasses Vercel's request-body limit). */
+  async function handleSectionPdfSelect(
+    si: number,
+    kind: "question_key" | "answer_key",
+    file: File
+  ) {
     setError(null);
     if (!/\.pdf$/i.test(file.name) || file.type !== "application/pdf") {
       setError("Please choose a PDF file.");
@@ -95,7 +105,7 @@ export default function QuizForm({
       slug.trim() ||
       title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60) ||
       "paper";
-    setPdfUploading(true);
+    setUploadingSlot(`${si}:${kind}`);
     try {
       const { uploadUrl, key } = await getPyqPdfUploadUrl(
         slugForKey,
@@ -108,14 +118,27 @@ export default function QuizForm({
         body: file,
       });
       if (!res.ok) throw new Error(`Upload failed (${res.status})`);
-      setPdfKey(key);
+      setSections((prev) =>
+        prev.map((s, i) => (i === si ? { ...s, [kind]: key } : s))
+      );
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "PDF upload failed. Try again."
       );
     } finally {
-      setPdfUploading(false);
+      setUploadingSlot(null);
     }
+  }
+
+  function addSection() {
+    setSections((prev) => [
+      ...prev,
+      {
+        label: `Section ${String.fromCharCode(65 + prev.length)}`,
+        question_key: null,
+        answer_key: null,
+      },
+    ]);
   }
 
   function handleExcelImport(imported: QuizQuestionInput[]) {
@@ -154,7 +177,8 @@ export default function QuizForm({
       is_pyq: isPyq && !isMock,
       exam_name: isPyq ? examName : "",
       exam_year: isPyq && examYear ? Number(examYear) : null,
-      pdf_key: isPyq ? pdfKey || null : null,
+      pdf_key: isPyq ? sections[0]?.question_key || null : null,
+      paper_sections: isPyq ? sections : [],
       exam_slug: examSlug || null,
       status,
       questions,
@@ -353,49 +377,124 @@ export default function QuizForm({
                   className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
                 />
 
-                <label className="mt-4 block text-sm font-medium text-slate-700">
-                  Question paper PDF
-                </label>
-                <p className="mt-1 text-xs text-slate-400">
-                  Optional — the original paper, stored in cloud storage and
-                  shown as a download button on the paper page.
-                </p>
-                {pdfKey ? (
-                  <div className="mt-2 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-                    <span className="truncate text-sm font-medium text-emerald-700">
-                      {pdfKey.split("/").pop()}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setPdfKey("")}
-                      className="ml-auto shrink-0 text-xs font-medium text-slate-500 hover:text-red-600"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 px-4 py-6 text-sm text-slate-500 hover:border-indigo-400 hover:text-indigo-600">
-                    <input
-                      type="file"
-                      accept="application/pdf,.pdf"
-                      className="sr-only"
-                      disabled={pdfUploading}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handlePdfSelect(file);
-                        e.target.value = "";
-                      }}
-                    />
-                    {pdfUploading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Uploading…
-                      </>
-                    ) : (
-                      <>Choose a PDF (max 50 MB)</>
-                    )}
+                <div className="mt-4 flex items-center justify-between">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Paper sections
                   </label>
+                  <button
+                    type="button"
+                    onClick={addSection}
+                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
+                  >
+                    <Plus size={13} /> Add section
+                  </button>
+                </div>
+                <p className="mt-1 text-xs text-slate-400">
+                  e.g. Section A, Section B — each with its question paper and
+                  answer key PDFs (max 50 MB each).
+                </p>
+                {sections.length === 0 && (
+                  <p className="mt-2 rounded-lg border border-dashed border-slate-300 px-3 py-4 text-center text-xs text-slate-400">
+                    No sections yet — click “Add section” to upload question
+                    papers and answer keys.
+                  </p>
                 )}
+                <div className="mt-2 space-y-3">
+                  {sections.map((s, si) => (
+                    <div
+                      key={si}
+                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          value={s.label}
+                          onChange={(e) =>
+                            setSections((prev) =>
+                              prev.map((x, i) =>
+                                i === si ? { ...x, label: e.target.value } : x
+                              )
+                            )
+                          }
+                          placeholder="Section A"
+                          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold focus:border-indigo-500 focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSections((prev) =>
+                              prev.filter((_, i) => i !== si)
+                            )
+                          }
+                          className="shrink-0 rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                          title="Remove section"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                      <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {(
+                          [
+                            { kind: "question_key", label: "Question paper" },
+                            { kind: "answer_key", label: "Answer key" },
+                          ] as const
+                        ).map(({ kind, label }) => {
+                          const key = s[kind];
+                          const busy = uploadingSlot === `${si}:${kind}`;
+                          return (
+                            <div key={kind}>
+                              <p className="mb-1 text-xs font-medium text-slate-500">
+                                {label}
+                              </p>
+                              {key ? (
+                                <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5">
+                                  <span className="truncate text-xs font-medium text-emerald-700">
+                                    {key.split("/").pop()}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSections((prev) =>
+                                        prev.map((x, i) =>
+                                          i === si ? { ...x, [kind]: null } : x
+                                        )
+                                      )
+                                    }
+                                    className="ml-auto shrink-0 text-xs font-medium text-slate-500 hover:text-red-600"
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              ) : (
+                                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-white px-3 py-3 text-xs text-slate-500 hover:border-indigo-400 hover:text-indigo-600">
+                                  <input
+                                    type="file"
+                                    accept="application/pdf,.pdf"
+                                    className="sr-only"
+                                    disabled={busy}
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file)
+                                        handleSectionPdfSelect(si, kind, file);
+                                      e.target.value = "";
+                                    }}
+                                  />
+                                  {busy ? (
+                                    <>
+                                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                      Uploading…
+                                    </>
+                                  ) : (
+                                    <>Choose PDF</>
+                                  )}
+                                </label>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </>
             )}
 

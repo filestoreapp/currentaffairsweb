@@ -52,14 +52,57 @@ export default async function PyqTakePage({
           ),
         }}
       />
-      {paper.pdf_key && (
+      {paper.paper_sections && paper.paper_sections.length > 0 ? (
         <div className="mx-auto mb-6 max-w-5xl px-4 sm:px-6">
-          <a
-            href={`/api/pyq/download/${paper.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
-          >
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+            <h2 className="text-base font-extrabold text-slate-900">
+              Question Papers & Answer Keys
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {paper.paper_sections.map((s, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                >
+                  <p className="font-bold text-slate-800">
+                    {s.label || `Section ${String.fromCharCode(65 + i)}`}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {s.question_key && (
+                      <a
+                        href={`/api/pyq/download/${paper.slug}?section=${i}&kind=question`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
+                      >
+                        Question paper
+                      </a>
+                    )}
+                    {s.answer_key && (
+                      <a
+                        href={`/api/pyq/download/${paper.slug}?section=${i}&kind=answer`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700"
+                      >
+                        Answer key
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        paper.pdf_key && (
+          <div className="mx-auto mb-6 max-w-5xl px-4 sm:px-6">
+            <a
+              href={`/api/pyq/download/${paper.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+            >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -74,9 +117,10 @@ export default async function PyqTakePage({
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" x2="12" y1="15" y2="3" />
             </svg>
-            Download original question paper (PDF)
-          </a>
-        </div>
+              Download original question paper (PDF)
+            </a>
+          </div>
+        )
       )}
       <MockTestPlayer quiz={paper} initialLeaderboard={leaderboard} />
     </>

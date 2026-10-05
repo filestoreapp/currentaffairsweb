@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
-import type { QuizDifficulty, QuizStatus } from "@/lib/types";
+import type { QuizDifficulty, QuizStatus, PaperSection } from "@/lib/types";
 import { postMockToTelegram, postPyqToTelegram } from "@/lib/telegram";
 import { createPyqUploadUrl, isPdfStorageConfigured } from "@/lib/pdf-storage";
 
@@ -31,6 +31,7 @@ export interface QuizFormInput {
   exam_year?: number | null;
   pdf_key?: string | null;
   exam_slug?: string | null;
+  paper_sections?: PaperSection[] | null;
   status: QuizStatus;
   questions: QuizQuestionInput[];
 }
@@ -62,6 +63,7 @@ export async function createQuiz(input: QuizFormInput) {
       exam_year: isPyq ? input.exam_year || null : null,
       pdf_key: isPyq ? input.pdf_key || null : null,
       exam_slug: input.exam_slug?.trim() || null,
+      paper_sections: isPyq ? input.paper_sections ?? [] : [],
       status: input.status,
     })
     .select()
@@ -154,6 +156,7 @@ export async function updateQuiz(id: string, input: QuizFormInput) {
       exam_year: isPyq ? input.exam_year || null : null,
       pdf_key: isPyq ? input.pdf_key || null : null,
       exam_slug: input.exam_slug?.trim() || null,
+      paper_sections: isPyq ? input.paper_sections ?? [] : [],
       status: input.status,
     })
     .eq("id", id);

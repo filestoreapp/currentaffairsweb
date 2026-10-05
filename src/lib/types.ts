@@ -61,6 +61,12 @@ export interface QuizQuestion {
   position: number;
 }
 
+export interface PaperSection {
+  label: string;
+  question_key: string | null;
+  answer_key: string | null;
+}
+
 export interface Quiz {
   id: string;
   title: string;
@@ -80,6 +86,7 @@ export interface Quiz {
   exam_year: number | null;
   pdf_key: string | null;
   exam_slug: string | null;
+  paper_sections: PaperSection[];
   status: QuizStatus;
   created_at: string;
   updated_at: string;
