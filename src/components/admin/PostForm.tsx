@@ -26,6 +26,7 @@ interface DraftShape {
   tags: string;
   status: PostStatus;
   scheduledAt: string;
+  sendToTelegram: boolean;
   metaTitle: string;
   metaDescription: string;
 }
@@ -56,6 +57,7 @@ export default function PostForm({
   const [categoryId, setCategoryId] = useState(post?.category_id ?? "");
   const [tags, setTags] = useState((post?.tags ?? []).join(", "));
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
+  const [sendToTelegram, setSendToTelegram] = useState(true);
   const [scheduledAt, setScheduledAt] = useState(
     post?.status === "scheduled" && post?.published_at
       ? post.published_at.slice(0, 16)
@@ -82,6 +84,7 @@ export default function PostForm({
       tags,
       status,
       scheduledAt,
+      sendToTelegram,
       metaTitle,
       metaDescription,
     });
@@ -98,6 +101,7 @@ export default function PostForm({
     setTags(d.tags);
     setStatus(d.status);
     setScheduledAt(d.scheduledAt);
+    setSendToTelegram(d.sendToTelegram ?? true);
     setMetaTitle(d.metaTitle);
     setMetaDescription(d.metaDescription);
   }
@@ -153,6 +157,7 @@ export default function PostForm({
       status,
       published_at:
         status === "scheduled" ? new Date(scheduledAt).toISOString() : undefined,
+      send_to_telegram: sendToTelegram,
       meta_title: metaTitle,
       meta_description: metaDescription,
     };
@@ -337,6 +342,23 @@ export default function PostForm({
                   <option value="scheduled">Scheduled</option>
                 </select>
               </div>
+
+              <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2.5">
+                <input
+                  type="checkbox"
+                  checked={sendToTelegram}
+                  onChange={(e) => setSendToTelegram(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 accent-indigo-600"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-slate-700">
+                    Send to Telegram
+                  </span>
+                  <span className="block text-xs text-slate-400">
+                    Announce this post on the channel when it goes live
+                  </span>
+                </span>
+              </label>
 
               {status === "scheduled" && (
                 <div>

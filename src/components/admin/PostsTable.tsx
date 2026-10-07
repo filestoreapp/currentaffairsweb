@@ -5,6 +5,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { Pencil, Loader2 } from "lucide-react";
 import DeletePostButton from "@/components/admin/DeletePostButton";
+import SendToTelegramButton from "@/components/admin/SendToTelegramButton";
 import { bulkUpdateStatus, bulkDeletePosts } from "@/lib/actions/posts";
 import type { Post } from "@/lib/types";
 
@@ -177,6 +178,9 @@ export default function PostsTable({ posts }: { posts: Post[] }) {
                       >
                         <Pencil size={16} />
                       </Link>
+                      {displayStatus === "published" && (
+                        <SendToTelegramButton id={post.id} />
+                      )}
                       <DeletePostButton id={post.id} />
                     </div>
                   </td>
