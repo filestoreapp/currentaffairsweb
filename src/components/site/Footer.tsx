@@ -16,7 +16,9 @@ const LEARN_LINKS = [
 ];
 
 export default function Footer() {
-  const telegramUrl = process.env.NEXT_PUBLIC_TELEGRAM_URL;
+  const telegramUrl =
+    process.env.NEXT_PUBLIC_TELEGRAM_URL ||
+    "https://t.me/Daily_CurrentAffairs_Malayalam";
 
   return (
     <footer className="mt-16 border-t border-slate-200 bg-slate-900 text-slate-300">
