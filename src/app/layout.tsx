@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans_Malayalam } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import CookieConsent from "../components/site/CookieConsent";
 import "./globals.css";
 
 // Google Analytics 4 Measurement ID — paste yours here
@@ -120,8 +121,25 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
+        {/* Google Consent Mode v2 defaults (AdSense readiness, 2026-10-07).
+            Everything stays denied until the cookie-consent banner updates it. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+              window.gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+              });
+            `,
+          }}
+        />
         {children}
         {GA_MEASUREMENT_ID ? <GoogleAnalytics gaId={GA_MEASUREMENT_ID} /> : null}
+        <CookieConsent />
       </body>
     </html>
   );
