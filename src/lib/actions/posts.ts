@@ -60,6 +60,8 @@ export interface PostFormInput {
   tags?: string[];
   status: PostStatus;
   published_at?: string | null;
+  /** Send the Telegram announcement on publish. Defaults to true. */
+  send_to_telegram?: boolean;
   meta_title?: string;
   meta_description?: string;
 }
@@ -100,7 +102,7 @@ export async function createPost(input: PostFormInput) {
 
   if (error) throw new Error(error.message);
 
-  if (input.status === "published") {
+  if (input.status === "published" && input.send_to_telegram !== false) {
     await postToTelegram(data as never);
   }
 
@@ -196,7 +198,7 @@ export async function updatePost(id: string, input: PostFormInput) {
 
   if (error) throw new Error(error.message);
 
-  if (isNewlyPublished) {
+  if (isNewlyPublished && input.send_to_telegram !== false) {
     await postToTelegram(data as never);
   }
 
@@ -204,6 +206,32 @@ export async function updatePost(id: string, input: PostFormInput) {
   revalidatePath("/current-affairs");
   revalidatePath(`/current-affairs/${slug}`);
   redirect("/admin/posts");
+}
+
+/**
+ * Send an already-published post to Telegram on demand (admin button).
+ * Returns { ok } so the UI can show what happened.
+ */
+export async function announcePostToTelegram(
+  id: string
+): Promise<{ ok: boolean; skipped?: boolean; error?: string }> {
+  const supabase = await createClient();
+  const { data: post, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error || !post) return { ok: false, error: "Post not found." };
+  try {
+    const res = await postToTelegram(post as never);
+    if (res.skipped) return { ok: false, skipped: true };
+    return { ok: !!res.ok };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Telegram send failed.",
+    };
+  }
 }
 
 export async function deletePost(id: string) {
