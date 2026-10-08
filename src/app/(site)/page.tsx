@@ -95,7 +95,7 @@ export default async function HomePage({
 
   return (
     <div>
-      <section className="relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-14 text-white sm:px-12 sm:py-20">
+      <section className="relative overflow-hidden rounded-3xl bg-slate-900 px-5 py-10 text-white sm:px-12 sm:py-20">
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden
@@ -110,21 +110,21 @@ export default async function HomePage({
             <Sparkles size={14} />
             കേരള PSC പരീക്ഷയ്ക്കുള്ള സൗജന്യ പഠനവേദി
           </p>
-          <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:mt-5 sm:text-6xl">
             Crack Kerala PSC,
             <span className="bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent">
               {" "}one day at a time.
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-slate-300">
+          <p className="mx-auto mt-4 max-w-xl text-sm text-slate-300 sm:mt-5 sm:text-base">
             Daily current affairs, full-length mock tests, previous year
             papers and a syllabus tracker — everything an aspirant needs,
             free forever.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8">
             <Link
               href="/mock-tests"
-              className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 px-7 py-3 font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500"
+              className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 px-6 py-2.5 font-semibold text-white shadow-lg shadow-indigo-600/30 sm:px-7 sm:py-3 transition hover:bg-indigo-500"
             >
               Take a Free Mock Test
               <ArrowRight
@@ -134,15 +134,15 @@ export default async function HomePage({
             </Link>
             <Link
               href="/current-affairs"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3 font-semibold text-white backdrop-blur transition hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-2.5 font-semibold text-white backdrop-blur sm:px-7 sm:py-3 transition hover:bg-white/10"
             >
               Today&apos;s Current Affairs
             </Link>
           </div>
 
-          <dl className="mx-auto mt-10 grid max-w-xl grid-cols-2 gap-6 sm:grid-cols-4">
+          <dl className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 sm:mt-10 sm:grid-cols-4 sm:gap-6">
             {heroStats.map((s) => (
-              <div key={s.label}>
+              <div key={s.label} className="flex flex-col">
                 <dt className="order-2 mt-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   {s.label}
                 </dt>
