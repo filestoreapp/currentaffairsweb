@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { getPublishedPosts, getAllCategories } from "@/lib/posts";
-import { getPublishedMocks, getPublishedPyqs, getPublishedQuizzes } from "@/lib/quizzes";
+import { getAllCategories } from "@/lib/posts";
 import HomeLatestPosts from "@/components/site/HomeLatestPosts";
+import HeroStats from "@/components/site/HeroStats";
 import HomePscUpdates from "@/components/site/HomePscUpdates";
 import {
   ClipboardList,
@@ -78,20 +78,7 @@ export default async function HomePage({
 }) {
   // NOTE: searchParams is intentionally NOT awaited here — it's passed
   // straight through to the Suspense islands so this shell stays static.
-  const [categories, mocks, pyqs, quizzes, { count }] = await Promise.all([
-    getAllCategories(),
-    getPublishedMocks(),
-    getPublishedPyqs(),
-    getPublishedQuizzes(),
-    getPublishedPosts({ page: 1, perPage: 1 }),
-  ]);
-
-  const heroStats = [
-    { value: mocks.length, label: "Mock Tests" },
-    { value: pyqs.length, label: "PYQ Papers" },
-    { value: quizzes.length, label: "Practice Quizzes" },
-    { value: count, label: "Study Notes" },
-  ];
+  const categories = await getAllCategories();
 
   return (
     <div>
@@ -140,18 +127,7 @@ export default async function HomePage({
             </Link>
           </div>
 
-          <dl className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 sm:mt-10 sm:grid-cols-4 sm:gap-6">
-            {heroStats.map((s) => (
-              <div key={s.label} className="flex flex-col">
-                <dt className="order-2 mt-1 block text-xs font-medium uppercase tracking-wider text-slate-400">
-                  {s.label}
-                </dt>
-                <dd className="order-1 text-3xl font-extrabold text-white">
-                  {s.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <HeroStats />
         </div>
       </section>
 
