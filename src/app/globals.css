@@ -18,6 +18,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Never allow sideways page scroll / blank gutter on the right:
+   any element that accidentally overflows horizontally is clipped
+   instead of stretching the page (mobile pinch-zoom-out safety). */
+html,
+body {
+  overflow-x: clip;
+}
+
 ::selection {
   background: #4f46e5;
   color: #fff;
