@@ -98,9 +98,9 @@ export default async function HomePage({
             കേരള PSC പരീക്ഷയ്ക്കുള്ള സൗജന്യ പഠനവേദി
           </p>
           <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:mt-5 sm:text-6xl">
-            Crack Kerala PSC,
+            Kerala PSC,
             <span className="bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent">
-              {" "}one day at a time.
+              {" "}simplified.
             </span>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm text-slate-300 sm:mt-5 sm:text-base">
