@@ -45,6 +45,7 @@ export async function generateMetadata({
       images,
       type: "article",
       url: postUrl,
+      locale: "en_IN",
       publishedTime: post.published_at || undefined,
       modifiedTime: post.updated_at,
       authors: ["PSC Current Affairs"],
@@ -123,10 +124,10 @@ export default async function PostPage({
   const [quiz, related] = await Promise.all([
     getQuizByPostId(post.id),
     post.category
-      ? getPublishedPosts({ perPage: 4, categorySlug: post.category.slug })
-      : getPublishedPosts({ perPage: 4 }),
+      ? getPublishedPosts({ perPage: 7, categorySlug: post.category.slug })
+      : getPublishedPosts({ perPage: 7 }),
   ]);
-  const relatedPosts = related.posts.filter((p) => p.id !== post.id).slice(0, 3);
+  const relatedPosts = related.posts.filter((p) => p.id !== post.id).slice(0, 6);
   const { html: contentHtml, headings } = extractHeadings(post.content_html);
   const showToc = headings.length >= 3;
 
