@@ -17,7 +17,9 @@ export default function SiteLayout({
       <Suspense fallback={null}>
         <ViewTracker />
       </Suspense>
-      <Header />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-8">
         {children}
       </main>
