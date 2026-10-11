@@ -30,5 +30,14 @@ export function createPublicClient() {
 
   return createSupabaseClient(url, anonKey, {
     auth: { autoRefreshToken: false, persistSession: false },
+    global: {
+      // Next.js 15+ defaults fetch() to `no-store`, which opts every
+      // data-fetching page into fully dynamic rendering (killing ISR and
+      // edge caching). Pin Supabase reads to ISR with a 5-min revalidation
+      // so public pages can be statically generated + edge-cached, matching
+      // the `export const revalidate = 300` on those routes.
+      fetch: (input, init) =>
+        fetch(input, { ...init, next: { revalidate: 300 } }),
+    },
   });
 }
