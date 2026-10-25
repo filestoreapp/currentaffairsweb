@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getAllCategories } from "@/lib/posts";
+import { getNextUpcomingExam } from "@/lib/exams";
+import Countdown from "@/components/site/Countdown";
 import HomeLatestPosts from "@/components/site/HomeLatestPosts";
 import HeroStats from "@/components/site/HeroStats";
 import HomePscUpdates from "@/components/site/HomePscUpdates";
@@ -78,7 +80,10 @@ export default async function HomePage({
 }) {
   // NOTE: searchParams is intentionally NOT awaited here — it's passed
   // straight through to the Suspense islands so this shell stays static.
-  const categories = await getAllCategories();
+  const [categories, nextExam] = await Promise.all([
+    getAllCategories(),
+    getNextUpcomingExam(),
+  ]);
 
   return (
     <div>
@@ -130,6 +135,46 @@ export default async function HomePage({
           <HeroStats />
         </div>
       </section>
+
+      {nextExam && nextExam.exam_date && (
+        <section className="mt-6">
+          <div className="rounded-3xl border border-indigo-100 bg-white p-5 sm:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+                  Next PSC Exam
+                </p>
+                <h2 className="mt-1 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+                  {nextExam.name}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {[
+                    nextExam.category_no
+                      ? `Category ${nextExam.category_no}`
+                      : null,
+                    nextExam.department,
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </p>
+              </div>
+              <Link
+                href={`/exams/${nextExam.slug}`}
+                className="group inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:underline"
+              >
+                View exam hub
+                <ArrowRight
+                  size={15}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </Link>
+            </div>
+            <div className="mt-4">
+              <Countdown targetDate={nextExam.exam_date} />
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="mt-10">
         <div className="flex items-end justify-between">
@@ -245,3 +290,4 @@ export default async function HomePage({
     </div>
   );
 }
+

@@ -40,6 +40,34 @@ export async function getExamBySlug(slug: string): Promise<Exam | null> {
   }
 }
 
+/**
+ * Nearest upcoming published exam: status "upcoming" with an exam_date
+ * on or after today (IST). Powers the homepage countdown — when an exam
+ * passes, the next one rolls in automatically. Returns null when no
+ * upcoming exam has a date set, so the homepage section stays hidden.
+ */
+export async function getNextUpcomingExam(): Promise<Exam | null> {
+  try {
+    const today = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata",
+    });
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("exams")
+      .select("*")
+      .eq("is_published", true)
+      .eq("status", "upcoming")
+      .gte("exam_date", today)
+      .order("exam_date", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return (data ?? null) as Exam | null;
+  } catch {
+    return null;
+  }
+}
+
 export interface ExamRelatedContent {
   mocks: Quiz[];
   pyqs: Quiz[];
@@ -116,3 +144,4 @@ export async function getExamByIdForAdmin(id: string): Promise<Exam | null> {
   if (error) throw new Error(error.message);
   return data as Exam | null;
 }
+
