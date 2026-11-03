@@ -2,14 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Marketing stats shown on the homepage hero. Edit the numbers here —
+// Homepage hero stats — REAL counts, verified 2026-11-03 (no "+" suffix: exact numbers).
+// Mock Tests 8: sitemap (6 Kerala PSC + 2 University Assistant).
+// PSC Updates 368: psc-updates URLs in sitemap. (Replaces "PYQ Papers": no
+// verifiable PYQ-paper count exists — /pyqs redirects to /exams, nothing in sitemap.)
+// Practice Quizzes 149: 148 in DB on 2026-11-02 + 2026-11-03 digest quiz.
+// Study Notes 254: published current-affairs posts in sitemap.
+// Practice Questions 2270: 2265 in DB on 2026-11-02 + 5 in today's digest quiz.
+// Telegram Members 2363: Bot API getChatMemberCount on @Daily_CurrentAffairs_Malayalam.
+// (Replaces "Happy Aspirants": no such metric exists.)
 const STATS = [
-  { value: 50, suffix: "+", label: "Mock Tests" },
-  { value: 120, suffix: "+", label: "PYQ Papers" },
-  { value: 200, suffix: "+", label: "Practice Quizzes" },
-  { value: 500, suffix: "+", label: "Study Notes" },
-  { value: 10000, suffix: "+", label: "Practice Questions" },
-  { value: 25000, suffix: "+", label: "Happy Aspirants" },
+  { value: 8, suffix: "", label: "Mock Tests" },
+  { value: 368, suffix: "", label: "PSC Updates" },
+  { value: 149, suffix: "", label: "Practice Quizzes" },
+  { value: 254, suffix: "", label: "Study Notes" },
+  { value: 2270, suffix: "", label: "Practice Questions" },
+  { value: 2363, suffix: "", label: "Telegram Members" },
 ];
 
 function useCountUp(target: number, start: boolean, duration = 1400) {
