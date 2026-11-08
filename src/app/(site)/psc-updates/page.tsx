@@ -7,7 +7,7 @@ import PscUpdateCard from "@/components/site/PscUpdateCard";
 export const metadata = {
   title: "Kerala PSC Notifications & Updates",
   description:
-    "Latest Kerala PSC notifications, exam programmes, ranked lists and official updates — tracked daily.",
+    "Latest Kerala PSC notifications — exam programmes, ranked lists, shortlists, results and admit-card updates, tracked daily from keralapsc.gov.in.",
 };
 
 export const revalidate = 900; // 15 min - these come from a scraper, not live traffic
@@ -26,7 +26,7 @@ export default async function PscUpdatesPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">PSC Notifications &amp; Updates</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Notifications &amp; Updates</h1>
       <p className="mt-2 text-slate-500">
         Auto-pulled from the official{" "}
         <a

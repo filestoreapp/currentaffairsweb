@@ -3,9 +3,9 @@ import { getPublishedPosts } from "@/lib/posts";
 import CurrentAffairsList from "@/components/site/CurrentAffairsList";
 
 export const metadata = {
-  title: "Daily Kerala PSC Current Affairs",
+  title: "Daily Kerala PSC Current Affairs in Malayalam",
   description:
-    "Day-wise Kerala PSC current affairs in English and Malayalam — daily updates, exam-oriented facts and free quizzes.",
+    "Daily Kerala PSC current affairs in Malayalam — exam-oriented facts, quick-revision tables and quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.",
 };
 
 // Cache the listing shell for 5 minutes. Pagination (`?page=N`) lives in
@@ -39,8 +39,12 @@ export default async function CurrentAffairsPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Current Affairs</h1>
-      <p className="mt-2 text-slate-500">{count} articles published</p>
+      <h1 className="text-3xl font-extrabold tracking-tight">Daily Kerala PSC Current Affairs</h1>
+      <p className="mt-2 text-slate-500">
+        {count} articles published — daily current affairs in Malayalam for
+        Kerala PSC exams, with exam-oriented facts, quick-revision tables and
+        free quizzes.
+      </p>
 
       <Suspense fallback={<ListSkeleton />}>
         <CurrentAffairsList searchParams={searchParams} />

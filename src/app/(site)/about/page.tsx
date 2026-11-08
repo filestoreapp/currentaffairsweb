@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Newspaper, Trophy, ScrollText, ListChecks, Bell, Send } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "About PSC Current Affairs",
   description:
     "About PSC Current Affairs — free Kerala PSC exam preparation with daily current affairs, quizzes, mock tests and PYQ papers.",
 };

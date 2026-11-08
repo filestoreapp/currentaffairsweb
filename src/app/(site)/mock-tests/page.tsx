@@ -8,9 +8,9 @@ import { ClipboardList, Clock, Trophy, Users, Medal, Flame } from "lucide-react"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Kerala PSC Mock Tests",
+  title: "Free Kerala PSC Mock Tests 2026",
   description:
-    "Free full-length Kerala PSC mock tests with negative marking, timer and live leaderboards. Practice like the real exam.",
+    "Free Kerala PSC mock tests 2026 for LDC, LGS, University Assistant, Police Constable and more — 100-mark papers, 75-minute timer, −0.33 negative marking and live leaderboards. No login needed.",
 };
 
 export const revalidate = 300;
@@ -26,11 +26,12 @@ export default async function MockTestsPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Free Mock Tests</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Free Kerala PSC Mock Tests</h1>
       <p className="mt-2 max-w-2xl text-slate-500">
-        Full-length Kerala PSC mock tests — exam-style timer, negative
-        marking, and a live leaderboard. Free forever, no login needed.
-        Enter your name, take the test, and see where you rank.
+        Full-length Kerala PSC mock tests for LDC, LGS, University Assistant
+        and Police Constable — exam-style timer, negative marking, and a live
+        leaderboard. Free forever, no login needed. Enter your name, take the
+        test, and see where you rank.
       </p>
 
       {mocks.length === 0 ? (

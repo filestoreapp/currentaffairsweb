@@ -15,9 +15,9 @@ import type { Metadata } from "next";
 import ExamHubPapers from "@/components/site/ExamHubPapers";
 
 export const metadata: Metadata = {
-  title: "Kerala PSC Exams & PYQ Papers",
+  title: "Kerala PSC Exams, Syllabus & PYQ Papers",
   description:
-    "Kerala PSC exam hubs: syllabus, important dates, mock tests and previous year question papers for LDC, LGS, University Assistant and more.",
+    "Kerala PSC exam hubs for LDC, LGS, University Assistant, Police Constable and more — syllabus, exam dates, mock tests and previous year question papers with answer keys.",
 };
 
 export const revalidate = 300;

@@ -41,9 +41,9 @@ function formatDate(iso: string | null): string {
 
 export async function generateMetadata(): Promise<Metadata> {
   const url = `${siteUrl()}/exam-calendar`;
-  const title = "Kerala PSC Exam Calendar \u2014 Upcoming Exam Dates & Programme";
+  const title = "Kerala PSC Exam Calendar 2026–27 — Exam Dates & Programme";
   const description =
-    "Kerala PSC examination programmes with upcoming exam dates, pulled from official keralapsc.gov.in notifications. Never miss an exam date.";
+    "Kerala PSC examination programmes 2026–27 with upcoming exam dates, pulled from official keralapsc.gov.in notifications. Never miss an exam date.";
   return {
     title,
     description,
