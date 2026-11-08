@@ -5,9 +5,9 @@ import { ChevronRight, ScrollText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2026, 2025",
+  title: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2014–2026",
   description:
-    "Kerala PSC previous year question papers (PYQ) for 2026 and 2025 — 286 papers with post name, category number, paper code and exam date. Download official PDFs where available.",
+    "Kerala PSC previous year question papers (PYQ) from 2014 to 2026 — 1,442 papers with post name, category number, paper code and exam date. Download PDFs hosted here or from the official PSC site.",
 };
 
 export const revalidate = 300;
@@ -16,9 +16,9 @@ export default function PyqsDirectoryPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2026, 2025",
+    name: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2014–2026",
     description:
-      "Kerala PSC previous year question papers for 2026 and 2025, searchable by post name, paper code or category number.",
+      "Kerala PSC previous year question papers from 2014 to 2026, searchable by post name, paper code or category number.",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
@@ -66,10 +66,12 @@ export default function PyqsDirectoryPage() {
             കേരള പിഎസ്‌സി മുൻവർഷ ചോദ്യപേപ്പറുകൾ
           </h1>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
-            2025, 2026 വർഷങ്ങളിലെ {pyqPapers.length} കേരള പിഎസ്‌സി
+            2014 മുതൽ 2026 വരെയുള്ള {pyqPapers.length} കേരള പിഎസ്‌സി
             ചോദ്യപേപ്പറുകളുടെ വിവരങ്ങൾ ഇവിടെ കാണാം. തസ്തികയുടെ പേര്, പേപ്പർ
-            കോഡ് അല്ലെങ്കിൽ കാറ്റഗറി നമ്പർ ഉപയോഗിച്ച് തിരയാം. നേരിട്ടുള്ള PDF
-            ലിങ്കുള്ള പേപ്പറുകൾ ഔദ്യോഗിക സൈറ്റിൽ നിന്ന് ഡൗൺലോഡ് ചെയ്യാം.
+            കോഡ് അല്ലെങ്കിൽ കാറ്റഗറി നമ്പർ ഉപയോഗിച്ച് തിരയാം.{" "}
+            {pyqPapers.filter((p) => p.b2_key).length} പേപ്പറുകളുടെ PDF ഇവിടെ
+            നിന്ന് നേരിട്ട് ഡൗൺലോഡ് ചെയ്യാം; മറ്റുള്ളവ ഔദ്യോഗിക സൈറ്റിൽ നിന്ന്.
+            2017–2019 വർഷങ്ങളിലെ പേപ്പറുകൾ ഔദ്യോഗിക ആർക്കൈവിൽ ലഭ്യമല്ല.
           </p>
         </div>
       </div>

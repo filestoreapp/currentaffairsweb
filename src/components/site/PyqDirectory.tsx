@@ -7,9 +7,11 @@ export interface PyqDirectoryPaper {
   post: string;
   category_no: string | null;
   paper_code: string | null;
-  exam_date: string;
+  exam_date: string | null;
   year: number;
   official_pdf_url: string | null;
+  /** B2 object key (pyq/<year>/<slug>.pdf) when the PDF is hosted here. */
+  b2_key: string | null;
 }
 
 const PSC_ARCHIVE_URL = "https://www.keralapsc.gov.in";
@@ -62,10 +64,23 @@ function PaperTable({ papers }: { papers: PyqDirectoryPaper[] }) {
                 {p.paper_code ?? <span className="text-slate-300">—</span>}
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-slate-600">
-                {fmtDate(p.exam_date)}
+                {p.exam_date ? (
+                  fmtDate(p.exam_date)
+                ) : (
+                  <span className="text-slate-300">—</span>
+                )}
               </td>
               <td className="px-4 py-3">
-                {p.official_pdf_url ? (
+                {p.b2_key ? (
+                  <a
+                    href={`/api/pyq/file?key=${encodeURIComponent(p.b2_key)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-bold text-white transition hover:bg-emerald-700"
+                  >
+                    <Download size={13} /> PDF
+                  </a>
+                ) : p.official_pdf_url ? (
                   <a
                     href={p.official_pdf_url}
                     target="_blank"
@@ -141,8 +156,15 @@ export default function PyqDirectory({
         ) : (
           <>
             <span className="font-bold text-slate-800">{papers.length}</span>{" "}
-            ചോദ്യപേപ്പറുകൾ — 2026-ലെ {papers.filter((p) => p.year === 2026).length} എണ്ണവും
-            2025-ലെ {papers.filter((p) => p.year === 2025).length} എണ്ണവും
+            ചോദ്യപേപ്പറുകൾ — 2014 മുതൽ 2026 വരെ
+            {papers.filter((p) => p.b2_key).length > 0 && (
+              <>
+                {" "}
+                (
+                {papers.filter((p) => p.b2_key).length} എണ്ണത്തിന്റെ PDF ഇവിടെ
+                നിന്ന് ഡൗൺലോഡ് ചെയ്യാം)
+              </>
+            )}
           </>
         )}
       </p>
@@ -166,11 +188,11 @@ export default function PyqDirectory({
       ))}
 
       <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-800">
-        PDF ലിങ്ക് കാണുന്ന പേപ്പറുകൾ ഔദ്യോഗിക PSC സൈറ്റിൽ നിന്ന് നേരിട്ട്
-        ഡൗൺലോഡ് ചെയ്യാം. ലിങ്കില്ലാത്ത പേപ്പറുകൾ ഔദ്യോഗിക സൈറ്റിൽ
-        (keralapsc.gov.in) പേപ്പർ കോഡ് ഉപയോഗിച്ച് തിരയാം. ഈ പട്ടികയിൽ
-        ഉൾപ്പെടാത്ത പേപ്പറുകൾ ഉണ്ടാകാം — പൂർണമായ പട്ടികയ്ക്ക് ഔദ്യോഗിക സൈറ്റ്
-        നോക്കുക.
+        PDF ബട്ടൺ കാണുന്ന പേപ്പറുകൾ ഇവിടെ നിന്ന് നേരിട്ട് ഡൗൺലോഡ് ചെയ്യാം.
+        ലിങ്കില്ലാത്ത പേപ്പറുകൾ ഔദ്യോഗിക സൈറ്റിൽ (keralapsc.gov.in) പേപ്പർ
+        കോഡ് ഉപയോഗിച്ച് തിരയാം. 2017–2019 വർഷങ്ങളിലെ പേപ്പറുകൾ ഔദ്യോഗിക
+        ആർക്കൈവിൽ ലഭ്യമല്ല. ഈ പട്ടികയിൽ ഉൾപ്പെടാത്ത പേപ്പറുകൾ ഉണ്ടാകാം —
+        പൂർണമായ പട്ടികയ്ക്ക് ഔദ്യോഗിക സൈറ്റ് നോക്കുക.
       </p>
     </div>
   );
