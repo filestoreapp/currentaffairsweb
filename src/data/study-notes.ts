@@ -6,6 +6,12 @@ import type {
 import { BATCH_1_COMPUTER_NOTES } from "./study-notes/batch-1-computer";
 import { BATCH_1_LAW_NOTES } from "./study-notes/batch-1-law";
 import { BATCH_1_TECHNICAL_TEACHING_NOTES } from "./study-notes/batch-1-technical-teaching";
+import { BATCH_2_KERALA_HISTORY_WORLD_NOTES } from "./study-notes/batch-2-kerala-history-world";
+import { BATCH_2_INDIAN_HISTORY_A_NOTES } from "./study-notes/batch-2-indian-history-a";
+import { BATCH_2_INDIAN_HISTORY_B_NOTES } from "./study-notes/batch-2-indian-history-b";
+import { BATCH_2_GEOGRAPHY_INDIA_WORLD_NOTES } from "./study-notes/batch-2-geography-india-world";
+import { BATCH_2_KERALA_GEOGRAPHY_CIVICS_NOTES } from "./study-notes/batch-2-kerala-geography-civics";
+import { BATCH_2_CONSTITUTION_NOTES } from "./study-notes/batch-2-constitution";
 
 /**
  * Study-notes library data.
@@ -16,10 +22,16 @@ import { BATCH_1_TECHNICAL_TEACHING_NOTES } from "./study-notes/batch-1-technica
  * the index as coming soon and have no topic page.
  */
 
-const BATCH_1_CONTENT: Record<string, StudyNoteContent> = {
+const ALL_CONTENT: Record<string, StudyNoteContent> = {
   ...BATCH_1_COMPUTER_NOTES,
   ...BATCH_1_LAW_NOTES,
   ...BATCH_1_TECHNICAL_TEACHING_NOTES,
+  ...BATCH_2_KERALA_HISTORY_WORLD_NOTES,
+  ...BATCH_2_INDIAN_HISTORY_A_NOTES,
+  ...BATCH_2_INDIAN_HISTORY_B_NOTES,
+  ...BATCH_2_GEOGRAPHY_INDIA_WORLD_NOTES,
+  ...BATCH_2_KERALA_GEOGRAPHY_CIVICS_NOTES,
+  ...BATCH_2_CONSTITUTION_NOTES,
 };
 
 export const STUDY_TOPICS_META: StudyTopicMeta[] = [
@@ -2843,7 +2855,7 @@ export const STUDY_TOPICS_META: StudyTopicMeta[] = [
 
 export const STUDY_TOPICS: StudyTopic[] = STUDY_TOPICS_META.map((m) => ({
   ...m,
-  content: BATCH_1_CONTENT[m.slug],
+  content: ALL_CONTENT[m.slug],
 }));
 
 export const STUDY_TOPICS_WITH_CONTENT: StudyTopic[] = STUDY_TOPICS.filter(
