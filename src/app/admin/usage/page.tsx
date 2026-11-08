@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createPublicClient } from "@/lib/supabase/public";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { Image as ImageIcon, Database, Globe, AlertTriangle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +42,19 @@ async function getImageRepoUsage() {
 }
 
 async function getDbUsage() {
-  const supabase = createPublicClient();
+  // page_views SELECT is granted only to `authenticated` (see supabase/schema.sql),
+  // so the anon client silently counts 0 rows for signed-out viewers. Read
+  // through the service-role client so the numbers are truthful regardless of
+  // sign-in; without SUPABASE_SERVICE_ROLE_KEY fall back to the public client
+  // and report page_views as unknown ("—") rather than a misleading 0.
+  let supabase: SupabaseClient;
+  let canReadPageViews = true;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    supabase = createPublicClient();
+    canReadPageViews = false;
+  }
   let sizeBytes: number | null = null;
   let rpcMissing = false;
   try {
@@ -54,6 +68,10 @@ async function getDbUsage() {
   const counts: Record<string, number | null> = {};
   for (const table of ["posts", "page_views", "quiz_attempts", "quizzes"]) {
     try {
+      if (table === "page_views" && !canReadPageViews) {
+        counts[table] = null;
+        continue;
+      }
       const { count } = await supabase
         .from(table)
         .select("*", { count: "exact", head: true });
@@ -66,7 +84,15 @@ async function getDbUsage() {
 }
 
 async function getTraffic() {
-  const supabase = createPublicClient();
+  // Same RLS reason as getDbUsage: only the service-role client can read
+  // page_views for a signed-out viewer. Without the service key, return null
+  // ("—") instead of a misleading 0.
+  let supabase: SupabaseClient;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    return null;
+  }
   const since = new Date();
   since.setDate(since.getDate() - 30);
   try {
