@@ -12,6 +12,12 @@ import { BATCH_2_INDIAN_HISTORY_B_NOTES } from "./study-notes/batch-2-indian-his
 import { BATCH_2_GEOGRAPHY_INDIA_WORLD_NOTES } from "./study-notes/batch-2-geography-india-world";
 import { BATCH_2_KERALA_GEOGRAPHY_CIVICS_NOTES } from "./study-notes/batch-2-kerala-geography-civics";
 import { BATCH_2_CONSTITUTION_NOTES } from "./study-notes/batch-2-constitution";
+import { BATCH_2_ECONOMY_NOTES } from "./study-notes/batch-2-economy";
+import { BATCH_2_KERALA_GK_A_NOTES } from "./study-notes/batch-2-kerala-gk-a";
+import { BATCH_2_KERALA_GK_B_NOTES } from "./study-notes/batch-2-kerala-gk-b";
+import { BATCH_2_ARTS_NOTES } from "./study-notes/batch-2-arts";
+import { BATCH_2_SCIENCE_PHYSICS_CHEMISTRY_NOTES } from "./study-notes/batch-2-science-physics-chemistry";
+import { BATCH_2_BIOLOGY_NOTES } from "./study-notes/batch-2-biology";
 
 /**
  * Study-notes library data.
@@ -32,6 +38,12 @@ const ALL_CONTENT: Record<string, StudyNoteContent> = {
   ...BATCH_2_GEOGRAPHY_INDIA_WORLD_NOTES,
   ...BATCH_2_KERALA_GEOGRAPHY_CIVICS_NOTES,
   ...BATCH_2_CONSTITUTION_NOTES,
+  ...BATCH_2_ECONOMY_NOTES,
+  ...BATCH_2_KERALA_GK_A_NOTES,
+  ...BATCH_2_KERALA_GK_B_NOTES,
+  ...BATCH_2_ARTS_NOTES,
+  ...BATCH_2_SCIENCE_PHYSICS_CHEMISTRY_NOTES,
+  ...BATCH_2_BIOLOGY_NOTES,
 };
 
 export const STUDY_TOPICS_META: StudyTopicMeta[] = [
