@@ -18,14 +18,21 @@ import { BATCH_2_KERALA_GK_B_NOTES } from "./study-notes/batch-2-kerala-gk-b";
 import { BATCH_2_ARTS_NOTES } from "./study-notes/batch-2-arts";
 import { BATCH_2_SCIENCE_PHYSICS_CHEMISTRY_NOTES } from "./study-notes/batch-2-science-physics-chemistry";
 import { BATCH_2_BIOLOGY_NOTES } from "./study-notes/batch-2-biology";
+import { BATCH_3_SCIENCE_TECH_ENVIRONMENT_NOTES } from "./study-notes/batch-3-science-tech-environment";
+import { BATCH_3_ARITHMETIC_NOTES } from "./study-notes/batch-3-arithmetic";
+import { BATCH_3_MENTAL_ABILITY_NOTES } from "./study-notes/batch-3-mental-ability";
+import { BATCH_3_ENGLISH_NOTES } from "./study-notes/batch-3-english";
+import { BATCH_3_MALAYALAM_NOTES } from "./study-notes/batch-3-malayalam";
 
 /**
  * Study-notes library data.
  * Metadata for ALL 256 topics (from seo-build/study-notes-topics.json,
  * slugs in seo-build/study-notes-slugs.json). Note bodies live in
- * src/data/study-notes/batch-1-*.ts; batch 1 covers the 25 topics that
- * are NOT in our 4 syllabus pages. Topics without content yet list on
- * the index as coming soon and have no topic page.
+ * src/data/study-notes/batch-*.ts: batch 1 covers the 25 topics that
+ * are NOT in our 4 syllabus pages, batch 2 the next 173, and batch 3
+ * the final 58 (Science & Tech, Arithmetic, Mental Ability, English,
+ * Malayalam) — all 256 topics now have content. Topics without content
+ * yet list on the index as coming soon and have no topic page.
  */
 
 const ALL_CONTENT: Record<string, StudyNoteContent> = {
@@ -44,6 +51,11 @@ const ALL_CONTENT: Record<string, StudyNoteContent> = {
   ...BATCH_2_ARTS_NOTES,
   ...BATCH_2_SCIENCE_PHYSICS_CHEMISTRY_NOTES,
   ...BATCH_2_BIOLOGY_NOTES,
+  ...BATCH_3_SCIENCE_TECH_ENVIRONMENT_NOTES,
+  ...BATCH_3_ARITHMETIC_NOTES,
+  ...BATCH_3_MENTAL_ABILITY_NOTES,
+  ...BATCH_3_ENGLISH_NOTES,
+  ...BATCH_3_MALAYALAM_NOTES,
 };
 
 export const STUDY_TOPICS_META: StudyTopicMeta[] = [
