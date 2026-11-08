@@ -4,7 +4,12 @@ import { searchSite } from "@/lib/search";
 import { FileText, ClipboardList, Bell } from "lucide-react";
 import { postPublicPath } from "@/lib/series-paths";
 
-export const metadata = { title: "Search" };
+export const metadata = {
+  title: "Search",
+  // Search-result pages are thin duplicates of the pages they list — keep
+  // them out of the index so they don't dilute the landing pages.
+  robots: { index: false, follow: true },
+};
 
 export default async function SearchPage({
   searchParams,

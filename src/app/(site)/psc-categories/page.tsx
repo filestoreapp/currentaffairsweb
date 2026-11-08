@@ -7,9 +7,9 @@ import { Hash, ChevronRight, CalendarDays, FileText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kerala PSC Categories",
+  title: "Kerala PSC Categories by Number",
   description:
-    "Kerala PSC category-wise pages: announcements, exam countdowns, question papers and answer keys by category number.",
+    "Kerala PSC categories by number — exam dates, countdowns, announcements, question papers and answer keys for every PSC category.",
 };
 
 export const revalidate = 300;
@@ -80,7 +80,7 @@ export default async function PscCategoriesPage() {
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <div className="text-center">
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-          PSC Categories
+          Kerala PSC Categories by Number
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-slate-600">
           Every Kerala PSC category number on its own page — announcements,

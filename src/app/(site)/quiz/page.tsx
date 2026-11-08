@@ -5,9 +5,9 @@ import QuizList from "@/components/site/QuizList";
 import { ArrowRight } from "lucide-react";
 
 export const metadata = {
-  title: "Free Kerala PSC Quizzes",
+  title: "Kerala PSC Quiz — Free Daily Quizzes",
   description:
-    "Free Kerala PSC practice quizzes with answers, explanations and leaderboards — lock in every topic.",
+    "Free Kerala PSC quiz questions in Malayalam with answers and explanations — daily current affairs quizzes and topic quizzes for LDC, LGS and degree-level exams, with leaderboards.",
 };
 
 // Cache the quiz listing shell for 5 minutes. The category filter
@@ -40,10 +40,11 @@ export default async function QuizListPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Practice Quizzes</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Quiz — Free Practice Quizzes</h1>
       <p className="mt-2 text-slate-500">
-        Test your knowledge of Kerala PSC current affairs. Enter your name,
-        answer the questions, and see how you rank!
+        Free Kerala PSC quizzes in Malayalam — daily current affairs quizzes
+        and topic quizzes for LDC, LGS and degree-level exams. Enter your
+        name, answer the questions, and see how you rank!
       </p>
 
       <Link

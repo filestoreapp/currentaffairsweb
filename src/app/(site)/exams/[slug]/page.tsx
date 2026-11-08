@@ -28,10 +28,10 @@ export async function generateMetadata({
   const exam = await getExamBySlug(slug);
   if (!exam) return { title: "Exam not found" };
   const desc = exam.description
-    ? exam.description.slice(0, 155)
-    : `${exam.name} (${exam.short_name}) — syllabus, important dates, mock tests, PYQ papers and latest Kerala PSC notifications.`;
+    ? `${exam.name} (${exam.short_name}) — Kerala PSC syllabus, exam date, mock tests & PYQ papers. ${exam.description}`.slice(0, 160)
+    : `${exam.name} (${exam.short_name}) — Kerala PSC syllabus, exam date, mock tests and previous year question papers.`;
   return {
-    title: `${exam.short_name} – ${exam.name}`,
+    title: `${exam.short_name} – ${exam.name}: Syllabus, Mock Tests & PYQ Papers`,
     description: desc,
   };
 }

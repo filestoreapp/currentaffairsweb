@@ -25,7 +25,7 @@ const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "PSC Current Affairs";
 const siteUrl = "https://www.psccurrentaffairs.online";
 
 const description =
-  "Daily Kerala PSC current affairs, GK updates, practice quizzes and official notification tracking to help you crack your government job exam.";
+  "Free Kerala PSC preparation — daily current affairs in Malayalam, full-length mock tests, previous year question papers, quizzes, syllabus tracker and official notifications for LDC, LGS, University Assistant and more.";
 
 const ogImage = {
   url: "/og-default.png",
@@ -37,19 +37,20 @@ const ogImage = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} - Daily Kerala PSC Current Affairs`,
+    default: "Kerala PSC Current Affairs, Mock Tests & Quizzes",
     template: `%s | ${siteName}`,
   },
   description,
   keywords: [
     "Kerala PSC",
-    "PSC current affairs",
-    "Kerala PSC notifications",
-    "PSC exam programme",
-    "PSC syllabus",
-    "PSC quiz",
+    "Kerala PSC current affairs",
+    "current affairs Malayalam",
     "Kerala PSC mock test",
-    "PSC previous year questions",
+    "free Kerala PSC mock test",
+    "Kerala PSC quiz",
+    "Kerala PSC previous year question papers",
+    "Kerala PSC PYQ",
+    "Kerala PSC syllabus",
     "LDC exam Kerala",
     "LGS exam Kerala",
     "University Assistant exam",
@@ -57,10 +58,12 @@ export const metadata: Metadata = {
     "Secretariat Assistant exam",
     "KAS exam Kerala",
     "Kerala PSC study material",
-    "PSC general knowledge",
-    "Kerala PSC rank list",
-    "PSC cut off marks",
+    "Kerala PSC notifications",
     "Kerala PSC exam date",
+    "Kerala PSC exam calendar",
+    "Kerala PSC rank list",
+    "PSC admit card",
+    "PSC cut off marks",
     "PSC one time registration",
   ],
   authors: [{ name: siteName }],
@@ -75,13 +78,13 @@ export const metadata: Metadata = {
     siteName,
     url: siteUrl,
     locale: "en_IN",
-    title: `${siteName} - Daily Kerala PSC Current Affairs`,
+    title: "Kerala PSC Current Affairs, Mock Tests & Quizzes",
     description,
     images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteName} - Daily Kerala PSC Current Affairs`,
+    title: "Kerala PSC Current Affairs, Mock Tests & Quizzes",
     description,
     images: [ogImage.url],
   },
