@@ -10,7 +10,7 @@ const PRIMARY_LINKS = [
   { href: "/psc-categories", label: "Categories" },
   { href: "/quiz", label: "Quiz" },
   { href: "/mock-tests", label: "Mock Tests" },
-  { href: "/exams#pyq-papers", label: "PYQ Papers" },
+  { href: "/pyqs", label: "PYQ Papers" },
   { href: "/syllabus", label: "Syllabus" },
   { href: "/psc-updates", label: "PSC Updates" },
 ];

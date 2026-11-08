@@ -47,6 +47,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/exam-calendar`, lastModified: new Date() },
     { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
     { url: `${siteUrl}/exams`, lastModified: new Date() },
+    { url: `${siteUrl}/pyqs`, lastModified: new Date() },
+    { url: `${siteUrl}/exams/ldc/syllabus`, lastModified: new Date() },
+    { url: `${siteUrl}/exams/lgs/syllabus`, lastModified: new Date() },
+    {
+      url: `${siteUrl}/exams/police-constable/syllabus`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${siteUrl}/exams/university-assistant/syllabus`,
+      lastModified: new Date(),
+    },
     { url: `${siteUrl}/psc-categories`, lastModified: new Date() },
     ...pscCats.map((c) => ({
       url: `${siteUrl}/psc-categories/${c.slug}`,

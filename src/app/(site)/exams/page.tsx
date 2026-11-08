@@ -198,6 +198,13 @@ export default async function ExamsIndexPage({
           </div>
         </div>
 
+        <Link
+          href="/pyqs"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800"
+        >
+          Browse the full PYQ directory (2025–2026) →
+        </Link>
+
         {years.length > 0 && otherPapers.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
             <Link
