@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Post } from "@/lib/types";
 
 export async function getTopPosts(limit = 5) {
@@ -22,7 +24,19 @@ export async function getTotalPostViews() {
 async function fetchAllPageViews(since: string) {
   // PostgREST silently caps a single query at 1000 rows. The site passed that
   // long ago, so every unbounded page_views read must page through all rows.
-  const supabase = await createClient();
+  //
+  // page_views SELECT is granted only to `authenticated` (see supabase/schema.sql),
+  // so the cookie-aware anon client returns zero rows for signed-out viewers
+  // and the stats page showed 0 visits even while traffic grew. Read through
+  // the service-role client so the numbers are truthful regardless of sign-in.
+  // If SUPABASE_SERVICE_ROLE_KEY is unset (local dev), fall back to the
+  // session client: a signed-in admin still sees real numbers.
+  let supabase: SupabaseClient;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    supabase = await createClient();
+  }
   const PAGE = 1000;
   const rows: { created_at: string; path: string }[] = [];
   let from = 0;
