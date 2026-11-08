@@ -12,6 +12,7 @@ const PRIMARY_LINKS = [
   { href: "/mock-tests", label: "Mock Tests" },
   { href: "/pyqs", label: "PYQ Papers" },
   { href: "/syllabus", label: "Syllabus" },
+  { href: "/study-notes", label: "Study Notes" },
   { href: "/psc-updates", label: "PSC Updates" },
 ];
 

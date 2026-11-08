@@ -5,6 +5,7 @@ import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { getPublishedExams } from "@/lib/exams";
 import { getPublishedPscCategories } from "@/lib/psc-categories";
 import { postPublicPath } from "@/lib/series-paths";
+import { STUDY_TOPICS_WITH_CONTENT } from "@/data/study-notes";
 
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -48,6 +49,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
     { url: `${siteUrl}/exams`, lastModified: new Date() },
     { url: `${siteUrl}/pyqs`, lastModified: new Date() },
+    { url: `${siteUrl}/study-notes`, lastModified: new Date() },
+    ...STUDY_TOPICS_WITH_CONTENT.map((t) => ({
+      url: `${siteUrl}/study-notes/${t.slug}`,
+      lastModified: new Date(),
+    })),
     { url: `${siteUrl}/exams/ldc/syllabus`, lastModified: new Date() },
     { url: `${siteUrl}/exams/lgs/syllabus`, lastModified: new Date() },
     {
