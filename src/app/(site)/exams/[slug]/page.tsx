@@ -316,10 +316,10 @@ export default async function ExamHubPage({
           <div className="flex items-center justify-between">
             <SectionTitle icon={BookOpen}>Syllabus</SectionTitle>
             <Link
-              href="/syllabus"
+              href={`/exams/${slug}/syllabus`}
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-800"
             >
-              Full syllabus tracker →
+              Full syllabus &amp; exam pattern →
             </Link>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -407,7 +407,7 @@ export default async function ExamHubPage({
           <div className="flex items-center justify-between">
             <SectionTitle icon={FileText}>Previous Year Papers</SectionTitle>
             <Link
-              href="/exams#pyq-papers"
+              href="/pyqs"
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-800"
             >
               All PYQ papers →
