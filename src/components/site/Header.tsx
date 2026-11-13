@@ -7,6 +7,7 @@ const PRIMARY_LINKS = [
   { href: "/", label: "Home" },
   { href: "/current-affairs", label: "Current Affairs" },
   { href: "/exams", label: "Exams" },
+  { href: "/upcoming-exams", label: "Upcoming Exams" },
   { href: "/psc-categories", label: "Categories" },
   { href: "/quiz", label: "Quiz" },
   { href: "/mock-tests", label: "Mock Tests" },
