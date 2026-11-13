@@ -65,6 +65,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/exams/university-assistant/syllabus`,
       lastModified: new Date(),
     },
+    {
+      url: `${siteUrl}/exams/secretariat-assistant/syllabus`,
+      lastModified: new Date(),
+    },
+    { url: `${siteUrl}/exams/veo/syllabus`, lastModified: new Date() },
+    {
+      url: `${siteUrl}/exams/staff-nurse/syllabus`,
+      lastModified: new Date(),
+    },
     { url: `${siteUrl}/psc-categories`, lastModified: new Date() },
     ...pscCats.map((c) => ({
       url: `${siteUrl}/psc-categories/${c.slug}`,

@@ -8,6 +8,15 @@
  * - LDC negative marking: sources disagree (see ldc.negativeMarkingNote).
  * - Police Constable duration: 90 min shown, 75 min conflict noted.
  * - University Assistant negative marking: expected, not confirmed.
+ * - Secretariat Assistant negative marking: not in the notification scheme
+ *   table; secondary sources agree on 0.33. Mains = two papers (100+100)
+ *   + interview 20; the prelims slot in its entry renders Paper II
+ *   (see comment in the entry), prelims split is in marksNote.
+ * - VEO mains split: part names from the official 2019 programme;
+ *   20/50/20/10 from prep sources, post-2021 mains unconfirmed;
+ *   no official VEO PDF — the PSC syllabus index is linked instead.
+ * - Staff Nurse duration: 90 min reported for 469/2024, 75 min claimed
+ *   elsewhere; the all-nursing 10x10 split is verified from the official PDF.
  */
 
 export interface ExamSyllabusSection {
@@ -342,6 +351,270 @@ export const EXAM_SYLLABI: Record<string, ExamSyllabusPattern> = {
       {
         q: "പൊതുവിജ്ഞാനത്തിന് എത്ര മാർക്ക്?",
         a: "മെയിൻ പരീക്ഷയിൽ പൊതുവിജ്ഞാനത്തിന് 55 മാർക്കുണ്ട് — ആകെ മാർക്കിന്റെ പകുതിയിലധികം. കേരള ചരിത്രം, ഇന്ത്യൻ രാഷ്ട്രീയം, ഭരണം എന്നിവയ്ക്ക് പ്രത്യേകം ശ്രദ്ധ കൊടുക്കുക.",
+      },
+    ],
+  },
+  "secretariat-assistant": {
+    slug: "secretariat-assistant",
+    examName: "Secretariat Assistant",
+    shortName: "Secretariat Assistant",
+    seoTitle:
+      "Secretariat Assistant Syllabus 2026 – Kerala PSC Mains Paper I & II Pattern, Marks & Topics",
+    seoDescription:
+      "Kerala PSC Secretariat Assistant syllabus: degree-level prelims and mains Paper I & II section-wise marks, interview, negative marking and official syllabus PDFs.",
+    malayalamTitle: "സെക്രട്ടേറിയറ്റ് അസിസ്റ്റന്റ് സിലബസ് 2026",
+    malayalamSubtitle:
+      "കേരള പിഎസ്‌സി സെക്രട്ടേറിയറ്റ് അസിസ്റ്റന്റ് / ഓഡിറ്റർ പരീക്ഷ — സിലബസ്, പരീക്ഷാ പാറ്റേൺ, മാർക്ക് വിതരണം",
+    intro: [
+      "സർക്കാർ സെക്രട്ടേറിയറ്റ്, കേരള പിഎസ്‌സി, അഡ്വക്കേറ്റ് ജനറലിന്റെ ഓഫീസ്, സ്റ്റേറ്റ് ഓഡിറ്റ് വകുപ്പ് തുടങ്ങിയ സ്ഥാപനങ്ങളിലെ അസിസ്റ്റന്റ് / ഓഡിറ്റർ തസ്തികകളിലേക്കുള്ള ഡിഗ്രിതല പരീക്ഷയാണ് സെക്രട്ടേറിയറ്റ് അസിസ്റ്റന്റ് പരീക്ഷ.",
+      "പ്രിലിമിനറി പരീക്ഷ (സ്ക്രീനിങ്), മെയിൻ പരീക്ഷ (പേപ്പർ I, പേപ്പർ II), ഇന്റർവ്യൂ എന്നിങ്ങനെ മൂന്ന് ഘട്ടങ്ങളായാണ് പരീക്ഷ നടക്കുന്നത്. പ്രിലിമിനറി മാർക്ക് റാങ്കിങ്ങിൽ പരിഗണിക്കില്ല — മെയിൻ പരീക്ഷയുടെയും ഇന്റർവ്യൂവിന്റെയും മാർക്കാണ് റാങ്ക് നിശ്ചയിക്കുന്നത്. താഴെ കൊടുത്തിരിക്കുന്ന ആദ്യ പട്ടിക മെയിൻ പേപ്പർ I-ന്റേതാണ്; പേപ്പർ II-ന്റെ വിതരണം അതിന് താഴെയുണ്ട്.",
+    ],
+    level: "Degree level",
+    totalMarks: 200,
+    duration: "1 hour 30 minutes (per mains paper)",
+    durationNote:
+      "പ്രിലിമിനറി പരീക്ഷ 1 മണിക്കൂർ 15 മിനിറ്റാണ്. ഓരോ മെയിൻ പേപ്പറും 1 മണിക്കൂർ 30 മിനിറ്റ് വീതമാണ്.",
+    medium: "English, Malayalam, Tamil, Kannada",
+    negativeMarking: "ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയും",
+    negativeMarkingNote:
+      "വിജ്ഞാപനത്തിന്റെ സ്കീം പട്ടികയിൽ നെഗറ്റീവ് മാർക്കിങ് രേഖപ്പെടുത്തിയിട്ടില്ല; ഒന്നിലധികം ദ്വിതീയ സ്രോതസ്സുകൾ 0.33 എന്നാണ് പറയുന്നത്. നിങ്ങളുടെ കാറ്റഗറിയുടെ വിജ്ഞാപനത്തിൽ ഉറപ്പുവരുത്തുക.",
+    syllabusStatus: "official",
+    statusNote:
+      "ഔദ്യോഗിക സിലബസ് — കാറ്റഗറി 576/2024 മെയിൻ പരീക്ഷ 2025 സെപ്റ്റംബർ 27-ന് നടന്നു; ഷോർട്ട്ലിസ്റ്റ് 2025 ഡിസംബർ 6-ന് പ്രസിദ്ധീകരിച്ചു",
+    officialPdfUrl:
+      "https://www.keralapsc.gov.in/sites/default/files/2025-01/syllabus_0.pdf",
+    // Main table = Mains Paper I (100). The prelims slot below is reused for
+    // Mains Paper II (the template renders it as a second titled table);
+    // the prelims split itself is described in marksNote.
+    sections: [
+      { section: "History", marks: 7 },
+      { section: "Geography", marks: 7 },
+      { section: "Economics", marks: 7 },
+      { section: "Life Science & Public Health", marks: 7 },
+      { section: "Physics", marks: 7 },
+      { section: "Chemistry", marks: 7 },
+      { section: "Arts / Literature / Culture", marks: 8 },
+      { section: "Sports", marks: 3 },
+      { section: "Basics of Computer", marks: 6 },
+      {
+        section: "Simple Arithmetic, Mental Ability & Reasoning",
+        marks: 15,
+      },
+      { section: "General English", marks: 13 },
+      {
+        section: "Regional Language (Malayalam / Kannada / Tamil)",
+        marks: 13,
+      },
+    ],
+    prelims: {
+      title: "മെയിൻ പരീക്ഷ — പേപ്പർ II",
+      note: "100 മാർക്ക് · 1 മണിക്കൂർ 30 മിനിറ്റ്. ഭരണം, മാനേജ്മെന്റ്, ഭരണഘടന, കേരള സമ്പദ്‌വ്യവസ്ഥ എന്നിവയാണ് പേപ്പർ II-ന്റെ വിഷയങ്ങൾ.",
+      sections: [
+        { section: "Principles of Administration", marks: 10 },
+        { section: "Principles of Management", marks: 10 },
+        { section: "Constitutional Structure", marks: 12 },
+        {
+          section: "Centre-State Relations under the Constitution",
+          marks: 8,
+        },
+        { section: "Kerala's Economy", marks: 15 },
+        { section: "Kerala Model of Development", marks: 15 },
+        { section: "Environment / Climate", marks: 10 },
+        { section: "Disaster Management", marks: 10 },
+        { section: "E-Governance", marks: 10 },
+      ],
+    },
+    marksNote:
+      "മെയിൻ പരീക്ഷ 200 മാർക്കിന്റേതാണ് (പേപ്പർ I 100 + പേപ്പർ II 100); ഇന്റർവ്യൂ 20 മാർക്ക് — റാങ്കിങ് ആകെ 220 മാർക്കിൽ. പ്രിലിമിനറി പരീക്ഷ (ഡിഗ്രിതല പൊതു പരീക്ഷ) 100 മാർക്കിന്റേതാണ് — പൊതുവിജ്ഞാനം 50, ഗണിതവും മാനസിക ശേഷിയും റീസണിങ്ങും 20, ഇംഗ്ലീഷ് 20, പ്രാദേശിക ഭാഷ 10; ഇത് സ്ക്രീനിങ് മാത്രമാണ്.",
+    faqs: [
+      {
+        q: "സെക്രട്ടേറിയറ്റ് അസിസ്റ്റന്റ് പരീക്ഷയിൽ ആകെ എത്ര മാർക്കാണ്?",
+        a: "മെയിൻ പരീക്ഷ 200 മാർക്കിന്റേതാണ് — പേപ്പർ I 100-ഉം പേപ്പർ II 100-ഉം. ഇന്റർവ്യൂ 20 മാർക്ക് കൂടി ചേർത്ത് 220 മാർക്കിലാണ് റാങ്കിങ്. പ്രിലിമിനറി പരീക്ഷ 100 മാർക്കിന്റേതാണ്, പക്ഷേ അത് സ്ക്രീനിങ് മാത്രമാണ്; അതിന്റെ മാർക്ക് റാങ്കിങ്ങിൽ പരിഗണിക്കില്ല.",
+      },
+      {
+        q: "മെയിൻ പേപ്പർ I-ൽ ഏറ്റവും കൂടുതൽ മാർക്ക് ഏത് വിഭാഗത്തിനാണ്?",
+        a: "ഗണിതവും മാനസിക ശേഷിയും റീസണിങ്ങും ചേർന്ന് 15 മാർക്കാണ് ഏറ്റവും കൂടുതൽ. ഇംഗ്ലീഷിനും പ്രാദേശിക ഭാഷയ്ക്കും 13 മാർക്ക് വീതമുണ്ട്.",
+      },
+      {
+        q: "മെയിൻ പേപ്പർ II-ൽ എന്തൊക്കെയാണ് വരുന്നത്?",
+        a: "ഭരണത്തിന്റെ തത്ത്വങ്ങൾ, മാനേജ്മെന്റ്, ഭരണഘടനാ ഘടന, കേന്ദ്ര-സംസ്ഥാന ബന്ധങ്ങൾ, കേരള സമ്പദ്‌വ്യവസ്ഥ, കേരള വികസന മാതൃക, പരിസ്ഥിതി, ദുരന്ത നിവാരണം, ഇ-ഗവേണൻസ് എന്നിവയാണ് പേപ്പർ II-ന്റെ ഒൻപത് മൊഡ്യൂളുകൾ.",
+      },
+      {
+        q: "നെഗറ്റീവ് മാർക്കിങ് ഉണ്ടോ?",
+        a: "ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയ്ക്കുമെന്നാണ് ഒന്നിലധികം സ്രോതസ്സുകൾ പറയുന്നത്. എന്നാൽ വിജ്ഞാപനത്തിന്റെ സ്കീം പട്ടികയിൽ ഇത് രേഖപ്പെടുത്തിയിട്ടില്ല — നിങ്ങളുടെ കാറ്റഗറിയുടെ വിജ്ഞാപനത്തിൽ ഉറപ്പുവരുത്തുക.",
+      },
+      {
+        q: "അടുത്ത സെക്രട്ടേറിയറ്റ് അസിസ്റ്റന്റ് പരീക്ഷ എപ്പോഴാണ്?",
+        a: "കാറ്റഗറി 058/2026 (എസ്.ടി. വിഭാഗത്തിന് മാത്രമുള്ള പ്രത്യേക നിയമനം) പ്രകാരമുള്ള പരീക്ഷ 2027 ജനുവരി 30-ന് നടക്കും — രണ്ട് പേപ്പറുകൾ, OMR രീതി. കൺഫർമേഷൻ സമയപരിധി 26/10–14/11/2026 ആയിരുന്നു.",
+      },
+      {
+        q: "576/2024 കാറ്റഗറിയുടെ നില എന്താണ്?",
+        a: "മെയിൻ പരീക്ഷ 2025 സെപ്റ്റംബർ 27-ന് നടന്നു; ഷോർട്ട്ലിസ്റ്റ് 2025 ഡിസംബർ 6-ന് പ്രസിദ്ധീകരിച്ചു. ഇന്റർവ്യൂ തീയതി ഇതുവരെ പ്രഖ്യാപിച്ചിട്ടില്ല.",
+      },
+    ],
+  },
+
+  veo: {
+    slug: "veo",
+    examName: "Village Extension Officer",
+    shortName: "VEO",
+    seoTitle:
+      "VEO Syllabus 2026 – Kerala PSC Village Extension Officer Exam Pattern, Marks & Topics",
+    seoDescription:
+      "Kerala PSC VEO syllabus: Village Extension Officer main exam pattern, section-wise marks, prelims pattern, negative marking and exam details.",
+    malayalamTitle: "വിഇഒ സിലബസ് 2026",
+    malayalamSubtitle:
+      "കേരള പിഎസ്‌സി വില്ലേജ് എക്സ്റ്റൻഷൻ ഓഫീസർ പരീക്ഷ — സിലബസ്, പരീക്ഷാ പാറ്റേൺ, മാർക്ക് വിതരണം",
+    intro: [
+      "ഗ്രാമവികസന വകുപ്പിലെ വില്ലേജ് എക്സ്റ്റൻഷൻ ഓഫീസർ ഗ്രേഡ് II തസ്തികയിലേക്കുള്ള പത്താംതല പരീക്ഷയാണ് വിഇഒ പരീക്ഷ.",
+      "2021 മുതൽ രണ്ട് ഘട്ടങ്ങളായാണ് പരീക്ഷ നടക്കുന്നത് — ആദ്യം പത്താംതല പൊതു പ്രിലിമിനറി പരീക്ഷയും തുടർന്ന് വിഇഒ മെയിൻ പരീക്ഷയും. റാങ്ക് ലിസ്റ്റ് മെയിൻ പരീക്ഷയുടെ മാർക്കിന്റെ അടിസ്ഥാനത്തിലാണ്.",
+    ],
+    level: "10th level (SSLC)",
+    totalMarks: 100,
+    duration: "1 hour 15 minutes",
+    durationNote:
+      "2019-ലെ ഒറ്റ പരീക്ഷയും പ്രിലിമിനറി പരീക്ഷയും 75 മിനിറ്റായിരുന്നു. മെയിൻ പരീക്ഷയുടെ സമയം ഔദ്യോഗികമായി സ്ഥിരീകരിച്ചിട്ടില്ല.",
+    medium: "Malayalam, Tamil, Kannada (General English in English)",
+    negativeMarking: "ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയും",
+    syllabusStatus: "expected",
+    statusNote:
+      "പ്രതീക്ഷിത സിലബസ് — 2019-ലെ ഔദ്യോഗിക പരീക്ഷാ പദ്ധതിയും പത്താംതല പാറ്റേണും അടിസ്ഥാനമാക്കിയുള്ളത്; പുതിയ വിജ്ഞാപനം വന്നിട്ടില്ല",
+    officialPdfUrl: null,
+    officialIndexUrl: "https://www.keralapsc.gov.in/syllabus",
+    sections: [
+      { section: "Simple Arithmetic & Mental Ability", marks: 20 },
+      { section: "General Knowledge & Current Affairs", marks: 50 },
+      { section: "General English", marks: 20 },
+      {
+        section: "Regional Language (Malayalam / Tamil / Kannada)",
+        marks: 10,
+      },
+    ],
+    prelims: {
+      title: "പ്രിലിമിനറി പരീക്ഷ — പത്താംതല പൊതു പരീക്ഷ",
+      note: "100 മാർക്ക് · 1 മണിക്കൂർ 15 മിനിറ്റ്. മെയിൻ പരീക്ഷയ്ക്ക് യോഗ്യത നേടാനുള്ള സ്ക്രീനിങ് പരീക്ഷ മാത്രമാണ്; പ്രിലിമിനറി മാർക്ക് റാങ്കിങ്ങിൽ പരിഗണിക്കില്ല.",
+      sections: [
+        { section: "General Knowledge", marks: 60 },
+        { section: "General Science", marks: 20 },
+        { section: "Simple Arithmetic & Mental Ability", marks: 20 },
+      ],
+    },
+    marksNote:
+      "മെയിൻ പരീക്ഷയുടെ വിഭാഗങ്ങളും അവയുടെ ക്രമവും 2019-ലെ ഔദ്യോഗിക പരീക്ഷാ പദ്ധതിയിൽ നിന്നുള്ളതാണ്. 20/50/20/10 എന്ന മാർക്ക് വിതരണത്തെക്കുറിച്ച് ഒന്നിലധികം സ്രോതസ്സുകൾ യോജിക്കുന്നുണ്ട്, പക്ഷേ ഔദ്യോഗിക പദ്ധതിയിൽ മാർക്ക് രേഖപ്പെടുത്തിയിട്ടില്ല; 2021 മുതലുള്ള മെയിൻ പരീക്ഷയും ഇതേ വിതരണം തന്നെയാണോ എന്ന് സ്ഥിരീകരിച്ചിട്ടില്ല.",
+    faqs: [
+      {
+        q: "വിഇഒ പരീക്ഷയുടെ ആകെ മാർക്ക് എത്രയാണ്?",
+        a: "മെയിൻ പരീക്ഷ 100 മാർക്കിന്റേതാണ് — ഗണിതവും മാനസിക ശേഷിയും 20, പൊതുവിജ്ഞാനവും കറന്റ് അഫയേഴ്സും 50, ഇംഗ്ലീഷ് 20, പ്രാദേശിക ഭാഷ 10. പ്രിലിമിനറി പരീക്ഷയും 100 മാർക്കിന്റേതാണ്.",
+      },
+      {
+        q: "വിഇഒ പരീക്ഷ രണ്ട് ഘട്ടങ്ങളായാണോ?",
+        a: "അതെ, 2021 മുതൽ. ആദ്യം പത്താംതല പൊതു പ്രിലിമിനറി പരീക്ഷയും (പൊതുവിജ്ഞാനം 60, സയൻസ് 20, ഗണിതവും മാനസിക ശേഷിയും 20) തുടർന്ന് വിഇഒ മെയിൻ പരീക്ഷയുമാണ്. റാങ്ക് മെയിൻ മാർക്കിന്റെ അടിസ്ഥാനത്തിലാണ്.",
+      },
+      {
+        q: "നെഗറ്റീവ് മാർക്കിങ് ഉണ്ടോ?",
+        a: "അതെ. ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയ്ക്കും; ഉത്തരം എഴുതാത്ത ചോദ്യങ്ങൾക്ക് മാർക്ക് കുറയില്ല.",
+      },
+      {
+        q: "വിഇഒ പരീക്ഷയ്ക്ക് എന്ത് യോഗ്യതയാണ് വേണ്ടത്?",
+        a: "എസ്എസ്എൽസി (പത്താംതലം) ആണ് കുറഞ്ഞ യോഗ്യത — 2018-ലെ വിജ്ഞാപനപ്രകാരം എസ്എസ്എൽസിയിൽ 40% മാർക്കെങ്കിലും വേണം.",
+      },
+      {
+        q: "അടുത്ത വിഇഒ വിജ്ഞാപനം എപ്പോഴാണ്?",
+        a: "അവസാന പൊതു വിജ്ഞാപനം 276/2018 ആണ് (പരീക്ഷ 2019 നവംബറിൽ); എസ്.സി/എസ്.ടി പ്രത്യേക നിയമനം 307/2020-ന്റെ പ്രിലിമിനറി 2021-ലും നടന്നു. അതിനുശേഷം പുതിയ വിജ്ഞാപനം വന്നിട്ടില്ല — keralapsc.gov.in-ൽ നോക്കുക.",
+      },
+      {
+        q: "മെയിൻ പരീക്ഷയിൽ ഏറ്റവും കൂടുതൽ മാർക്ക് ഏത് വിഭാഗത്തിനാണ്?",
+        a: "പൊതുവിജ്ഞാനവും കറന്റ് അഫയേഴ്സും ചേർന്ന് 50 മാർക്ക് — ആകെ മാർക്കിന്റെ പകുതി. അതുകൊണ്ട് ദിനംപ്രതിയുള്ള കറന്റ് അഫയേഴ്സ് പഠനം ഏറ്റവും പ്രധാനമാണ്.",
+      },
+    ],
+  },
+
+  "staff-nurse": {
+    slug: "staff-nurse",
+    examName: "Staff Nurse Grade II",
+    shortName: "Staff Nurse",
+    seoTitle:
+      "Staff Nurse Syllabus 2026 – Kerala PSC Staff Nurse Gr II Exam Pattern, Marks & Topics",
+    seoDescription:
+      "Kerala PSC Staff Nurse Grade II syllabus: 10 nursing modules, 100 marks, single OMR exam pattern, negative marking and official syllabus PDF.",
+    malayalamTitle: "സ്റ്റാഫ് നഴ്സ് സിലബസ് 2026",
+    malayalamSubtitle:
+      "കേരള പിഎസ്‌സി സ്റ്റാഫ് നഴ്സ് ഗ്രേഡ് II പരീക്ഷ — സിലബസ്, പരീക്ഷാ പാറ്റേൺ, മാർക്ക് വിതരണം",
+    intro: [
+      "ആരോഗ്യ വകുപ്പ്, മെഡിക്കൽ വിദ്യാഭ്യാസ വകുപ്പ്, ഇൻഷുറൻസ് മെഡിക്കൽ സർവീസസ് എന്നിവിടങ്ങളിലെ സ്റ്റാഫ് നഴ്സ് ഗ്രേഡ് II തസ്തികയിലേക്കുള്ള സാങ്കേതിക പരീക്ഷയാണ് സ്റ്റാഫ് നഴ്സ് പരീക്ഷ. ബി.എസ്‌സി നഴ്സിങ് അല്ലെങ്കിൽ ജി.എൻ.എം യോഗ്യതയും കേരള നഴ്സസ് ആൻഡ് മിഡ്‌വൈവ്സ് കൗൺസിൽ രജിസ്ട്രേഷനും വേണം.",
+      "ഒറ്റ OMR പരീക്ഷയാണ് — 100 ചോദ്യങ്ങൾ, 100 മാർക്ക്. അതിനുശേഷം ഷോർട്ട്ലിസ്റ്റ്, രേഖാപരിശോധന, ഇന്റർവ്യൂ എന്നിവയുണ്ട്.",
+    ],
+    level: "Technical — B.Sc Nursing / GNM",
+    totalMarks: 100,
+    duration: "1 hour 30 minutes",
+    durationNote:
+      "469/2024 പരീക്ഷയ്ക്ക് 90 മിനിറ്റ് എന്നാണ് റിപ്പോർട്ട് ചെയ്യുന്നത്, പക്ഷേ സ്രോതസ്സുകൾ തമ്മിൽ അഭിപ്രായവ്യത്യാസമുണ്ട് — ചിലത് 75 മിനിറ്റ് എന്ന് പറയുന്നു. നിങ്ങളുടെ കാറ്റഗറിയുടെ വിജ്ഞാപനത്തിൽ സമയം ഉറപ്പുവരുത്തുക.",
+    medium: "English",
+    negativeMarking: "ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയും",
+    syllabusStatus: "official",
+    statusNote:
+      "ഔദ്യോഗിക സിലബസ് — കാറ്റഗറി 469/2024 പരീക്ഷ 2025 ജൂലൈ 18-ന് നടന്നു; ഷോർട്ട്ലിസ്റ്റ് 2025 നവംബർ 19-ന് പ്രസിദ്ധീകരിച്ചു",
+    officialPdfUrl:
+      "https://www.keralapsc.gov.in/sites/default/files/inline-files/Staff%20Nurse%20Gr-II.pdf",
+    sections: [
+      {
+        section:
+          "Behavioural Sciences — Anatomy & Physiology; Microbiology",
+        marks: 10,
+      },
+      {
+        section: "Behavioural Sciences — Psychology; Sociology",
+        marks: 10,
+      },
+      {
+        section:
+          "Fundamentals of Nursing (incl. First Aid, Clinical Pharmacology)",
+        marks: 10,
+      },
+      {
+        section: "Community Health Nursing (incl. Nutrition)",
+        marks: 10,
+      },
+      { section: "Medical Surgical Nursing", marks: 10 },
+      { section: "Mental Health Nursing", marks: 10 },
+      { section: "Child Health Nursing", marks: 10 },
+      { section: "Midwifery and Gynaecological Nursing", marks: 10 },
+      {
+        section: "Nursing Education & Introduction to Research",
+        marks: 10,
+      },
+      {
+        section:
+          "Professional Trends and Adjustment & Nursing Administration and Ward Management",
+        marks: 10,
+      },
+    ],
+    marksNote:
+      "മുഴുവൻ 100 മാർക്കും നഴ്സിങ് വിഷയങ്ങളാണ് — പൊതുവിജ്ഞാനം, കറന്റ് അഫയേഴ്സ്, ഇംഗ്ലീഷ്, മാനസിക ശേഷി, മലയാളം എന്നീ വിഭാഗങ്ങൾ ഈ സിലബസിൽ ഇല്ല. ചില വെബ്സൈറ്റുകൾ അങ്ങനെ കാണിക്കുന്നത് ഔദ്യോഗിക സിലബസിന് വിരുദ്ധമാണ്; മുകളിലെ പട്ടിക ഔദ്യോഗിക സിലബസ് പ്രകാരമാണ്.",
+    faqs: [
+      {
+        q: "സ്റ്റാഫ് നഴ്സ് പരീക്ഷയുടെ ആകെ മാർക്ക് എത്രയാണ്?",
+        a: "100 മാർക്ക് — 100 ചോദ്യങ്ങൾ. പത്ത് മൊഡ്യൂളുകൾ, ഓരോന്നിനും 10 മാർക്ക് വീതം.",
+      },
+      {
+        q: "പരീക്ഷയിൽ പൊതുവിജ്ഞാനം ഉണ്ടോ?",
+        a: "ഇല്ല. മുഴുവൻ 100 മാർക്കും നഴ്സിങ് വിഷയങ്ങളാണ്. പൊതുവിജ്ഞാനമോ കറന്റ് അഫയേഴ്സോ ഇംഗ്ലീഷോ മാനസിക ശേഷിയോ ഈ സിലബസിൽ ഇല്ല — ഔദ്യോഗിക സിലബസ് പ്രകാരമാണ് ഇത്.",
+      },
+      {
+        q: "ഏറ്റവും കൂടുതൽ ശ്രദ്ധ കൊടുക്കേണ്ട മൊഡ്യൂൾ ഏതാണ്?",
+        a: "എല്ലാ മൊഡ്യൂളിനും 10 മാർക്ക് വീതമാണ്, അതുകൊണ്ട് ഒന്നും ഒഴിവാക്കരുത്. മെഡിക്കൽ സർജിക്കൽ നഴ്സിങ്, കമ്യൂണിറ്റി ഹെൽത്ത് നഴ്സിങ്, ഫണ്ടമെന്റൽസ് ഓഫ് നഴ്സിങ് എന്നിവയാണ് വിശാലമായ മൊഡ്യൂളുകൾ.",
+      },
+      {
+        q: "നെഗറ്റീവ് മാർക്കിങ് ഉണ്ടോ?",
+        a: "അതെ. ഓരോ തെറ്റായ ഉത്തരത്തിനും 0.33 മാർക്ക് കുറയ്ക്കും; ഉത്തരം എഴുതാത്ത ചോദ്യങ്ങൾക്ക് മാർക്ക് കുറയില്ല.",
+      },
+      {
+        q: "469/2024 കാറ്റഗറിയുടെ നില എന്താണ്?",
+        a: "പരീക്ഷ 2025 ജൂലൈ 18-ന് നടന്നു; ഷോർട്ട്ലിസ്റ്റ് 2025 നവംബർ 19-ന് പ്രസിദ്ധീകരിച്ചു. അതിനുശേഷം രേഖാപരിശോധനയും ഇന്റർവ്യൂവുമാണ് — ഇന്റർവ്യൂ മാർക്കിന്റെ ഭാരം ഔദ്യോഗികമായി സ്ഥിരീകരിച്ചിട്ടില്ല.",
+      },
+      {
+        q: "പരീക്ഷയ്ക്ക് എന്ത് യോഗ്യതയാണ് വേണ്ടത്?",
+        a: "പ്ലസ് ടു (സയൻസ്) + ബി.എസ്‌സി നഴ്സിങ് അല്ലെങ്കിൽ കുറഞ്ഞത് 3 വർഷത്തെ ജി.എൻ.എം, കൂടാതെ കേരള നഴ്സസ് ആൻഡ് മിഡ്‌വൈവ്സ് കൗൺസിൽ രജിസ്ട്രേഷനും വേണം.",
       },
     ],
   },
