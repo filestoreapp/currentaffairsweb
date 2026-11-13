@@ -424,3 +424,50 @@ begin
 end;
 $$;
 grant execute on function prune_page_views(int) to anon, authenticated;
+
+-- Lifetime page-view storage (2026-11-13). page_views only keeps recent
+-- rows; rollup_page_views() aggregates rows older than the retention
+-- window into page_view_daily (one row per UTC day + path, never pruned)
+-- and deletes exactly those raw rows, in one transaction — so a prune can
+-- never run without the rollup. The hourly psc-scrape worker calls
+-- rollup_page_views(); prune_page_views() above is kept defined for safety.
+-- Lifetime total = sum(page_view_daily.views) + count(page_views).
+-- One-off backfill of all existing raw rows lives in
+-- supabase/migrations/20261113_page_view_daily.sql (run in the SQL Editor).
+create table if not exists page_view_daily (
+  day date not null,
+  path text not null,
+  views int not null default 0,
+  primary key (day, path)
+);
+
+alter table page_view_daily enable row level security;
+-- No policies: reads go through the service-role client only, exactly like
+-- page_views (anon has no SELECT). Service role bypasses RLS.
+
+create index if not exists page_view_daily_day_idx on page_view_daily (day desc);
+
+create or replace function rollup_page_views(retention_days int default 90)
+returns int
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  deleted int;
+begin
+  retention_days := greatest(30, least(365, retention_days));
+  insert into page_view_daily (day, path, views)
+  select created_at::date, path, count(*)
+  from page_views
+  where created_at < now() - (retention_days || ' days')::interval
+  group by created_at::date, path
+  on conflict (day, path)
+  do update set views = page_view_daily.views + excluded.views;
+  delete from page_views
+  where created_at < now() - (retention_days || ' days')::interval;
+  get diagnostics deleted = row_count;
+  return deleted;
+end;
+$$;
+grant execute on function rollup_page_views(int) to anon, authenticated;

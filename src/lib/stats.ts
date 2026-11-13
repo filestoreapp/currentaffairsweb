@@ -75,6 +75,11 @@ export async function getVisitsOverTime(days = 30) {
     const day = row.created_at.slice(0, 10);
     if (counts.has(day)) counts.set(day, (counts.get(day) ?? 0) + 1);
   }
+  // Merge the daily rollup (disjoint from raw rows — see getTopPages).
+  const daily = await fetchDailyPageViews(since.toISOString().slice(0, 10));
+  for (const row of daily ?? []) {
+    if (counts.has(row.day)) counts.set(row.day, (counts.get(row.day) ?? 0) + row.views);
+  }
 
   return Array.from(counts.entries()).map(([date, visits]) => ({
     date,
@@ -143,6 +148,13 @@ export async function getTopPages(days = 30, limit = 8) {
   for (const row of data) {
     counts.set(row.path, (counts.get(row.path) ?? 0) + 1);
   }
+  // Merge the daily rollup: page_view_daily holds exactly the raw rows that
+  // were rolled up and deleted, so the two sources are disjoint — summing is
+  // exact. A missing table (migration pending) just means raw-only.
+  const daily = await fetchDailyPageViews(since.toISOString().slice(0, 10));
+  for (const row of daily ?? []) {
+    counts.set(row.path, (counts.get(row.path) ?? 0) + row.views);
+  }
 
   return Array.from(counts.entries())
     .map(([path, views]) => ({ path, views }))
@@ -197,4 +209,128 @@ export async function getEngagementSummary() {
     postsWithViews: withViews,
     postsWithNoViews: rows.length - withViews,
   };
+}
+
+// =========================================================
+// LIFETIME VISITS (page_view_daily rollup)
+// =========================================================
+// page_views only keeps recent rows: the hourly rollup aggregates rows
+// older than 90 days into page_view_daily (one row per UTC day + path)
+// and deletes those raw rows. The two sources are disjoint by
+// construction, so lifetime totals are exact sums of both.
+// A null return from fetchDailyPageViews means the rollup table doesn't
+// exist yet (migration pending) — callers fall back to raw rows.
+
+/** Paged read of the daily rollup table. Null when unreadable (no service
+ * key, or the table doesn't exist yet). */
+async function fetchDailyPageViews(
+  sinceDay?: string
+): Promise<{ day: string; path: string; views: number }[] | null> {
+  let supabase: SupabaseClient;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    return null;
+  }
+  const PAGE = 1000;
+  const rows: { day: string; path: string; views: number }[] = [];
+  let from = 0;
+  for (;;) {
+    let q = supabase
+      .from("page_view_daily")
+      .select("day, path, views")
+      .order("day", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (sinceDay) q = q.gte("day", sinceDay);
+    const { data, error } = await q;
+    if (error) return null;
+    const batch = data ?? [];
+    rows.push(...batch);
+    if (batch.length < PAGE) break;
+    from += PAGE;
+  }
+  return rows;
+}
+
+async function countRawPageViews(since?: string): Promise<number | null> {
+  let supabase: SupabaseClient;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    return null;
+  }
+  let q = supabase.from("page_views").select("*", { count: "exact", head: true });
+  if (since) q = q.gte("created_at", since);
+  const { count, error } = await q;
+  if (error) return null;
+  return count ?? 0;
+}
+
+/** Lifetime visits = daily rollup total + remaining raw rows.
+ * `migrated` is false while the rollup table doesn't exist yet (the total
+ * then falls back to the raw count, which is all the history retained). */
+export async function getLifetimeVisits(): Promise<{
+  total: number;
+  migrated: boolean;
+} | null> {
+  const [daily, raw] = await Promise.all([
+    fetchDailyPageViews(),
+    countRawPageViews(),
+  ]);
+  if (daily === null && raw === null) return null;
+  if (daily === null) return { total: raw ?? 0, migrated: false };
+  const dailyTotal = daily.reduce((sum, r) => sum + r.views, 0);
+  return { total: dailyTotal + (raw ?? 0), migrated: true };
+}
+
+/** Lifetime top pages, merged from the daily rollup + raw rows. */
+export async function getLifetimeTopPages(limit = 8): Promise<{
+  pages: { path: string; views: number }[];
+  migrated: boolean;
+} | null> {
+  const daily = await fetchDailyPageViews();
+  let raw: { created_at: string; path: string }[];
+  try {
+    raw = await fetchAllPageViews("1970-01-01T00:00:00.000Z");
+  } catch {
+    return null;
+  }
+  const counts = new Map<string, number>();
+  for (const row of daily ?? []) {
+    counts.set(row.path, (counts.get(row.path) ?? 0) + row.views);
+  }
+  for (const row of raw) {
+    counts.set(row.path, (counts.get(row.path) ?? 0) + 1);
+  }
+  const pages = Array.from(counts.entries())
+    .map(([path, views]) => ({ path, views }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit);
+  return { pages, migrated: daily !== null };
+}
+
+/** Visits in the last `days` days, merged from daily rollup + raw rows.
+ * Falls back to raw-only while the rollup table doesn't exist yet (raw
+ * then still holds the full retained history, so the number stays right). */
+export async function getVisitsInLastDays(days = 30): Promise<number | null> {
+  const since = new Date();
+  since.setDate(since.getDate() - (days - 1));
+  since.setHours(0, 0, 0, 0);
+  const sinceIso = since.toISOString();
+
+  const daily = await fetchDailyPageViews(sinceIso.slice(0, 10));
+  let total = 0;
+  let ok = false;
+  if (daily !== null) {
+    total += daily.reduce((sum, r) => sum + r.views, 0);
+    ok = true;
+  }
+  try {
+    const raw = await fetchAllPageViews(sinceIso);
+    total += raw.length;
+    ok = true;
+  } catch {
+    // No service key / no session client: keep whatever the daily table gave.
+  }
+  return ok ? total : null;
 }

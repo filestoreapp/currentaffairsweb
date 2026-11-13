@@ -2,7 +2,12 @@ import Link from "next/link";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { Image as ImageIcon, Database, Globe, AlertTriangle } from "lucide-react";
+import { Image as ImageIcon, Database, Globe, AlertTriangle, TrendingUp } from "lucide-react";
+import {
+  getLifetimeVisits,
+  getLifetimeTopPages,
+  getVisitsInLastDays,
+} from "@/lib/stats";
 
 export const dynamic = "force-dynamic";
 
@@ -84,33 +89,22 @@ async function getDbUsage() {
 }
 
 async function getTraffic() {
-  // Same RLS reason as getDbUsage: only the service-role client can read
-  // page_views for a signed-out viewer. Without the service key, return null
-  // ("—") instead of a misleading 0.
-  let supabase: SupabaseClient;
+  // Visits in the last 30 days, merged from the daily rollup + raw rows
+  // (see src/lib/stats.ts). Null when neither source is readable.
   try {
-    supabase = createAdminClient();
-  } catch {
-    return null;
-  }
-  const since = new Date();
-  since.setDate(since.getDate() - 30);
-  try {
-    const { count } = await supabase
-      .from("page_views")
-      .select("*", { count: "exact", head: true })
-      .gte("created_at", since.toISOString());
-    return count ?? 0;
+    return await getVisitsInLastDays(30);
   } catch {
     return null;
   }
 }
 
 export default async function UsagePage() {
-  const [images, db, visits30d] = await Promise.all([
+  const [images, db, visits30d, lifetime, lifetimeTop] = await Promise.all([
     getImageRepoUsage(),
     getDbUsage(),
     getTraffic(),
+    getLifetimeVisits().catch(() => null),
+    getLifetimeTopPages(8).catch(() => null),
   ]);
 
   const imageMb = "kb" in images && images.kb != null ? images.kb / 1024 : null;
@@ -207,7 +201,7 @@ export default async function UsagePage() {
               ["Posts", db.counts.posts],
               ["Quizzes & mocks", db.counts.quizzes],
               ["Quiz attempts", db.counts.quiz_attempts],
-              ["Page views (90-day window)", db.counts.page_views],
+              ["Page views (raw rows)", db.counts.page_views],
             ].map(([label, n]) => (
               <div key={label as string} className="flex justify-between">
                 <dt className="text-slate-500">{label}</dt>
@@ -217,9 +211,21 @@ export default async function UsagePage() {
               </div>
             ))}
           </dl>
-          <p className="mt-3 text-xs text-slate-400">
-            Page views older than 90 days are pruned daily by the cron job.
-          </p>
+          {lifetime != null && !lifetime.migrated ? (
+            <p className="mt-3 flex items-start gap-1.5 text-xs leading-relaxed text-amber-700">
+              <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+              Lifetime storage pending — run{" "}
+              <span className="font-mono">
+                supabase/migrations/20261113_page_view_daily.sql
+              </span>{" "}
+              in the Supabase SQL Editor to start keeping lifetime totals.
+            </p>
+          ) : (
+            <p className="mt-3 text-xs text-slate-400">
+              Raw rows older than 90 days are rolled up into daily totals by
+              the hourly cron — lifetime visits are never lost.
+            </p>
+          )}
         </div>
 
         {/* Hosting */}
@@ -249,6 +255,42 @@ export default async function UsagePage() {
             serverless function.
           </p>
         </div>
+      </div>
+
+      {/* Lifetime visits — daily rollup + remaining raw rows, never pruned */}
+      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="flex items-center gap-2">
+          <TrendingUp size={18} className="text-indigo-600" />
+          <h2 className="font-bold">Lifetime visits</h2>
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          All visits since tracking began — daily totals in page_view_daily
+          plus the raw rows not yet rolled up.
+        </p>
+        <p className="mt-4 text-3xl font-extrabold tabular-nums">
+          {lifetime == null ? "—" : lifetime.total.toLocaleString("en-IN")}
+        </p>
+        <p className="mt-1.5 text-xs text-slate-500">
+          {lifetime == null
+            ? "Couldn't read visit data right now."
+            : lifetime.migrated
+              ? "Stored for life — the hourly rollup keeps every visit."
+              : "Raw rows only so far — run the migration to lock in lifetime storage."}
+        </p>
+        {lifetimeTop != null && lifetimeTop.pages.length > 0 && (
+          <dl className="mt-4 space-y-1.5 border-t border-slate-100 pt-4 text-sm">
+            {lifetimeTop.pages.map(({ path, views }) => (
+              <div key={path} className="flex justify-between gap-4">
+                <dt className="min-w-0 truncate font-mono text-xs text-slate-500">
+                  {path}
+                </dt>
+                <dd className="shrink-0 font-semibold tabular-nums">
+                  {views.toLocaleString("en-IN")}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
     </div>
   );
