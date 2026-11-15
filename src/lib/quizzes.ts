@@ -112,6 +112,56 @@ export async function getPublishedMocks() {
   }));
 }
 
+// ---- Lightweight counts for the homepage hero stats (server-rendered) ----
+// Head-only counts: no rows are fetched, so the homepage render stays cheap.
+export async function getPublishedMockCount() {
+  const supabase = createPublicClient();
+  const { count, error } = await supabase
+    .from("quizzes")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "published")
+    .eq("is_mock", true)
+    .eq("is_pyq", false);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function getPublishedQuizCount() {
+  const supabase = createPublicClient();
+  const { count, error } = await supabase
+    .from("quizzes")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "published")
+    .eq("is_mock", false)
+    .eq("is_pyq", false);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+// Questions inside published quizzes (mock tests + practice quizzes) —
+// what a visitor can actually practise. PYQ papers are PDFs, not rows,
+// so they are not part of this count.
+export async function getPublishedQuestionCount() {
+  const supabase = createPublicClient();
+  const { data: quizzes, error } = await supabase
+    .from("quizzes")
+    .select("id")
+    .eq("status", "published");
+  if (error) throw error;
+  const ids = (quizzes ?? []).map((q) => q.id);
+  if (ids.length === 0) return 0;
+  let total = 0;
+  for (let i = 0; i < ids.length; i += 100) {
+    const { count, error: qErr } = await supabase
+      .from("quiz_questions")
+      .select("*", { count: "exact", head: true })
+      .in("quiz_id", ids.slice(i, i + 100));
+    if (qErr) throw qErr;
+    total += count ?? 0;
+  }
+  return total;
+}
+
 export async function getMockBySlug(slug: string) {
   const supabase = createPublicClient();
   const { data: quiz, error } = await supabase

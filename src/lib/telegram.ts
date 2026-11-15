@@ -238,3 +238,26 @@ export async function postPyqToTelegram(paper: {
 
   return { skipped: false, ok: true };
 }
+
+/**
+ * Live member count of the Telegram channel (Bot API getChatMemberCount).
+ * Used by the homepage hero stats so the number is server-rendered from
+ * the real source, never hardcoded. Returns null when the bot token /
+ * channel is not configured or the API call fails — the caller omits the
+ * stat instead of showing a made-up number. 5 s timeout so a slow
+ * Telegram API can never hang the homepage render.
+ */
+export async function getTelegramMemberCount(): Promise<number | null> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const channelId = process.env.TELEGRAM_CHANNEL_ID;
+  if (!token || !channelId) return null;
+  try {
+    const url = `https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=${encodeURIComponent(channelId)}`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { ok?: boolean; result?: number };
+    return typeof body.result === "number" ? body.result : null;
+  } catch {
+    return null;
+  }
+}
