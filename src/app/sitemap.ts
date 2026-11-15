@@ -6,7 +6,7 @@ import { getPublishedExams } from "@/lib/exams";
 import { getPublishedPscCategories } from "@/lib/psc-categories";
 import { postPublicPath } from "@/lib/series-paths";
 import { STUDY_TOPICS_WITH_CONTENT } from "@/data/study-notes";
-import { getCategories } from "@/lib/ranked-lists";
+import { getCategories, getRankedLists } from "@/lib/ranked-lists";
 import { categorySlug } from "@/lib/rank-cutoffs";
 
 
@@ -55,6 +55,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/ranked-lists/${categorySlug(c.category)}`,
       lastModified: new Date(),
     })),
+    // One page per ranked list (auto-generated from the same seed).
+    ...getRankedLists()
+      .filter((l) => l.category)
+      .map((l) => ({
+        url: `${siteUrl}/ranked-lists/${categorySlug(l.category as string)}/${l.id}`,
+        lastModified: new Date(l.published_on ?? new Date()),
+      })),
     { url: `${siteUrl}/syllabus`, lastModified: new Date() },
     { url: `${siteUrl}/about`, lastModified: new Date() },
     { url: `${siteUrl}/contact`, lastModified: new Date() },
