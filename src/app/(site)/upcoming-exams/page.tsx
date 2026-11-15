@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { CalendarDays, FileText, Info } from "lucide-react";
 import UpcomingCountdown from "@/components/site/UpcomingCountdown";
 import { ExamRow } from "@/components/site/UpcomingExamRow";
@@ -32,6 +33,17 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function UpcomingExamsPage() {
   return (
     <div className="mx-auto max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Upcoming Exams" },
+            ])
+          ),
+        }}
+      />
       <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
         കേരള പി.എസ്.സി • 2026–27
       </p>

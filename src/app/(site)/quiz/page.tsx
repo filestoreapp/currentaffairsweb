@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { getAllCategories } from "@/lib/posts";
 import QuizList from "@/components/site/QuizList";
 import { ArrowRight } from "lucide-react";
@@ -40,6 +41,17 @@ export default async function QuizListPage({
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Quizzes" },
+            ])
+          ),
+        }}
+      />
       <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Quiz — Free Practice Quizzes</h1>
       <p className="mt-2 text-slate-500">
         Free Kerala PSC quizzes in Malayalam — daily current affairs quizzes

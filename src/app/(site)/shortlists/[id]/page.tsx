@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { format } from "date-fns";
 import { ArrowLeft, Download, ExternalLink, ListChecks, Trophy } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -46,6 +47,18 @@ export default async function ShortlistDetailPage({
 
   return (
     <div className="mx-auto max-w-3xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Short Lists", path: "/shortlists" },
+              { name: update.title },
+            ])
+          ),
+        }}
+      />
       <Link
         href="/shortlists"
         className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:underline"

@@ -6,7 +6,7 @@ import {
 } from "@/lib/quizzes";
 import { notFound } from "next/navigation";
 import MockTestPlayer from "@/components/site/MockTestPlayer";
-import { quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import {
   mockMalayalamDescription,
   mockMalayalamTitle,
@@ -113,6 +113,18 @@ export default async function MockTestLandingPage({
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             quizJsonLd(mock, `${siteUrl()}/mock-tests/${mock.slug}`)
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Mock Tests", path: "/mock-tests" },
+              { name: titleMl },
+            ])
           ),
         }}
       />

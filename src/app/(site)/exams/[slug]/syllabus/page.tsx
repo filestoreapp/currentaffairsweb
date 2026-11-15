@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExamBySlug, getExamRelatedContent } from "@/lib/exams";
 import { EXAM_SYLLABI } from "@/data/exam-syllabi";
+import { breadcrumbJsonLd, siteUrl } from "@/lib/seo";
 import type { Exam, Quiz } from "@/lib/types";
 import {
   ChevronRight,
@@ -155,25 +156,12 @@ export default async function ExamSyllabusPage({
     "@type": "WebPage",
     name: data.seoTitle,
     description: data.seoDescription,
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-        { "@type": "ListItem", position: 2, name: "Exams", item: "/exams" },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: displayShort,
-          item: `/exams/${slug}`,
-        },
-        {
-          "@type": "ListItem",
-          position: 4,
-          name: "Syllabus",
-          item: `/exams/${slug}/syllabus`,
-        },
-      ],
-    },
+    breadcrumb: breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Exams", path: "/exams" },
+      { name: displayShort, path: `/exams/${slug}` },
+      { name: "Syllabus" },
+    ]),
     mainEntity: {
       "@type": "FAQPage",
       mainEntity: data.faqs.map((f) => ({
@@ -184,11 +172,32 @@ export default async function ExamSyllabusPage({
     },
   };
 
+  // Course schema: this page genuinely describes the exam's syllabus —
+  // sections and marks as published. Only fields visible on the page.
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: `${displayName} — Syllabus`,
+    description: data.seoDescription,
+    url: `${siteUrl()}/exams/${slug}/syllabus`,
+    inLanguage: "en",
+    about: "Kerala Public Service Commission (Kerala PSC) exam preparation",
+    provider: {
+      "@type": "Organization",
+      name: "PSC Current Affairs",
+      url: siteUrl(),
+    },
+  };
+
   return (
     <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
 
       {/* Breadcrumb */}

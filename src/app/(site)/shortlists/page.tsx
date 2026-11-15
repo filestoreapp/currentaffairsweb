@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { format } from "date-fns";
 import { Download, ExternalLink, ListChecks } from "lucide-react";
 import { getShortlistsPage } from "@/lib/psc-updates";
@@ -26,6 +27,17 @@ export default async function ShortlistsPage({
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Short Lists" },
+            ])
+          ),
+        }}
+      />
       <h1 className="text-3xl font-extrabold tracking-tight">
         Kerala PSC Short Lists
       </h1>

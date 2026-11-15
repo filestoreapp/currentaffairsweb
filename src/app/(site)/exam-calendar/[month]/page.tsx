@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { CalendarDays, FileText, Info } from "lucide-react";
 import UpcomingCountdown from "@/components/site/UpcomingCountdown";
@@ -56,6 +57,18 @@ export default async function ExamMonthPage({
 
   return (
     <div className="mx-auto max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Exam Calendar", path: "/exam-calendar" },
+              { name: `${data.title} പരീക്ഷകൾ` },
+            ])
+          ),
+        }}
+      />
       <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
         പരീക്ഷാ കലണ്ടർ • കേരള പി.എസ്.സി
       </p>

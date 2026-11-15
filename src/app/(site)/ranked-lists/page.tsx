@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { FileText, ListOrdered, Search, TrendingDown } from "lucide-react";
 import RankedListSearch from "@/components/site/RankedListSearch";
 import {
@@ -40,6 +41,17 @@ export default function RankedListsPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Ranked Lists" },
+            ])
+          ),
+        }}
+      />
       <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
         റാങ്ക് ലിസ്റ്റ് • കേരള പി.എസ്.സി
       </p>

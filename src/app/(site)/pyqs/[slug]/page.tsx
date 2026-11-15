@@ -1,7 +1,7 @@
 import { getPyqBySlug, getMockLeaderboard } from "@/lib/quizzes";
 import { notFound } from "next/navigation";
 import MockTestPlayer from "@/components/site/MockTestPlayer";
-import { quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -49,6 +49,18 @@ export default async function PyqTakePage({
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             quizJsonLd(paper, `${siteUrl()}/pyqs/${paper.slug}`)
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Previous Year Question Papers", path: "/pyqs" },
+              { name: paper.title },
+            ])
           ),
         }}
       />

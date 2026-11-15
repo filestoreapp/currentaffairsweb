@@ -1,7 +1,7 @@
 import { getQuizBySlug, getLeaderboard } from "@/lib/quizzes";
 import { notFound, redirect } from "next/navigation";
 import QuizPlayer from "@/components/site/QuizPlayer";
-import { quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300; // 5 min — leaderboard shown is the starting snapshot; client updates it live after each attempt
@@ -48,6 +48,18 @@ export default async function QuizTakePage({
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             quizJsonLd(quiz, `${siteUrl()}/quiz/${quiz.slug}`)
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Quizzes", path: "/quiz" },
+              { name: quiz.title },
+            ])
           ),
         }}
       />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PyqDirectory from "@/components/site/PyqDirectory";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import pyqPapers from "@/data/pyq-directory.json";
 import { ChevronRight, ScrollText } from "lucide-react";
 import type { Metadata } from "next";
@@ -19,19 +20,11 @@ export default function PyqsDirectoryPage() {
     name: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2014–2026",
     description:
       "Kerala PSC previous year question papers from 2014 to 2026, searchable by post name, paper code or category number.",
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-        { "@type": "ListItem", position: 2, name: "Exams", item: "/exams" },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "Previous Year Papers",
-          item: "/pyqs",
-        },
-      ],
-    },
+    breadcrumb: breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Exams", path: "/exams" },
+      { name: "Previous Year Papers" },
+    ]),
   };
 
   return (

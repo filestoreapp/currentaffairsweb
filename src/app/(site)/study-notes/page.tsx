@@ -1,5 +1,6 @@
 import Link from "next/link";
 import StudyNotesIndex from "@/components/site/StudyNotesIndex";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { STUDY_SUBJECTS, STUDY_TOPICS, STUDY_TOPICS_WITH_CONTENT } from "@/data/study-notes";
 import { ChevronRight, NotebookPen } from "lucide-react";
 import type { Metadata } from "next";
@@ -19,18 +20,10 @@ export default function StudyNotesPage() {
     name: "കേരള പിഎസ്‌സി പഠന കുറിപ്പുകൾ — Kerala PSC Study Notes in Malayalam",
     description:
       "കേരള പിഎസ്‌സി പരീക്ഷകൾക്കുള്ള പഠന കുറിപ്പുകൾ മലയാളത്തിൽ — 21 വിഷയങ്ങളിലായി 256 വിഷയങ്ങൾ.",
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Study Notes",
-          item: "/study-notes",
-        },
-      ],
-    },
+    breadcrumb: breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Study Notes" },
+    ]),
   };
 
   return (

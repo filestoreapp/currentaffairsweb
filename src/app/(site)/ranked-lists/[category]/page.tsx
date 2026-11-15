@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { FileText, TrendingDown } from "lucide-react";
 import RankEstimator from "@/components/site/RankEstimator";
@@ -63,6 +64,18 @@ export default async function RankedListCategoryPage({
 
   return (
     <div className="mx-auto max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Ranked Lists", path: "/ranked-lists" },
+              { name: `കാറ്റഗറി ${data.category}` },
+            ])
+          ),
+        }}
+      />
       <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
         കട്ട്-ഓഫ് • കാറ്റഗറി {data.category}
       </p>
