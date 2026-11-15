@@ -47,6 +47,11 @@ export interface Post {
       (never on daily digests). Null until set; column added 2026-11-15. */
   psc_relevance: string | null;
   author_id: string | null;
+  /** Who created/checked this post: "admin" (site editorial pipeline) or
+      "owner" (the site owner himself). Role word only — never a personal
+      name on any public page. Column added 2026-11-16, default "admin"
+      so worker-created posts are Admin unless the form says otherwise. */
+  author_role: "admin" | "owner" | null;
   created_at: string;
   updated_at: string;
 }

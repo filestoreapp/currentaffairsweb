@@ -46,6 +46,13 @@ export default function PostForm({
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
   const [pscRelevance, setPscRelevance] = useState(post?.psc_relevance ?? "");
+  // Who created/checked the post. Default Owner: the user creates posts
+  // manually through this form. Browser tasks creating posts on the
+  // pipeline's behalf must pick Admin. Worker-created posts never touch
+  // this form — the DB default ("admin") covers them.
+  const [authorRole, setAuthorRole] = useState<"admin" | "owner">(
+    post?.author_role ?? "owner"
+  );
   const [editorMode, setEditorMode] = useState<EditorMode>(
     post?.editor_mode ?? "richtext"
   );
@@ -150,6 +157,7 @@ export default function PostForm({
       slug: slug ? slugify(slug, { lower: true, strict: true }) : undefined,
       excerpt,
       psc_relevance: pscRelevance.trim() || null,
+      author_role: authorRole,
       content_html: finalHtml,
       content_markdown: editorMode === "markdown" ? contentMarkdown : undefined,
       editor_mode: editorMode,
@@ -272,6 +280,29 @@ export default function PostForm({
             <p className="mt-1 text-xs text-slate-400">
               Shown on standalone posts only. Leave blank for daily digests —
               digest items never show this line.
+            </p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Author — who created / checked this post
+            </label>
+            <select
+              value={authorRole}
+              onChange={(e) =>
+                setAuthorRole(e.target.value as "admin" | "owner")
+              }
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            >
+              <option value="owner">Owner — I wrote this myself</option>
+              <option value="admin">
+                Admin — created by the site admin / automated pipeline
+              </option>
+            </select>
+            <p className="mt-1 text-xs text-slate-400">
+              Shown on the post page as “Checked by Owner/Admin” with a link
+              to About. No personal name is ever shown. Browser tasks creating
+              posts on the pipeline&apos;s behalf must pick Admin.
             </p>
           </div>
 

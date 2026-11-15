@@ -271,6 +271,15 @@ export default async function PostPage({
                 Last updated {format(new Date(lastUpdated), "dd MMM yyyy")}
               </span>
             )}
+            <span>
+              Checked by{" "}
+              <Link
+                href="/about"
+                className="font-medium text-indigo-600 hover:underline"
+              >
+                {post.author_role === "owner" ? "Owner" : "Admin"}
+              </Link>
+            </span>
             <span className="flex items-center gap-1">
               <Clock size={14} /> {readingTime(post.content_html)} min read
             </span>
