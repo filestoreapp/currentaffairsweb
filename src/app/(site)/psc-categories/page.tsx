@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Kerala PSC Categories by Number",
   description:
     "Kerala PSC categories by number — exam dates, countdowns, announcements, question papers and answer keys for every PSC category.",
+  alternates: {
+    canonical: "https://www.psccurrentaffairs.online/psc-categories",
+  },
 };
 
 export const revalidate = 300;

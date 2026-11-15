@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getAllCategories } from "@/lib/posts";
 import NextExamWidget from "@/components/site/NextExamWidget";
 import HomeLatestPosts from "@/components/site/HomeLatestPosts";
@@ -19,6 +20,12 @@ import {
 // islands below, so they stay dynamic without forcing the whole page
 // to re-query Supabase on every visit.
 export const revalidate = 300;
+
+// Self-canonical: the root layout no longer sets a global canonical
+// (it wrongly pointed every page at the homepage).
+export const metadata: Metadata = {
+  alternates: { canonical: "https://www.psccurrentaffairs.online" },
+};
 
 const FEATURES = [
   {

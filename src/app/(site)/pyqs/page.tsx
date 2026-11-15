@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: { absolute: "Kerala PSC PYQ Papers 2014–2026 — Download PDFs" },
   description:
     "Kerala PSC previous year question papers 2014–2026 — 1,442 papers with post name, category number and exam date. Download PDFs or the official PSC paper.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/pyqs" },
 };
 
 export const revalidate = 300;

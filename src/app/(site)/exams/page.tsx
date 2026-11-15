@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: "Kerala PSC Exams, Syllabus & PYQ Papers",
   description:
     "Kerala PSC exam hubs for LDC, LGS, University Assistant, Police Constable and more — syllabus, exam dates, mock tests and previous year question papers with answer keys.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/exams" },
 };
 
 export const revalidate = 300;

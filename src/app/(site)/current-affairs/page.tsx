@@ -1,13 +1,41 @@
 import { Suspense } from "react";
 import { getPublishedPosts } from "@/lib/posts";
 import CurrentAffairsList from "@/components/site/CurrentAffairsList";
+import type { Metadata } from "next";
 
-export const metadata = {
-  // Absolute: the composed title already carries the brand; no template suffix.
-  title: { absolute: "Daily Kerala PSC Current Affairs in Malayalam" },
-  description:
-    "Daily Kerala PSC current affairs in Malayalam — exam-oriented facts, quick-revision tables and quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.",
-};
+const LISTING_TITLE = "Daily Kerala PSC Current Affairs in Malayalam";
+const LISTING_DESCRIPTION =
+  "Daily Kerala PSC current affairs in Malayalam — exam-oriented facts, quick-revision tables and quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.";
+const PER_PAGE = 12;
+
+// Paginated listings canonical to their own clean URL (page 1 has no
+// param; page N includes ?page=N — never all to page 1). Pages past the
+// last real page are noindex (thin/empty). Reading searchParams here makes
+// this route dynamic; the shell is cheap (one count query) and the island
+// already fetched per page.
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page) || 1);
+  const { count } = await getPublishedPosts({ page: 1, perPage: 1 });
+  const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+  const canonical =
+    page > 1
+      ? `https://www.psccurrentaffairs.online/current-affairs?page=${page}`
+      : "https://www.psccurrentaffairs.online/current-affairs";
+  return {
+    // Absolute: the composed title already carries the brand; no template suffix.
+    title: { absolute: LISTING_TITLE },
+    description: LISTING_DESCRIPTION,
+    alternates: { canonical },
+    ...(page > totalPages
+      ? { robots: { index: false, follow: true } }
+      : {}),
+  };
+}
 
 // Cache the listing shell for 5 minutes. Pagination (`?page=N`) lives in
 // the Suspense island below, so flipping pages stays dynamic without

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Contact PSC Current Affairs — reach us on Telegram or send us an email.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/contact" },
 };
 
 // TODO: set the inbox address that contact-form messages should go to.

@@ -1,15 +1,40 @@
 import Link from "next/link";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, siteUrl } from "@/lib/seo";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
 import type { PscSourceKey } from "@/lib/types";
 import { PSC_SOURCES } from "@/lib/psc-sources";
 import PscUpdateCard from "@/components/site/PscUpdateCard";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Kerala PSC Notifications & Updates",
-  description:
-    "Latest Kerala PSC notifications — exam programmes, ranked lists, shortlists, results and admit-card updates, tracked daily from keralapsc.gov.in.",
-};
+const UPDATES_TITLE = "Kerala PSC Notifications & Updates";
+const UPDATES_DESCRIPTION =
+  "Latest Kerala PSC notifications — exam programmes, ranked lists, shortlists, results and admit-card updates, tracked daily from keralapsc.gov.in.";
+
+// Filtered views canonical to their own clean URL (?source=X); an unknown
+// source param falls back to the unfiltered URL. A filter with no updates
+// at all is a thin page → noindex.
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ source?: string }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const source = PSC_SOURCES.find((s) => s.key === params.source)?.key as
+    | PscSourceKey
+    | undefined;
+  const canonical = source
+    ? `${siteUrl()}/psc-updates?source=${source}`
+    : `${siteUrl()}/psc-updates`;
+  const updates = await getLatestPscUpdates({ source, limit: 1 });
+  return {
+    title: UPDATES_TITLE,
+    description: UPDATES_DESCRIPTION,
+    alternates: { canonical },
+    ...(updates.length === 0
+      ? { robots: { index: false, follow: true } }
+      : {}),
+  };
+}
 
 export const revalidate = 900; // 15 min - these come from a scraper, not live traffic
 

@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: "Free Kerala PSC Mock Tests 2026",
   description:
     "Free Kerala PSC mock tests 2026 for LDC, LGS, University Assistant, Police Constable and more — 100-mark papers, 75-minute timer, −0.33 negative marking and live leaderboards. No login needed.",
+  alternates: {
+    canonical: "https://www.psccurrentaffairs.online/mock-tests",
+  },
 };
 
 export const revalidate = 300;

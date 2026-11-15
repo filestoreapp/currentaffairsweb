@@ -32,6 +32,9 @@ export async function generateMetadata({
   return {
     title: `Category ${cat.cat_no} — ${cat.post_name}`,
     description: `Kerala PSC category ${cat.cat_no}: ${cat.post_name}. Announcements, exam countdown, question papers and answer keys.`,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/psc-categories/${cat.slug}`,
+    },
   };
 }
 

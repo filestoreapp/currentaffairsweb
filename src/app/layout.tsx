@@ -68,7 +68,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: siteName }],
   alternates: {
-    canonical: siteUrl,
+    // NOTE: no global canonical here — it made every page without its own
+    // canonical point at the homepage (2026-11-16 fix). Each page sets its
+    // own self-referencing canonical; the homepage sets it in (site)/page.tsx.
     types: {
       "application/rss+xml": "/rss.xml",
     },

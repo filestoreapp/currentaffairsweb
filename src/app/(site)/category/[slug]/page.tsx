@@ -15,6 +15,11 @@ export async function generateMetadata({
   const categories = await getAllCategories();
   const category = categories.find((c) => c.slug === slug);
   if (!category) return { title: "Category" };
+  const { count } = await getPublishedPosts({
+    categorySlug: slug,
+    page: 1,
+    perPage: 1,
+  });
   return {
     // Search title only — the visible H1 stays the Malayalam category name.
     title: {
@@ -25,6 +30,11 @@ export async function generateMetadata({
     description:
       category.description ||
       `Kerala PSC ${category.name} in Malayalam — latest posts, quizzes and study material for LDC, LGS, University Assistant and other Kerala PSC exams.`,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/category/${slug}`,
+    },
+    // Thin page: a category with no posts at all is not worth indexing.
+    ...(count === 0 ? { robots: { index: false, follow: true } } : {}),
     keywords: [
       category.name,
       `Kerala PSC ${category.name}`,
