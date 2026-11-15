@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans_Malayalam } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import CookieConsent from "../components/site/CookieConsent";
+import AiReferralTracker from "../components/site/AiReferralTracker";
 import "./globals.css";
 
 // Google Analytics 4 Measurement ID — paste yours here
@@ -144,6 +145,7 @@ export default function RootLayout({
         />
         {children}
         {GA_MEASUREMENT_ID ? <GoogleAnalytics gaId={GA_MEASUREMENT_ID} /> : null}
+        <AiReferralTracker />
         <CookieConsent />
       </body>
     </html>
