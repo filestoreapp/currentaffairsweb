@@ -43,6 +43,10 @@ export default function CookieConsent() {
 
   useEffect(() => {
     try {
+      // Consent UI belongs to the top-level page, never to an embedded
+      // widget: inside an iframe (e.g. our /embed widgets on another
+      // site) the banner would overlay the widget.
+      if (window.self !== window.top) return;
       const stored = localStorage.getItem(CONSENT_KEY);
       if (stored) {
         // Defaults are denied until updated — re-apply the saved choice.

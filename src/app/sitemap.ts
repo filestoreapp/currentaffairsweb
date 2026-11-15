@@ -66,6 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/exam-calendar/january-2027`, lastModified: new Date() },
     { url: `${siteUrl}/upcoming-exams`, lastModified: new Date() },
     { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
+    { url: `${siteUrl}/embed`, lastModified: new Date() },
     { url: `${siteUrl}/shortlists`, lastModified: new Date() },
     ...pscUpdates
       .filter((u) => u.source === "shortlists")

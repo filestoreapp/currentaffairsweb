@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { submitMockAttempt } from "@/lib/actions/quizzes";
 import { recordCompletion } from "@/lib/game-progress";
 import GameProgressCard from "@/components/site/GameProgressCard";
+import ScoreShareCard from "@/components/site/ScoreShareCard";
 import type { Quiz, QuizAttempt, QuizQuestion } from "@/lib/types";
 import {
   CheckCircle2,
@@ -365,6 +366,17 @@ export default function MockTestPlayer({
             </p>
           ) : null}
         </div>
+
+        <ScoreShareCard
+          testTitle={quiz.title}
+          score={stats.score}
+          total={questions.length}
+          correct={stats.correct}
+          accuracyPct={pct}
+          rank={stats.rank}
+          totalAttempts={stats.totalAttempts}
+          userName={name}
+        />
 
         <GameProgressCard />
 
