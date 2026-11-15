@@ -15,11 +15,12 @@ export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const url = `${siteUrl()}/ranked-lists`;
-  const title = "റാങ്ക് ലിസ്റ്റിൽ പേര് തിരയൂ — കേരള പി.എസ്.സി റാങ്ക് ലിസ്റ്റ് തിരയൽ";
+  // Search title in English — the visible H1 stays Malayalam.
+  const title = "Kerala PSC Ranked Lists — Search by Name & Number";
   const description =
     "കേരള പി.എസ്.സി റാങ്ക് ലിസ്റ്റുകളിൽ നിങ്ങളുടെ പേര് അല്ലെങ്കിൽ രജിസ്റ്റർ നമ്പർ തിരയൂ — റാങ്ക്, മാർക്ക്, കട്ട്-ഓഫ് വിവരങ്ങൾ സഹിതം. ഔദ്യോഗിക ലിസ്റ്റുകളിൽ നിന്ന്.";
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {

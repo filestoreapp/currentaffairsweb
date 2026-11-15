@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle } from "@/lib/seo";
 import {
   getStudyTopic,
   STUDY_TOPICS_WITH_CONTENT,
@@ -33,7 +33,12 @@ export async function generateMetadata({
   if (!topic || !topic.content) return { title: "കുറിപ്പ് കണ്ടെത്തിയില്ല" };
   const firstPara = topic.content.intro[0] ?? "";
   return {
-    title: `${topic.topicMalayalam} | കേരള പിഎസ്‌സി പഠന കുറിപ്പുകൾ`,
+    // Search title in English — the visible H1 stays the Malayalam topic.
+    title: {
+      absolute: fitTitle(
+        `${topic.topicMalayalam} — Kerala PSC Study Notes (Malayalam)`
+      ),
+    },
     description:
       firstPara.length > 155 ? firstPara.slice(0, 152) + "…" : firstPara,
   };

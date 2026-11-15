@@ -2,6 +2,7 @@ import { getPublishedPosts, getAllCategories } from "@/lib/posts";
 import PostCard from "@/components/site/PostCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { fitTitle } from "@/lib/seo";
 
 export const revalidate = 300; // 5 min — no cookies/searchParams here, so this can ISR
 
@@ -15,10 +16,15 @@ export async function generateMetadata({
   const category = categories.find((c) => c.slug === slug);
   if (!category) return { title: "Category" };
   return {
-    title: `${category.name} — Kerala PSC`,
+    // Search title only — the visible H1 stays the Malayalam category name.
+    title: {
+      absolute: fitTitle(
+        `${category.name} — Kerala PSC Current Affairs (Malayalam)`
+      ),
+    },
     description:
       category.description ||
-      `Free Kerala PSC ${category.name} current affairs, quizzes and study material.`,
+      `Kerala PSC ${category.name} in Malayalam — latest posts, quizzes and study material for LDC, LGS, University Assistant and other Kerala PSC exams.`,
     keywords: [
       category.name,
       `Kerala PSC ${category.name}`,

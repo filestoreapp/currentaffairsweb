@@ -6,7 +6,7 @@ import { getShortlistsPage } from "@/lib/psc-updates";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kerala PSC Short Lists — ഷോർട്ട് ലിസ്റ്റുകൾ",
+  title: { absolute: "Kerala PSC Short Lists — Check Your Number" },
   description:
     "Kerala PSC short lists (probability lists) for every post — check whether your register number made the short list, with the official PSC PDF for each event.",
 };

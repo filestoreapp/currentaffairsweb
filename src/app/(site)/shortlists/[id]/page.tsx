@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle } from "@/lib/seo";
 import { format } from "date-fns";
 import { ArrowLeft, Download, ExternalLink, ListChecks, Trophy } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -29,7 +29,9 @@ export async function generateMetadata({
   const update = await getShortlistById(id).catch(() => null);
   if (!update) return { title: "Short List — Kerala PSC" };
   return {
-    title: `${update.title} | Kerala PSC Short List`,
+    title: {
+      absolute: fitTitle(`${update.title} | Kerala PSC Short List`),
+    },
     description: `Kerala PSC short list — ${update.title}. Check the official PSC PDF.`,
   };
 }

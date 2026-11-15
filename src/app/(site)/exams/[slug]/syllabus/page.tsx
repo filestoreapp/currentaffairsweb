@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExamBySlug, getExamRelatedContent } from "@/lib/exams";
 import { EXAM_SYLLABI } from "@/data/exam-syllabi";
-import { breadcrumbJsonLd, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle, siteUrl } from "@/lib/seo";
 import type { Exam, Quiz } from "@/lib/types";
 import {
   ChevronRight,
@@ -31,7 +31,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = EXAM_SYLLABI[slug];
   if (!data) return { title: "Syllabus not found" };
-  return { title: data.seoTitle, description: data.seoDescription };
+  // Search title in English — the visible heading stays Malayalam.
+  // Year comes from the existing seoTitle when present ("…2026…").
+  const yearMatch = data.seoTitle.match(/\b(20\d\d)\b/);
+  const year = yearMatch ? ` ${yearMatch[1]}` : "";
+  const withYear = `Kerala PSC ${data.shortName} Syllabus${year} — Pattern & Marks`;
+  const title =
+    withYear.length <= 60
+      ? withYear
+      : fitTitle(`Kerala PSC ${data.shortName} Syllabus — Pattern & Marks`);
+  return { title: { absolute: title }, description: data.seoDescription };
 }
 
 function PatternFact({
