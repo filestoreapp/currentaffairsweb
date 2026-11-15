@@ -37,6 +37,11 @@ export interface UpcomingExam {
   highlight?: boolean;
   /** Optional extra Malayalam note shown under the row. */
   note?: string;
+  /**
+   * Last day (YYYY-MM-DD) for a multi-day exam. Defaults to `date`.
+   * Only the Dec 21–22 Divisional Accounts Officer mains spans two days.
+   */
+  endDate?: string;
 }
 
 export interface UpcomingMonth {
@@ -285,6 +290,7 @@ export const UPCOMING_EXAM_MONTHS: UpcomingMonth[] = [
         date: "2026-12-21",
         dateLabel: "ഡിസംബർ 21–22, തിങ്കൾ–ചൊവ്വ",
         time: "പേപ്പർ I, II ഡിസംബർ 21; പേപ്പർ III ഡിസംബർ 22",
+        endDate: "2026-12-22",
         posts: "ഡിവിഷണൽ അക്കൗണ്ട്സ് ഓഫീസർ മെയിൻ പരീക്ഷ (വിവരണാത്മകം)",
         categories: "220/2025; 472/2025",
         scope: "സംസ്ഥാനതലം",
@@ -408,3 +414,119 @@ export const UPCOMING_EXAM_MONTHS: UpcomingMonth[] = [
 export const ALL_UPCOMING_EXAMS: UpcomingExam[] = UPCOMING_EXAM_MONTHS.flatMap(
   (m) => m.exams
 );
+
+/* ------------------------------------------------------------------ */
+/* Next-exam countdown helpers (IST throughout)                        */
+/*                                                                     */
+/* The exam `time` field is a Malayalam label, e.g.                    */
+/* "രാവിലെ 7:00–8:50" or "ബാച്ച് I രാവിലെ 8:00–11:00; ബാച്ച് II       */
+/* 10:45–1:45 (ഓൺലൈൻ)". The helpers below parse the first and last    */
+/* clock times out of that label. When no clock time is published      */
+/* (all January 2027 rows), the window is the whole exam day.          */
+/* ------------------------------------------------------------------ */
+
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+
+/** IST calendar date (YYYY-MM-DD) for an epoch-ms instant. */
+export function istDateOf(ms: number): string {
+  return new Date(ms).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+}
+
+/** Epoch ms for a wall-clock time on a date, interpreted in IST. */
+function istMs(date: string, hour24: number, minute: number): number {
+  const [y, m, d] = date.split("-").map(Number);
+  return Date.UTC(y, m - 1, d, hour24, minute) - IST_OFFSET_MS;
+}
+
+interface ParsedRange {
+  startMin: number;
+  endMin: number;
+}
+
+/**
+ * First and last clock times of a Malayalam time label, as minutes from
+ * midnight IST. The end is the smallest 12-hour reading strictly after
+ * the start, so "9:00–12:00" ends at noon and "10:45–1:45" ends at 13:45.
+ * Returns null when the label has no clock times at all.
+ */
+function parseTimeRange(time: string | null): ParsedRange | null {
+  if (!time) return null;
+  const tokens = [...time.matchAll(/(\d{1,2}):(\d{2})/g)];
+  if (tokens.length === 0) return null;
+
+  const first = tokens[0];
+  const beforeFirst = time.slice(0, first.index ?? 0);
+  const markers = [...beforeFirst.matchAll(/രാവിലെ|ഉച്ചയ്ക്ക്|വൈകുന്നേരം/g)];
+  const firstMarker = markers[markers.length - 1]?.[0];
+  const startHour12 = Number(first[1]);
+  const startMin =
+    (firstMarker === "ഉച്ചയ്ക്ക്" || firstMarker === "വൈകുന്നേരം"
+      ? (startHour12 % 12) + 12
+      : startHour12 % 12) *
+      60 +
+    Number(first[2]);
+
+  const last = tokens[tokens.length - 1];
+  const endHour12 = Number(last[1]);
+  const endMinute = Number(last[2]);
+  const candidates = [
+    (endHour12 % 12) * 60 + endMinute,
+    ((endHour12 % 12) + 12) * 60 + endMinute,
+  ];
+  const endMin =
+    candidates.find((c) => c > startMin) ?? candidates[1] + 12 * 60;
+
+  return { startMin, endMin };
+}
+
+export interface ExamWindow {
+  /** Epoch ms of the exam start (00:00 IST when no time is published). */
+  startMs: number;
+  /** Epoch ms of the exam end (23:59:59 IST when no time is published). */
+  endMs: number;
+  /** False when the programme publishes no time for this exam. */
+  timeKnown: boolean;
+}
+
+/** Start/end of an exam as epoch ms, interpreted in IST. */
+export function examWindowMs(exam: UpcomingExam): ExamWindow {
+  const endDate = exam.endDate ?? exam.date;
+  const parsed = parseTimeRange(exam.time);
+  if (!parsed) {
+    return {
+      startMs: istMs(exam.date, 0, 0),
+      endMs: istMs(endDate, 23, 59) + 59_000,
+      timeKnown: false,
+    };
+  }
+  return {
+    startMs: istMs(
+      exam.date,
+      Math.floor(parsed.startMin / 60),
+      parsed.startMin % 60
+    ),
+    endMs: istMs(
+      endDate,
+      Math.floor(parsed.endMin / 60),
+      parsed.endMin % 60
+    ),
+    timeKnown: true,
+  };
+}
+
+/**
+ * The next exam that has not finished yet: the first exam (chronological)
+ * whose end instant is still in the future. Returns null once every
+ * listed exam is over.
+ */
+export function pickNextExam(
+  exams: UpcomingExam[],
+  nowMs: number
+): { exam: UpcomingExam; window: ExamWindow } | null {
+  const sorted = [...exams].sort((a, b) => a.date.localeCompare(b.date));
+  for (const exam of sorted) {
+    const window = examWindowMs(exam);
+    if (window.endMs > nowMs) return { exam, window };
+  }
+  return null;
+}
