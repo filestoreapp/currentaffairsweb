@@ -82,9 +82,11 @@ export function postSearchTitle(post: {
     return fitTitle(post.meta_title);
   }
   const parts = istDateParts(post.published_at);
-  const isDigest =
-    (post.tags ?? []).includes("daily-digest") ||
-    post.slug.startsWith("daily-current-affairs-");
+  // Digest detection is slug-only: the "daily-digest" tag is unreliable
+  // (the Dec 2026 exam-plan standalone post carries it, and the digest
+  // format title would misdescribe it). Digest slugs are always
+  // daily-current-affairs-YYYY-MM-DD (cron step 0 + step 6).
+  const isDigest = post.slug.startsWith("daily-current-affairs-");
   if (isDigest && parts) {
     return `Kerala PSC Current Affairs ${parts.day} ${parts.monthLong} ${parts.year} (Malayalam)`;
   }
