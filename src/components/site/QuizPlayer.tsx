@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { submitQuizAttempt } from "@/lib/actions/quizzes";
+import { recordCompletion } from "@/lib/game-progress";
+import GameProgressCard from "@/components/site/GameProgressCard";
 import type { Quiz, QuizAttempt } from "@/lib/types";
 import { CheckCircle2, XCircle, Loader2, Trophy, Timer, ClipboardList } from "lucide-react";
 
@@ -77,6 +79,9 @@ export default function QuizPlayer({
     } catch {
       // non-fatal — still show the result even if saving the score failed
     } finally {
+      // Personal progress is local-only and reflects this real completion,
+      // even if the server-side leaderboard save failed.
+      recordCompletion("quiz", finalScore, questions.length);
       setSubmitting(false);
       setStage("result");
     }
@@ -324,6 +329,8 @@ export default function QuizPlayer({
           </div>
         </div>
       </div>
+
+      <GameProgressCard />
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6">
         <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">

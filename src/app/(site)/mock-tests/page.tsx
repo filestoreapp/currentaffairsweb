@@ -5,6 +5,7 @@ import {
   getTopStreaks,
 } from "@/lib/quizzes";
 import { ClipboardList, Clock, Trophy, Users, Medal, Flame } from "lucide-react";
+import GameProgressCard from "@/components/site/GameProgressCard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -146,6 +147,9 @@ export default async function MockTestsPage() {
           </ol>
         </div>
       )}
+      <div className="mt-8">
+        <GameProgressCard />
+      </div>
     </div>
   );
 }

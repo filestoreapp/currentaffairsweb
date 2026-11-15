@@ -66,6 +66,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/exam-calendar/january-2027`, lastModified: new Date() },
     { url: `${siteUrl}/upcoming-exams`, lastModified: new Date() },
     { url: `${siteUrl}/psc-updates`, lastModified: new Date() },
+    { url: `${siteUrl}/shortlists`, lastModified: new Date() },
+    ...pscUpdates
+      .filter((u) => u.source === "shortlists")
+      .map((u) => ({
+        url: `${siteUrl}/shortlists/${u.id}`,
+        lastModified: new Date(u.published_on ?? u.scraped_at),
+      })),
     { url: `${siteUrl}/exams`, lastModified: new Date() },
     { url: `${siteUrl}/pyqs`, lastModified: new Date() },
     { url: `${siteUrl}/study-notes`, lastModified: new Date() },

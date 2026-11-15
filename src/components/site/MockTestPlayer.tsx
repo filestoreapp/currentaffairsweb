@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { submitMockAttempt } from "@/lib/actions/quizzes";
+import { recordCompletion } from "@/lib/game-progress";
+import GameProgressCard from "@/components/site/GameProgressCard";
 import type { Quiz, QuizAttempt, QuizQuestion } from "@/lib/types";
 import {
   CheckCircle2,
@@ -154,6 +156,9 @@ export default function MockTestPlayer({
 
     setLeaderboard(merged.slice(0, 20));
     setReview(items);
+    // Personal progress is local-only and reflects this real completion,
+    // even if the server-side leaderboard save failed.
+    recordCompletion("mock", correct, questions.length);
     setStats({
       score,
       correct,
@@ -360,6 +365,8 @@ export default function MockTestPlayer({
             </p>
           ) : null}
         </div>
+
+        <GameProgressCard />
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
           <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">

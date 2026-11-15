@@ -58,6 +58,22 @@ export default async function PscUpdatesPage({
         <span className="shrink-0 text-xl font-black">→</span>
       </Link>
 
+      <Link
+        href="/shortlists"
+        className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-cyan-600 px-5 py-4 text-white shadow-sm transition hover:bg-cyan-500"
+      >
+        <span>
+          <span className="block font-extrabold">
+            ഷോർട്ട് ലിസ്റ്റുകൾ കാണൂ
+          </span>
+          <span className="mt-0.5 block text-sm text-cyan-100">
+            റാങ്ക് ലിസ്റ്റിന് മുമ്പുള്ള സാധ്യതാ പട്ടിക — നിങ്ങളുടെ രജിസ്റ്റർ
+            നമ്പർ ഉണ്ടോ എന്ന് പരിശോധിക്കൂ
+          </span>
+        </span>
+        <span className="shrink-0 text-xl font-black">→</span>
+      </Link>
+
       <div className="scrollbar-hide mt-6 flex gap-2 overflow-x-auto pb-2">
         <Link
           href="/psc-updates"
