@@ -147,9 +147,6 @@ export async function createPost(input: PostFormInput) {
   revalidatePath("/current-affairs");
   redirect("/admin/posts");
 }
-  revalidatePath("/current-affairs");
-  redirect("/admin/posts");
-}
 
 const MAX_REVISIONS_PER_POST = 20;
 
