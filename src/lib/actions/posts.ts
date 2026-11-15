@@ -52,6 +52,8 @@ export interface PostFormInput {
   title: string;
   slug?: string;
   excerpt?: string;
+  /** Exam-relevance line for standalone posts; null/blank = no line. */
+  psc_relevance?: string | null;
   content_html: string;
   content_markdown?: string;
   editor_mode: EditorMode;
@@ -79,26 +81,42 @@ export async function createPost(input: PostFormInput) {
       : input.published_at ?? null;
   const cover_image = await resolveCoverImage(supabase, input, slug);
 
-  const { data, error } = await supabase
+  const row = {
+    title: input.title,
+    slug,
+    excerpt: input.excerpt || null,
+    content_html: input.content_html,
+    content_markdown: input.content_markdown || null,
+    editor_mode: input.editor_mode,
+    cover_image,
+    category_id: input.category_id || null,
+    tags: input.tags || [],
+    status: input.status,
+    published_at,
+    meta_title: input.meta_title || input.title,
+    meta_description: input.meta_description || input.excerpt || null,
+    // Only sent when set; the column arrives with the 2026-11-15 migration.
+    ...(input.psc_relevance ? { psc_relevance: input.psc_relevance } : {}),
+    author_id: user?.id ?? null,
+  };
+
+  let { data, error } = await supabase
     .from("posts")
-    .insert({
-      title: input.title,
-      slug,
-      excerpt: input.excerpt || null,
-      content_html: input.content_html,
-      content_markdown: input.content_markdown || null,
-      editor_mode: input.editor_mode,
-      cover_image,
-      category_id: input.category_id || null,
-      tags: input.tags || [],
-      status: input.status,
-      published_at,
-      meta_title: input.meta_title || input.title,
-      meta_description: input.meta_description || input.excerpt || null,
-      author_id: user?.id ?? null,
-    })
+    .insert(row)
     .select()
     .single();
+
+  // Migration not applied yet: save the post without the line instead of
+  // failing the whole save (the line can be added after the migration).
+  if (error && /psc_relevance/.test(error.message)) {
+    const rowWithout = { ...row };
+    delete (rowWithout as Record<string, unknown>).psc_relevance;
+    ({ data, error } = await supabase
+      .from("posts")
+      .insert(rowWithout)
+      .select()
+      .single());
+  }
 
   if (error) throw new Error(error.message);
 
@@ -175,26 +193,41 @@ export async function updatePost(id: string, input: PostFormInput) {
       : input.published_at ?? null;
   const cover_image = await resolveCoverImage(supabase, input, slug);
 
-  const { data, error } = await supabase
+  const row = {
+    title: input.title,
+    slug,
+    excerpt: input.excerpt || null,
+    content_html: input.content_html,
+    content_markdown: input.content_markdown || null,
+    editor_mode: input.editor_mode,
+    cover_image,
+    category_id: input.category_id || null,
+    tags: input.tags || [],
+    status: input.status,
+    published_at,
+    meta_title: input.meta_title || input.title,
+    meta_description: input.meta_description || input.excerpt || null,
+    // Only sent when set; see createPost for the migration note.
+    ...(input.psc_relevance ? { psc_relevance: input.psc_relevance } : {}),
+  };
+
+  let { data, error } = await supabase
     .from("posts")
-    .update({
-      title: input.title,
-      slug,
-      excerpt: input.excerpt || null,
-      content_html: input.content_html,
-      content_markdown: input.content_markdown || null,
-      editor_mode: input.editor_mode,
-      cover_image,
-      category_id: input.category_id || null,
-      tags: input.tags || [],
-      status: input.status,
-      published_at,
-      meta_title: input.meta_title || input.title,
-      meta_description: input.meta_description || input.excerpt || null,
-    })
+    .update(row)
     .eq("id", id)
     .select()
     .single();
+
+  if (error && /psc_relevance/.test(error.message)) {
+    const rowWithout = { ...row };
+    delete (rowWithout as Record<string, unknown>).psc_relevance;
+    ({ data, error } = await supabase
+      .from("posts")
+      .update(rowWithout)
+      .eq("id", id)
+      .select()
+      .single());
+  }
 
   if (error) throw new Error(error.message);
 
