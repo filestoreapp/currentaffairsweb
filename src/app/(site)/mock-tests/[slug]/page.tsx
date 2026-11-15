@@ -6,7 +6,7 @@ import {
 } from "@/lib/quizzes";
 import { notFound } from "next/navigation";
 import MockTestPlayer from "@/components/site/MockTestPlayer";
-import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import {
   mockMalayalamDescription,
   mockMalayalamTitle,
@@ -42,9 +42,9 @@ export async function generateMetadata({
   const minutes = mock.time_limit_seconds
     ? Math.round(mock.time_limit_seconds / 60)
     : null;
-  const title = `${mockMalayalamTitle(mock)} — സൗജന്യ മോക്ക് ടെസ്റ്റ്`;
+  const title = fitTitle(`${mock.title} — Free Kerala PSC Mock Test`);
   return quizPageMetadata({
-    title,
+    title: { absolute: title },
     description: mockMalayalamDescription(mock, count, minutes),
     url: `${siteUrl()}/mock-tests/${mock.slug}`,
   });

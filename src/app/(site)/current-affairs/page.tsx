@@ -3,7 +3,8 @@ import { getPublishedPosts } from "@/lib/posts";
 import CurrentAffairsList from "@/components/site/CurrentAffairsList";
 
 export const metadata = {
-  title: "Daily Kerala PSC Current Affairs in Malayalam",
+  // Absolute: the composed title already carries the brand; no template suffix.
+  title: { absolute: "Daily Kerala PSC Current Affairs in Malayalam" },
   description:
     "Daily Kerala PSC current affairs in Malayalam — exam-oriented facts, quick-revision tables and quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.",
 };

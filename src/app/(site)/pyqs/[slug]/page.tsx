@@ -1,7 +1,7 @@
 import { getPyqBySlug, getMockLeaderboard } from "@/lib/quizzes";
 import { notFound } from "next/navigation";
 import MockTestPlayer from "@/components/site/MockTestPlayer";
-import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -23,7 +23,7 @@ export async function generateMetadata({
     paper.description ||
     `${paper.title}${examBit} — practice ${count} real Kerala PSC previous year questions free, with answers and live leaderboard.`;
   return quizPageMetadata({
-    title: `${paper.title} — PYQ Paper`,
+    title: { absolute: fitTitle(`${paper.title} — Kerala PSC PYQ`) },
     description,
     url: `${siteUrl()}/pyqs/${paper.slug}`,
   });

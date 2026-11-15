@@ -1,7 +1,7 @@
 import { getQuizBySlug, getLeaderboard } from "@/lib/quizzes";
 import { notFound, redirect } from "next/navigation";
 import QuizPlayer from "@/components/site/QuizPlayer";
-import { breadcrumbJsonLd, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle, istDateParts, quizJsonLd, quizPageMetadata, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300; // 5 min — leaderboard shown is the starting snapshot; client updates it live after each attempt
@@ -18,8 +18,16 @@ export async function generateMetadata({
   const description =
     quiz.description ||
     `Practice "${quiz.title}" — ${count} free Kerala PSC quiz questions with answers and explanations.`;
+  // Search title in English — the visible player heading stays Malayalam.
+  // Daily quizzes get the digest-style dated title.
+  const dailyMatch = slug.match(/^daily-current-affairs-quiz-(\d{4}-\d{2}-\d{2})$/);
+  const parts = dailyMatch ? istDateParts(`${dailyMatch[1]}T00:00:00+05:30`) : null;
+  const title =
+    parts != null
+      ? `Kerala PSC Daily Quiz ${parts.day} ${parts.monthLong} ${parts.year} (Malayalam)`
+      : fitTitle(`${quiz.title} — Kerala PSC Quiz`);
   return quizPageMetadata({
-    title: quiz.title,
+    title: { absolute: title },
     description,
     url: `${siteUrl()}/quiz/${quiz.slug}`,
   });

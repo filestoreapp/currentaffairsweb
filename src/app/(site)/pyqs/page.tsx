@@ -6,9 +6,9 @@ import { ChevronRight, ScrollText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kerala PSC Previous Year Question Papers – PYQ PDFs 2014–2026",
+  title: { absolute: "Kerala PSC PYQ Papers 2014–2026 — Download PDFs" },
   description:
-    "Kerala PSC previous year question papers (PYQ) from 2014 to 2026 — 1,442 papers with post name, category number, paper code and exam date. Download PDFs hosted here or from the official PSC site.",
+    "Kerala PSC previous year question papers 2014–2026 — 1,442 papers with post name, category number and exam date. Download PDFs or the official PSC paper.",
 };
 
 export const revalidate = 300;

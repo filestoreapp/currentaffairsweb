@@ -10,6 +10,7 @@ import ShareButtons from "@/components/site/ShareButtons";
 import PostCard from "@/components/site/PostCard";
 import { ClipboardList, Clock, ChevronRight, Tag } from "lucide-react";
 import { postPublicPath } from "@/lib/series-paths";
+import { postSearchTitle } from "@/lib/seo";
 
 
 export const revalidate = 300; // 5 min — no cookies used now, so this can ISR
@@ -24,8 +25,14 @@ export async function generateMetadata({
   if (!post) return {};
   const siteUrl = "https://www.psccurrentaffairs.online";
   const postUrl = `${siteUrl}${postPublicPath(post.slug)}`;
-  const title = post.meta_title || post.title;
-  const desc = post.meta_description || post.excerpt || undefined;
+  // Search-facing title only — the visible H1 stays the Malayalam
+  // post.title (standing rule 2026-10-11). Absolute: no template suffix,
+  // the composed title already carries the brand.
+  const title = postSearchTitle(post);
+  const desc =
+    post.meta_description ||
+    post.excerpt ||
+    `Kerala PSC current affairs in Malayalam — ${post.title}`;
   const images = post.cover_image ? [post.cover_image] : ["/og-default.png"];
   const keywords = [
     ...(post.tags ?? []),
@@ -35,7 +42,7 @@ export async function generateMetadata({
     "Kerala PSC study material",
   ];
   return {
-    title,
+    title: { absolute: title },
     description: desc,
     keywords,
     alternates: { canonical: postUrl },

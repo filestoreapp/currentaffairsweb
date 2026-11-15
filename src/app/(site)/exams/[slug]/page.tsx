@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExamBySlug, getExamRelatedContent } from "@/lib/exams";
 import { getPscCategoriesByExamSlug } from "@/lib/psc-categories";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle } from "@/lib/seo";
 import type { Exam, Quiz, PscUpdate } from "@/lib/types";
 import {
   ChevronRight,
@@ -31,8 +31,14 @@ export async function generateMetadata({
   const desc = exam.description
     ? `${exam.name} (${exam.short_name}) — Kerala PSC syllabus, exam date, mock tests & PYQ papers. ${exam.description}`.slice(0, 160)
     : `${exam.name} (${exam.short_name}) — Kerala PSC syllabus, exam date, mock tests and previous year question papers.`;
+  // Search title in English — the visible hub heading stays Malayalam.
+  // Shorten in steps so long exam names still fit ~60 chars.
+  const hubTitle = fitTitle(
+    `Kerala PSC ${exam.short_name} — Syllabus, Mock Tests & PYQ`,
+    60
+  );
   return {
-    title: `${exam.short_name} – ${exam.name}: Syllabus, Mock Tests & PYQ Papers`,
+    title: { absolute: hubTitle },
     description: desc,
   };
 }

@@ -12,11 +12,12 @@ import { siteUrl, DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const url = `${siteUrl()}/upcoming-exams`;
-  const title = "വരാനിരിക്കുന്ന പരീക്ഷകൾ — കേരള പി.എസ്.സി പരീക്ഷാ തീയതികൾ 2026–27";
+  // Search title in English — the visible H1 stays Malayalam.
+  const title = "Kerala PSC Upcoming Exams 2026–27 — Dates";
   const description =
     "കേരള പി.എസ്.സി വരാനിരിക്കുന്ന പരീക്ഷകൾ — നവംബർ, ഡിസംബർ 2026, ജനുവരി 2027 പരീക്ഷാ തീയതികൾ, കാറ്റഗറി നമ്പർ, കൺഫർമേഷൻ, അഡ്മിറ്റ് കാർഡ് വിവരങ്ങൾ.";
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {

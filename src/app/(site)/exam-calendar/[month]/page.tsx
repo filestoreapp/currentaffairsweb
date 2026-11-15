@@ -23,12 +23,16 @@ export async function generateMetadata({
   const data = UPCOMING_EXAM_MONTHS.find((m) => m.id === month);
   if (!data) return { title: "പരീക്ഷാ കലണ്ടർ" };
   const url = `${siteUrl()}/exam-calendar/${data.id}`;
-  const title = `${data.title} പരീക്ഷകൾ — കേരള പി.എസ്.സി പരീക്ഷാ തീയതികൾ`;
+  // Search title in English — the visible H1 stays Malayalam.
+  const [monthSlug, year] = data.id.split("-");
+  const englishMonth =
+    monthSlug.charAt(0).toUpperCase() + monthSlug.slice(1);
+  const title = `Kerala PSC Exam Calendar ${englishMonth} ${year} — Dates`;
   const description =
     `കേരള പി.എസ്.സി ${data.title} പരീക്ഷകൾ — ${data.exams.length} പരീക്ഷകൾ, ` +
     `തീയതി, സമയം, കാറ്റഗറി നമ്പർ, കൺഫർമേഷൻ, അഡ്മിറ്റ് കാർഡ് വിവരങ്ങൾ.`;
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {

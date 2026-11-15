@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, fitTitle } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { FileText, TrendingDown } from "lucide-react";
 import RankEstimator from "@/components/site/RankEstimator";
@@ -26,12 +26,15 @@ export async function generateMetadata({
   const data = getCategoryData(category);
   if (!data) return { title: "കട്ട്-ഓഫ്" };
   const url = `${siteUrl()}/ranked-lists/${category}`;
-  const title = `കാറ്റഗറി ${data.category} കട്ട്-ഓഫ് മാർക്ക് — ${data.post ?? "കേരള പി.എസ്.സി"}`;
+  // Search title in English — the visible H1 stays Malayalam.
+  const title = fitTitle(
+    `Rank List ${data.category} — Kerala PSC Cut-off Marks`
+  );
   const description =
     `കാറ്റഗറി ${data.category} (${data.post ?? ""}) — മുൻ റാങ്ക് ലിസ്റ്റുകളിലെ ` +
     `കട്ട്-ഓഫ് മാർക്കും റാങ്കും, നിങ്ങളുടെ റാങ്ക് താരതമ്യം ചെയ്യാം.`;
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: {
