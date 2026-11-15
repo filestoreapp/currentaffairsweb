@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Kerala PSC Syllabus Tracker",
   description:
     "Track your Kerala PSC syllabus coverage topic by topic for LDC, LGS, University Assistant and degree-level exams — tick off what you've mastered, no login needed.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/syllabus" },
 };
 
 export default function SyllabusPage() {

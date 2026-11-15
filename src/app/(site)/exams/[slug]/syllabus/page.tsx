@@ -40,7 +40,13 @@ export async function generateMetadata({
     withYear.length <= 60
       ? withYear
       : fitTitle(`Kerala PSC ${data.shortName} Syllabus — Pattern & Marks`);
-  return { title: { absolute: title }, description: data.seoDescription };
+  return {
+    title: { absolute: title },
+    description: data.seoDescription,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/exams/${slug}/syllabus`,
+    },
+  };
 }
 
 function PatternFact({

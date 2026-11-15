@@ -33,6 +33,9 @@ export async function generateMetadata({
       absolute: fitTitle(`${update.title} | Kerala PSC Short List`),
     },
     description: `Kerala PSC short list — ${update.title}. Check the official PSC PDF.`,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/shortlists/${update.id}`,
+    },
   };
 }
 

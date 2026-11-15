@@ -40,6 +40,9 @@ export async function generateMetadata({
   return {
     title: { absolute: hubTitle },
     description: desc,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/exams/${exam.slug}`,
+    },
   };
 }
 

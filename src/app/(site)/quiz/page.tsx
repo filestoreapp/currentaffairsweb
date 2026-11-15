@@ -9,6 +9,7 @@ export const metadata = {
   title: "Kerala PSC Quiz — Free Daily Quizzes",
   description:
     "Free Kerala PSC quiz questions in Malayalam with answers and explanations — daily current affairs quizzes and topic quizzes for LDC, LGS and degree-level exams, with leaderboards.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/quiz" },
 };
 
 // Cache the quiz listing shell for 5 minutes. The category filter

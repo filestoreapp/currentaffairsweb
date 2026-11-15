@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: { absolute: "Kerala PSC Study Notes in Malayalam — 256 Topics" },
   description:
     "കേരള പിഎസ്‌സി പരീക്ഷകൾക്കുള്ള പഠന കുറിപ്പുകൾ മലയാളത്തിൽ — കമ്പ്യൂട്ടർ, നിയമം, ഗണിതം, ചരിത്രം, ഭൂമിശാസ്ത്രം തുടങ്ങി 21 വിഷയങ്ങളിലായി 256 വിഷയങ്ങൾ. ചുരുക്കത്തിൽ പഠിക്കാൻ പ്രധാന വസ്തുതകളും റിവിഷൻ പോയിന്റുകളും.",
+  alternates: {
+    canonical: "https://www.psccurrentaffairs.online/study-notes",
+  },
 };
 
 export const revalidate = 300;

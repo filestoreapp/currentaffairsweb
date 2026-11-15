@@ -21,6 +21,9 @@ export async function generateMetadata({
   return {
     title: `${update.title} | ${label}`,
     description: update.category_number || update.title,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/psc-updates/${update.id}`,
+    },
   };
 }
 

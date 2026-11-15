@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "Privacy Policy of PSC Current Affairs — what data we collect, how we use it, and your choices.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/privacy" },
 };
 
 const SECTIONS: { heading: string; body: React.ReactNode }[] = [

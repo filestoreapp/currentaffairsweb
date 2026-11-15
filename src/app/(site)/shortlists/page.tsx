@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: { absolute: "Kerala PSC Short Lists — Check Your Number" },
   description:
     "Kerala PSC short lists (probability lists) for every post — check whether your register number made the short list, with the official PSC PDF for each event.",
+  alternates: {
+    canonical: "https://www.psccurrentaffairs.online/shortlists",
+  },
 };
 
 export const revalidate = 900;

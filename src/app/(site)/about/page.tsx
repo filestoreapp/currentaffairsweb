@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "About PSC Current Affairs",
   description:
     "About PSC Current Affairs — free Kerala PSC exam preparation with daily current affairs, quizzes, mock tests and PYQ papers.",
+  alternates: { canonical: "https://www.psccurrentaffairs.online/about" },
 };
 
 const FEATURES = [

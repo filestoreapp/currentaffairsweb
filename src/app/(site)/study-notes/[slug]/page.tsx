@@ -41,6 +41,9 @@ export async function generateMetadata({
     },
     description:
       firstPara.length > 155 ? firstPara.slice(0, 152) + "…" : firstPara,
+    alternates: {
+      canonical: `https://www.psccurrentaffairs.online/study-notes/${slug}`,
+    },
   };
 }
 
