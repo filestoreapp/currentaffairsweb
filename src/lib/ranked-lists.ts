@@ -91,6 +91,35 @@ export function getCategoryData(slug: string) {
   };
 }
 
+/** One ranked list by its seed id, with its candidates (by rank) and cut-offs. */
+export function getRankedListById(id: string) {
+  const seed = loadSeed();
+  const idx = seed.lists.findIndex((l) => l.id === id);
+  if (idx < 0) return null;
+  const meta = seed.lists[idx];
+  const entries: RankedListEntry[] = seed.entries
+    .filter(([li]) => li === idx)
+    .map(([, rank, regno, name, total, community, section]) => ({
+      rank,
+      regno,
+      name,
+      total,
+      community,
+      section,
+      list: meta,
+    }))
+    .sort((a, b) => a.rank - b.rank);
+  const cutoffs = meta.list_no
+    ? seed.cutoffs.filter((c) => c.list_no === meta.list_no)
+    : [];
+  return { meta, entries, cutoffs };
+}
+
+/** Cut-offs for one list number (official PSC figures; marks may be null). */
+export function getCutoffsByListNo(listNo: string): CutoffRow[] {
+  return loadSeed().cutoffs.filter((c) => c.list_no === listNo);
+}
+
 export function getCategories(): { category: string; post: string | null; lists: number; entries: number }[] {
   const seed = loadSeed();
   const map = new Map<string, { post: string | null; lists: number; entries: number }>();

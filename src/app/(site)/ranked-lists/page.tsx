@@ -151,8 +151,16 @@ export default function RankedListsPage() {
               <div className="flex shrink-0 gap-2">
                 {l.category && (
                   <Link
-                    href={`/ranked-lists/${categorySlug(l.category)}`}
+                    href={`/ranked-lists/${categorySlug(l.category)}/${l.id}`}
                     className="rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-500"
+                  >
+                    ലിസ്റ്റ് കാണൂ
+                  </Link>
+                )}
+                {l.category && (
+                  <Link
+                    href={`/ranked-lists/${categorySlug(l.category)}`}
+                    className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
                   >
                     കട്ട്-ഓഫ് കാണൂ
                   </Link>
