@@ -55,3 +55,31 @@ export async function getPscUpdateTotalCount() {
   if (error) throw error;
   return count ?? 0;
 }
+
+/** Paginated Short Lists (source = "shortlists"), newest first. */
+export async function getShortlistsPage(page = 1, perPage = 24) {
+  const supabase = createPublicClient();
+  const safePage = Math.max(1, Math.floor(page) || 1);
+  const from = (safePage - 1) * perPage;
+  const { data, count, error } = await supabase
+    .from("psc_updates")
+    .select("*", { count: "exact" })
+    .eq("source", "shortlists")
+    .order("published_on", { ascending: false, nullsFirst: false })
+    .order("scraped_at", { ascending: false })
+    .range(from, from + perPage - 1);
+  if (error) throw error;
+  return {
+    updates: (data ?? []) as PscUpdate[],
+    total: count ?? 0,
+    page: safePage,
+    perPage,
+  };
+}
+
+/** One Short List by id, or null when the row is missing / not a shortlist. */
+export async function getShortlistById(id: string) {
+  const update = await getPscUpdateById(id);
+  if (!update || update.source !== "shortlists") return null;
+  return update;
+}

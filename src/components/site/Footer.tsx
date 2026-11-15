@@ -7,6 +7,7 @@ const EXAM_LINKS = [
   { href: "/quiz", label: "Daily Quizzes", icon: Trophy },
   { href: "/syllabus", label: "Syllabus Tracker", icon: ListChecks },
   { href: "/ranked-lists", label: "Ranked List Search", icon: ListOrdered },
+  { href: "/shortlists", label: "Short Lists", icon: ListChecks },
 ];
 
 const LEARN_LINKS = [
