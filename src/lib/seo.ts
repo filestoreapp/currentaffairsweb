@@ -41,12 +41,37 @@ export function quizPageMetadata({
 }
 
 /**
+ * Shared BreadcrumbList builder — absolute URLs, current page last with no
+ * `item` URL (matching the post template). Pass `path` only for crumbs
+ * that link somewhere; the current page gets none.
+ */
+export function breadcrumbJsonLd(
+  items: { name: string; path?: string }[]
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      ...(item.path ? { item: `${siteUrl()}${item.path}` } : {}),
+    })),
+  };
+}
+
+/**
  * schema.org Quiz structured data. Questions ship with their accepted
  * answers — the same Q&A is already visible to anyone taking the quiz,
  * and exposing it as structured data targets long-tail question searches.
+ * `numberOfQuestions` and `timeRequired` come from the same quiz row the
+ * page visibly shows (question count, time limit), never invented.
  */
 export function quizJsonLd(quiz: Quiz, url: string) {
   const questions = quiz.questions ?? [];
+  const minutes = quiz.time_limit_seconds
+    ? Math.round(quiz.time_limit_seconds / 60)
+    : null;
   return {
     "@context": "https://schema.org",
     "@type": "Quiz",
@@ -55,6 +80,8 @@ export function quizJsonLd(quiz: Quiz, url: string) {
     url,
     inLanguage: "en",
     about: "Kerala Public Service Commission (Kerala PSC) exam preparation",
+    numberOfQuestions: questions.length > 0 ? questions.length : undefined,
+    timeRequired: minutes ? `PT${minutes}M` : undefined,
     hasPart: questions.map((q) => ({
       "@type": "Question",
       name: q.question,

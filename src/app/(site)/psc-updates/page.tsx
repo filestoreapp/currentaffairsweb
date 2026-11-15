@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
 import type { PscSourceKey } from "@/lib/types";
 import { PSC_SOURCES } from "@/lib/psc-sources";
@@ -26,6 +27,17 @@ export default async function PscUpdatesPage({
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "PSC Notifications & Updates" },
+            ])
+          ),
+        }}
+      />
       <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Notifications &amp; Updates</h1>
       <p className="mt-2 text-slate-500">
         Auto-pulled from the official{" "}

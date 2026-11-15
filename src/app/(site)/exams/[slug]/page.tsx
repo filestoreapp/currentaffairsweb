@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExamBySlug, getExamRelatedContent } from "@/lib/exams";
 import { getPscCategoriesByExamSlug } from "@/lib/psc-categories";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import type { Exam, Quiz, PscUpdate } from "@/lib/types";
 import {
   ChevronRight,
@@ -122,19 +123,11 @@ export default async function ExamHubPage({
     "@type": "WebPage",
     name: `${exam.short_name} – ${exam.name}`,
     description: exam.description ?? undefined,
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-        { "@type": "ListItem", position: 2, name: "Exams", item: "/exams" },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: exam.short_name,
-          item: `/exams/${exam.slug}`,
-        },
-      ],
-    },
+    breadcrumb: breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Exams", path: "/exams" },
+      { name: exam.short_name },
+    ]),
   };
 
   return (

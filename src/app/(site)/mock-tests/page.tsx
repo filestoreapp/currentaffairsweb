@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import {
   getPublishedMocks,
   getGlobalMockLeaderboard,
@@ -27,6 +28,17 @@ export default async function MockTestsPage() {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Mock Tests" },
+            ])
+          ),
+        }}
+      />
       <h1 className="text-3xl font-extrabold tracking-tight">Free Kerala PSC Mock Tests</h1>
       <p className="mt-2 max-w-2xl text-slate-500">
         Full-length Kerala PSC mock tests for LDC, LGS, University Assistant

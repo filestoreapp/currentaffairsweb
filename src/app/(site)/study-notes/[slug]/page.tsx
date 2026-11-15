@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import {
   getStudyTopic,
   STUDY_TOPICS_WITH_CONTENT,
@@ -84,24 +85,11 @@ export default async function StudyNotePage({
       url: "https://www.psccurrentaffairs.online",
     },
     about: topic.subjectMalayalam,
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Study Notes",
-          item: "/study-notes",
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: topic.topicMalayalam,
-          item: `/study-notes/${slug}`,
-        },
-      ],
-    },
+    breadcrumb: breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Study Notes", path: "/study-notes" },
+      { name: topic.topicMalayalam },
+    ]),
   };
 
   return (

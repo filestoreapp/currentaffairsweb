@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { CalendarDays, FileText, ExternalLink, Info } from "lucide-react";
 import { getLatestPscUpdates } from "@/lib/psc-updates";
 import { siteUrl, DEFAULT_OG_IMAGE } from "@/lib/seo";
@@ -71,6 +72,17 @@ export default async function ExamCalendarPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Exam Calendar" },
+            ])
+          ),
+        }}
+      />
       <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">
         Plan ahead
       </p>
