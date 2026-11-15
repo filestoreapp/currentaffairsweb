@@ -18,6 +18,7 @@ interface DraftShape {
   title: string;
   slug: string;
   excerpt: string;
+  pscRelevance: string;
   editorMode: EditorMode;
   contentHtml: string;
   contentMarkdown: string;
@@ -44,6 +45,7 @@ export default function PostForm({
   const [title, setTitle] = useState(post?.title ?? "");
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
+  const [pscRelevance, setPscRelevance] = useState(post?.psc_relevance ?? "");
   const [editorMode, setEditorMode] = useState<EditorMode>(
     post?.editor_mode ?? "richtext"
   );
@@ -76,6 +78,7 @@ export default function PostForm({
       title,
       slug,
       excerpt,
+      pscRelevance,
       editorMode,
       contentHtml,
       contentMarkdown,
@@ -93,6 +96,7 @@ export default function PostForm({
     setTitle(d.title);
     setSlug(d.slug);
     setExcerpt(d.excerpt);
+    setPscRelevance(d.pscRelevance ?? "");
     setEditorMode(d.editorMode);
     setContentHtml(d.contentHtml);
     setContentMarkdown(d.contentMarkdown);
@@ -145,6 +149,7 @@ export default function PostForm({
       title,
       slug: slug ? slugify(slug, { lower: true, strict: true }) : undefined,
       excerpt,
+      psc_relevance: pscRelevance.trim() || null,
       content_html: finalHtml,
       content_markdown: editorMode === "markdown" ? contentMarkdown : undefined,
       editor_mode: editorMode,
@@ -251,6 +256,23 @@ export default function PostForm({
               placeholder="Short summary shown in listings..."
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Why this matters for PSC
+            </label>
+            <textarea
+              value={pscRelevance}
+              onChange={(e) => setPscRelevance(e.target.value)}
+              rows={2}
+              placeholder="One or two sentences on the exam relevance — e.g. which syllabus topic or exam it feeds into."
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            />
+            <p className="mt-1 text-xs text-slate-400">
+              Shown on standalone posts only. Leave blank for daily digests —
+              digest items never show this line.
+            </p>
           </div>
 
           <div>

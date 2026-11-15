@@ -131,6 +131,21 @@ export default async function PostPage({
   const { html: contentHtml, headings } = extractHeadings(post.content_html);
   const showToc = headings.length >= 3;
 
+  // "Last updated": updated_at when the post was edited after publishing,
+  // otherwise the publish date. Digests are the daily-current-affairs
+  // posts (tag "daily-digest" / slug prefix) — they never show the
+  // exam-relevance line (standing rule, 2026-10-02), only the label.
+  const lastUpdated =
+    post.updated_at &&
+    post.published_at &&
+    new Date(post.updated_at) > new Date(post.published_at)
+      ? post.updated_at
+      : post.published_at;
+  const isDigest =
+    (post.tags ?? []).includes("daily-digest") ||
+    post.slug.startsWith("daily-current-affairs-");
+  const showRelevance = !isDigest && !!post.psc_relevance;
+
   const siteUrl = "https://www.psccurrentaffairs.online";
   const postUrl = `${siteUrl}${postPublicPath(post.slug)}`;
 
@@ -244,6 +259,11 @@ export default async function PostPage({
                 {format(new Date(post.published_at), "dd MMM yyyy")}
               </span>
             )}
+            {lastUpdated && (
+              <span>
+                Last updated {format(new Date(lastUpdated), "dd MMM yyyy")}
+              </span>
+            )}
             <span className="flex items-center gap-1">
               <Clock size={14} /> {readingTime(post.content_html)} min read
             </span>
@@ -293,6 +313,17 @@ export default async function PostPage({
           className="prose prose-slate mt-8 max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-indigo-600 prose-img:rounded-2xl"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
+
+        {showRelevance && (
+          <aside className="mt-10 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-5">
+            <p className="text-sm font-extrabold uppercase tracking-wide text-indigo-900">
+              Why this matters for PSC
+            </p>
+            <p className="mt-2 leading-relaxed text-slate-700">
+              {post.psc_relevance}
+            </p>
+          </aside>
+        )}
 
         {post.tags && post.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap items-center gap-2">

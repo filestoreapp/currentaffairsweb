@@ -43,6 +43,9 @@ export interface Post {
   meta_description: string | null;
   views: number;
   telegram_posted: boolean;
+  /** One–two sentence exam-relevance note, shown on standalone posts only
+      (never on daily digests). Null until set; column added 2026-11-15. */
+  psc_relevance: string | null;
   author_id: string | null;
   created_at: string;
   updated_at: string;
