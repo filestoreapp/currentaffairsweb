@@ -54,6 +54,8 @@ export interface PostFormInput {
   excerpt?: string;
   /** Exam-relevance line for standalone posts; null/blank = no line. */
   psc_relevance?: string | null;
+  /** Who created/checked the post: "admin" (pipeline) or "owner" (the user). */
+  author_role?: "admin" | "owner" | null;
   content_html: string;
   content_markdown?: string;
   editor_mode: EditorMode;
@@ -97,6 +99,9 @@ export async function createPost(input: PostFormInput) {
     meta_description: input.meta_description || input.excerpt || null,
     // Only sent when set; the column arrives with the 2026-11-15 migration.
     ...(input.psc_relevance ? { psc_relevance: input.psc_relevance } : {}),
+    // Always sent by the form (default Owner); the column defaults to
+    // "admin" for worker-created posts (2026-11-16 migration).
+    ...(input.author_role ? { author_role: input.author_role } : {}),
     author_id: user?.id ?? null,
   };
 
@@ -117,6 +122,24 @@ export async function createPost(input: PostFormInput) {
       .select()
       .single());
   }
+
+  // Same fallback for the author-role column (2026-11-16 migration).
+  // Drop both new fields here: if neither migration is applied yet, the
+  // first retry above already failed on the other column.
+  if (error && /author_role/.test(error.message)) {
+    const rowWithout = { ...row };
+    delete (rowWithout as Record<string, unknown>).author_role;
+    delete (rowWithout as Record<string, unknown>).psc_relevance;
+    ({ data, error } = await supabase
+      .from("posts")
+      .insert(rowWithout)
+      .select()
+      .single());
+  }
+
+  if (error) throw new Error(error.message);
+
+  if (input.status === "published" && input.send_to_telegram !== false) {
 
   if (error) throw new Error(error.message);
 
@@ -209,6 +232,7 @@ export async function updatePost(id: string, input: PostFormInput) {
     meta_description: input.meta_description || input.excerpt || null,
     // Only sent when set; see createPost for the migration note.
     ...(input.psc_relevance ? { psc_relevance: input.psc_relevance } : {}),
+    ...(input.author_role ? { author_role: input.author_role } : {}),
   };
 
   let { data, error } = await supabase
@@ -220,6 +244,21 @@ export async function updatePost(id: string, input: PostFormInput) {
 
   if (error && /psc_relevance/.test(error.message)) {
     const rowWithout = { ...row };
+    delete (rowWithout as Record<string, unknown>).psc_relevance;
+    ({ data, error } = await supabase
+      .from("posts")
+      .update(rowWithout)
+      .eq("id", id)
+      .select()
+      .single());
+  }
+
+  // Same fallback for the author-role column (2026-11-16 migration).
+  // Drop both new fields here: if neither migration is applied yet, the
+  // first retry above already failed on the other column.
+  if (error && /author_role/.test(error.message)) {
+    const rowWithout = { ...row };
+    delete (rowWithout as Record<string, unknown>).author_role;
     delete (rowWithout as Record<string, unknown>).psc_relevance;
     ({ data, error } = await supabase
       .from("posts")

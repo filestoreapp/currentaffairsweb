@@ -53,6 +53,24 @@ export default function AboutPage() {
         expensive coaching material.
       </p>
 
+      <div className="mt-8 max-w-3xl rounded-2xl border border-slate-200 bg-white p-6">
+        <h2 className="text-lg font-extrabold text-slate-900">
+          Who writes and checks our content?
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          Every post shows who created and checked it, next to its last-updated
+          date. <strong className="font-semibold text-slate-900">Admin</strong>{" "}
+          means the post was created and checked by the site&apos;s editorial
+          pipeline (including the automated daily digest).{" "}
+          <strong className="font-semibold text-slate-900">Owner</strong> means
+          the site owner wrote and checked it himself. The role word is all
+          that is ever shown — no personal names appear anywhere on this site.
+          Every fact is checked against official sources (keralapsc.gov.in
+          first) before publishing, and anything that cannot be verified is
+          left out rather than published blind.
+        </p>
+      </div>
+
       <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {FEATURES.map(({ icon: Icon, title, text }) => (
           <div
