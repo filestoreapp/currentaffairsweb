@@ -1,105 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, FileText, Info, Ticket } from "lucide-react";
+import { CalendarDays, FileText, Info } from "lucide-react";
 import UpcomingCountdown from "@/components/site/UpcomingCountdown";
+import { ExamRow } from "@/components/site/UpcomingExamRow";
 import {
   ALL_UPCOMING_EXAMS,
   UPCOMING_EXAM_MONTHS,
-  type ConfirmationInfo,
-  type UpcomingExam,
 } from "@/data/upcoming-exams";
 import { siteUrl, DEFAULT_OG_IMAGE } from "@/lib/seo";
-
-const MALAYALAM_MONTHS = [
-  "ജനു",
-  "ഫെബ്രു",
-  "മാർ",
-  "ഏപ്രി",
-  "മേയ്",
-  "ജൂൺ",
-  "ജൂലൈ",
-  "ഓഗ",
-  "സെപ്റ്റം",
-  "ഒക്ടോ",
-  "നവം",
-  "ഡിസം",
-];
-
-function confirmationBadge(c: ConfirmationInfo) {
-  switch (c.kind) {
-    case "finalized":
-      return {
-        cls: "border-sky-200 bg-sky-50 text-sky-700",
-        label: "കൺഫർമേഷന് ശേഷം അന്തിമമാക്കി",
-      };
-    case "open":
-      return {
-        cls: "border-emerald-200 bg-emerald-50 text-emerald-700",
-        label: `കൺഫർമേഷൻ തുറന്നിരിക്കുന്നു — ${c.window}`,
-      };
-    case "closed":
-      return {
-        cls: "border-amber-200 bg-amber-50 text-amber-800",
-        label: `കൺഫർമേഷൻ അവസാനിച്ചു — ${c.window}`,
-      };
-    case "not-required":
-      return {
-        cls: "border-slate-200 bg-slate-100 text-slate-600",
-        label: "കൺഫർമേഷൻ ആവശ്യമില്ല",
-      };
-  }
-}
-
-function ExamRow({ exam }: { exam: UpcomingExam }) {
-  const badge = confirmationBadge(exam.confirmation);
-  const [year, month, day] = exam.date.split("-").map(Number);
-  return (
-    <li
-      className={`flex flex-col gap-4 rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow sm:flex-row ${
-        exam.highlight
-          ? "border-indigo-300 ring-1 ring-indigo-200"
-          : "border-slate-200 hover:border-indigo-200"
-      }`}
-    >
-      <div
-        className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl text-white ${
-          exam.highlight
-            ? "bg-gradient-to-br from-indigo-600 to-violet-600"
-            : "bg-gradient-to-br from-slate-600 to-slate-800"
-        }`}
-      >
-        <span className="text-xl font-black leading-none">{day}</span>
-        <span className="mt-1 text-[10px] font-bold leading-tight">
-          {MALAYALAM_MONTHS[month - 1]} &apos;{String(year).slice(2)}
-        </span>
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
-          {exam.dateLabel}
-        </p>
-        <h3 className="mt-0.5 font-bold text-slate-900">{exam.posts}</h3>
-        <p className="mt-1 text-sm text-slate-600">
-          കാറ്റഗറി: {exam.categories} · {exam.scope}
-        </p>
-        <p className="mt-0.5 text-sm text-slate-600">
-          സമയം: {exam.time ?? "അഡ്മിറ്റ് കാർഡിൽ കാണാം"}
-        </p>
-        <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-600">
-          <Ticket size={14} className="shrink-0 text-slate-400" />
-          അഡ്മിറ്റ് കാർഡ് {exam.admitFrom}
-        </p>
-        {exam.note && (
-          <p className="mt-2 text-sm text-slate-500">{exam.note}</p>
-        )}
-      </div>
-      <span
-        className={`inline-flex h-fit shrink-0 items-center rounded-full border px-3 py-1.5 text-center text-xs font-bold ${badge.cls}`}
-      >
-        {badge.label}
-      </span>
-    </li>
-  );
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const url = `${siteUrl()}/upcoming-exams`;
@@ -163,6 +71,12 @@ export default function UpcomingExamsPage() {
             <CalendarDays size={22} className="text-indigo-600" />
             {month.title}
           </h2>
+          <Link
+            href={`/exam-calendar/${month.id}`}
+            className="mt-1 inline-block text-sm font-bold text-indigo-600 hover:text-indigo-800"
+          >
+            {month.title} മാസത്തെ പരീക്ഷകൾ പ്രത്യേക പേജിൽ കാണൂ →
+          </Link>
           {month.note && (
             <p className="mt-2 max-w-2xl text-sm text-slate-500">{month.note}</p>
           )}

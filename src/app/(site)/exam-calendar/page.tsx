@@ -21,6 +21,13 @@ const MONTHS = [
   "December",
 ];
 
+/** Month pages with a full exam list, keyed by programme title month. */
+const MONTH_PAGE_IDS: Record<string, string> = {
+  "November 2026": "november-2026",
+  "December 2026": "december-2026",
+  "January 2027": "january-2027",
+};
+
 /** PSC programme titles look like "Examination Programme for the month of October 2026". */
 function examMonth(title: string): string | null {
   const m = title.match(
@@ -150,6 +157,15 @@ export default async function ExamCalendarPage() {
                     Official PDF
                     <ExternalLink size={14} />
                   </a>
+                )}
+                {month && MONTH_PAGE_IDS[month] && (
+                  <Link
+                    href={`/exam-calendar/${MONTH_PAGE_IDS[month]}`}
+                    className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500"
+                  >
+                    <CalendarDays size={16} />
+                    {month} പരീക്ഷകൾ
+                  </Link>
                 )}
               </li>
             );
