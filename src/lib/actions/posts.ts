@@ -140,14 +140,13 @@ export async function createPost(input: PostFormInput) {
   if (error) throw new Error(error.message);
 
   if (input.status === "published" && input.send_to_telegram !== false) {
-
-  if (error) throw new Error(error.message);
-
-  if (input.status === "published" && input.send_to_telegram !== false) {
     await postToTelegram(data as never);
   }
 
   revalidatePath("/admin/posts");
+  revalidatePath("/current-affairs");
+  redirect("/admin/posts");
+}
   revalidatePath("/current-affairs");
   redirect("/admin/posts");
 }
