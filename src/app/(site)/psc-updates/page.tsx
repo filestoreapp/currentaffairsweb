@@ -42,6 +42,22 @@ export default async function PscUpdatesPage({
         any deadline.
       </p>
 
+      <Link
+        href="/ranked-lists"
+        className="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-indigo-600 px-5 py-4 text-white shadow-sm transition hover:bg-indigo-500"
+      >
+        <span>
+          <span className="block font-extrabold">
+            റാങ്ക് ലിസ്റ്റിൽ നിങ്ങളുടെ പേര് തിരയൂ
+          </span>
+          <span className="mt-0.5 block text-sm text-indigo-100">
+            പേരോ രജിസ്റ്റർ നമ്പറോ നൽകൂ — റാങ്ക്, മാർക്ക്, കട്ട്-ഓഫ്
+            ഉടൻ കാണാം
+          </span>
+        </span>
+        <span className="shrink-0 text-xl font-black">→</span>
+      </Link>
+
       <div className="scrollbar-hide mt-6 flex gap-2 overflow-x-auto pb-2">
         <Link
           href="/psc-updates"

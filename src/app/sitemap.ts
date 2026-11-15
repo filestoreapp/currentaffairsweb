@@ -6,6 +6,8 @@ import { getPublishedExams } from "@/lib/exams";
 import { getPublishedPscCategories } from "@/lib/psc-categories";
 import { postPublicPath } from "@/lib/series-paths";
 import { STUDY_TOPICS_WITH_CONTENT } from "@/data/study-notes";
+import { getCategories } from "@/lib/ranked-lists";
+import { categorySlug } from "@/lib/rank-cutoffs";
 
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -35,11 +37,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("sitemap: failed to fetch posts/categories", err);
   }
 
+  // Ranked-list pages come from the bundled seed index (no DB dependency).
+  let rankedCategories: { category: string }[] = [];
+  try {
+    rankedCategories = getCategories();
+  } catch (err) {
+    console.error("sitemap: failed to load ranked-list seed", err);
+  }
+
   return [
     { url: siteUrl, lastModified: new Date() },
     { url: `${siteUrl}/current-affairs`, lastModified: new Date() },
     { url: `${siteUrl}/quiz`, lastModified: new Date() },
     { url: `${siteUrl}/mock-tests`, lastModified: new Date() },
+    { url: `${siteUrl}/ranked-lists`, lastModified: new Date() },
+    ...rankedCategories.map((c) => ({
+      url: `${siteUrl}/ranked-lists/${categorySlug(c.category)}`,
+      lastModified: new Date(),
+    })),
     { url: `${siteUrl}/syllabus`, lastModified: new Date() },
     { url: `${siteUrl}/about`, lastModified: new Date() },
     { url: `${siteUrl}/contact`, lastModified: new Date() },
