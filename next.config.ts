@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      // Duplicate-category cleanup (2026-11-15): the "Currentaffairs"
+      // category was renamed to "Current Affairs" and "Sports & Awards"
+      // was merged into "Sports". Keep the old slugs working for SEO.
+      {
+        source: "/category/currentaffairs",
+        destination: "/category/current-affairs",
+        permanent: true,
+      },
+      {
+        source: "/category/sports-and-awards",
+        destination: "/category/sports",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
