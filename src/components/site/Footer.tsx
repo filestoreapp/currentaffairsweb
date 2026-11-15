@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Send, ClipboardList, ScrollText, ListChecks, Trophy, Rss } from "lucide-react";
+import { Send, ClipboardList, ScrollText, ListChecks, Trophy, Rss, ListOrdered } from "lucide-react";
 
 const EXAM_LINKS = [
   { href: "/mock-tests", label: "Mock Tests", icon: ClipboardList },
   { href: "/exams#pyq-papers", label: "PYQ Papers", icon: ScrollText },
   { href: "/quiz", label: "Daily Quizzes", icon: Trophy },
   { href: "/syllabus", label: "Syllabus Tracker", icon: ListChecks },
+  { href: "/ranked-lists", label: "Ranked List Search", icon: ListOrdered },
 ];
 
 const LEARN_LINKS = [
