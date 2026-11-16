@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import {
+  getShortLinkInsights,
   getShortLinkStats,
   isShortLinksConfigured,
   shortLinkUrl,
@@ -8,6 +9,23 @@ import {
 import { createShortLinkAction } from "@/lib/actions/short-links";
 
 export const dynamic = "force-dynamic";
+
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** "2026-11-17" -> "17 Nov" (parsed as a plain date, never shifted by TZ). */
+function dayLabel(iso: string): string {
+  const [, m, d] = iso.split("-").map(Number);
+  return `${d} ${MONTHS[m - 1]}`;
+}
+
+/** "2026-11-17" -> "17 Nov 2026". */
+function dayLabelFull(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d} ${MONTHS[m - 1]} ${y}`;
+}
 
 /**
  * Admin: short links for Telegram posts.
@@ -23,9 +41,15 @@ export default async function ShortLinksAdminPage({
 }) {
   const params = await searchParams;
   const configured = isShortLinksConfigured();
-  const links = configured
-    ? await getShortLinkStats().catch(() => null)
-    : null;
+  const [links, insights] = await Promise.all([
+    configured ? getShortLinkStats().catch(() => null) : Promise.resolve(null),
+    configured
+      ? getShortLinkInsights().catch(() => null)
+      : Promise.resolve(null),
+  ]);
+  const maxDaily = insights
+    ? Math.max(1, ...insights.daily_14.map((d) => d.clicks))
+    : 1;
 
   return (
     <div>
@@ -51,6 +75,152 @@ export default async function ShortLinksAdminPage({
           Not configured yet: add NEON_DATABASE_URL in Vercel (Production)
           and redeploy before links can be created or counted.
         </p>
+      )}
+      {configured && !insights && (
+        <p className="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Insights unavailable — could not load click counts from Neon.
+        </p>
+      )}
+
+      {insights && (
+        <section className="mt-6">
+          <h2 className="text-lg font-bold">Insights at a glance</h2>
+          <p className="mt-1 text-xs text-slate-500">
+            All dates in IST. Counts come from the Neon database.
+          </p>
+
+          <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {[
+              { label: "Total clicks", value: insights.total_clicks },
+              { label: "Clicks today", value: insights.clicks_today },
+              { label: "Last 7 days", value: insights.clicks_7d },
+              { label: "Last 30 days", value: insights.clicks_30d },
+            ].map((c) => (
+              <div
+                key={c.label}
+                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  {c.label}
+                </p>
+                <p className="mt-1 text-3xl font-extrabold">{c.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 className="text-sm font-bold">Top links</h3>
+              {insights.top_links.length === 0 ? (
+                <p className="mt-2 text-sm text-slate-500">No links yet.</p>
+              ) : (
+                <ol className="mt-2 space-y-2">
+                  {insights.top_links.map((l, i) => (
+                    <li
+                      key={l.code}
+                      className="flex items-baseline justify-between gap-2 text-sm"
+                    >
+                      <span className="min-w-0 truncate">
+                        <span className="font-semibold text-slate-500">
+                          {i + 1}.
+                        </span>{" "}
+                        <Link
+                          href={shortLinkUrl(l.code)}
+                          target="_blank"
+                          className="font-medium text-sky-700 hover:underline"
+                        >
+                          /go/{l.code}
+                        </Link>
+                        {l.label && (
+                          <span className="text-slate-500"> — {l.label}</span>
+                        )}
+                      </span>
+                      <span className="shrink-0 font-semibold">
+                        {l.total_clicks}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 className="text-sm font-bold">Best day &amp; average</h3>
+              <dl className="mt-2 space-y-1 text-sm">
+                <div className="flex justify-between gap-2">
+                  <dt className="text-slate-500">Best day</dt>
+                  <dd className="font-semibold">
+                    {insights.best_day
+                      ? `${dayLabelFull(insights.best_day.day)} — ${
+                          insights.best_day.clicks
+                        } clicks`
+                      : "—"}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <dt className="text-slate-500">
+                    Average / day (30 days)
+                  </dt>
+                  <dd className="font-semibold">
+                    {insights.avg_per_day_30d}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <dt className="text-slate-500">Links with zero clicks</dt>
+                  <dd className="font-semibold">
+                    {insights.zero_click_links.length}
+                  </dd>
+                </div>
+              </dl>
+              {insights.zero_click_links.length > 0 && (
+                <ul className="mt-2 space-y-1 text-sm">
+                  {insights.zero_click_links.map((l) => (
+                    <li key={l.code} className="truncate">
+                      <Link
+                        href={shortLinkUrl(l.code)}
+                        target="_blank"
+                        className="text-sky-700 hover:underline"
+                      >
+                        /go/{l.code}
+                      </Link>
+                      {l.label && (
+                        <span className="text-slate-500"> — {l.label}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <h3 className="text-sm font-bold">Daily clicks — last 14 days</h3>
+            <ul className="mt-3 space-y-1.5">
+              {insights.daily_14.map((d) => (
+                <li key={d.day} className="flex items-center gap-2 text-sm">
+                  <span className="w-14 shrink-0 text-xs text-slate-500">
+                    {dayLabel(d.day)}
+                  </span>
+                  <span className="h-4 flex-1 overflow-hidden rounded bg-slate-100">
+                    <span
+                      className="block h-full rounded bg-sky-600"
+                      style={{
+                        width: `${
+                          d.clicks === 0
+                            ? 0
+                            : Math.max(2, (d.clicks / maxDaily) * 100)
+                        }%`,
+                      }}
+                    />
+                  </span>
+                  <span className="w-8 shrink-0 text-right font-semibold">
+                    {d.clicks}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
       )}
 
       <form

@@ -155,6 +155,105 @@ export async function recordShortLinkClick(code: string): Promise<void> {
     ON CONFLICT (code, day) DO UPDATE SET clicks = short_link_clicks_daily.clicks + 1`;
 }
 
+export interface ShortLinkInsights {
+  total_clicks: number;
+  clicks_today: number;
+  clicks_7d: number;
+  clicks_30d: number;
+  top_links: { code: string; label: string; total_clicks: number }[];
+  daily_14: { day: string; clicks: number }[];
+  zero_click_links: { code: string; label: string }[];
+  best_day: { day: string; clicks: number } | null;
+  avg_per_day_30d: number;
+}
+
+/**
+ * Insights at a glance for the admin page: summary totals, top links,
+ * daily clicks for the last 14 IST days (zero-filled), links with no
+ * clicks, best day and 30-day average. All dates in IST.
+ */
+export async function getShortLinkInsights(): Promise<ShortLinkInsights> {
+  const sql = getSql();
+  const today = istDate(new Date());
+  const since7 = istDateDaysAgo(6);
+  const since30 = istDateDaysAgo(29);
+  const since14 = istDateDaysAgo(13);
+
+  const [summaryRows, topRows, dailyRows, zeroRows, bestRows] =
+    await Promise.all([
+      sql`
+        SELECT
+          COALESCE(SUM(clicks), 0)::int AS total_clicks,
+          COALESCE(SUM(CASE WHEN day = ${today}::date THEN clicks ELSE 0 END), 0)::int AS clicks_today,
+          COALESCE(SUM(CASE WHEN day >= ${since7}::date THEN clicks ELSE 0 END), 0)::int AS clicks_7d,
+          COALESCE(SUM(CASE WHEN day >= ${since30}::date THEN clicks ELSE 0 END), 0)::int AS clicks_30d
+        FROM short_link_clicks_daily
+      `,
+      sql`
+        SELECT l.code, l.label, COALESCE(SUM(c.clicks), 0)::int AS total_clicks
+        FROM short_links l
+        LEFT JOIN short_link_clicks_daily c ON c.code = l.code
+        GROUP BY l.code, l.label, l.created_at
+        ORDER BY total_clicks DESC, l.created_at ASC
+        LIMIT 5
+      `,
+      sql`
+        SELECT day::text AS day, SUM(clicks)::int AS clicks
+        FROM short_link_clicks_daily
+        WHERE day >= ${since14}::date
+        GROUP BY day
+        ORDER BY day ASC
+      `,
+      sql`
+        SELECT l.code, l.label
+        FROM short_links l
+        LEFT JOIN short_link_clicks_daily c ON c.code = l.code
+        GROUP BY l.code, l.label, l.created_at
+        HAVING COALESCE(SUM(c.clicks), 0) = 0
+        ORDER BY l.created_at DESC
+      `,
+      sql`
+        SELECT day::text AS day, SUM(clicks)::int AS clicks
+        FROM short_link_clicks_daily
+        GROUP BY day
+        ORDER BY clicks DESC, day DESC
+        LIMIT 1
+      `,
+    ]);
+
+  const summary = summaryRows[0] as {
+    total_clicks: number;
+    clicks_today: number;
+    clicks_7d: number;
+    clicks_30d: number;
+  };
+
+  // Zero-fill the last 14 IST days so the bar chart always shows 14 rows.
+  const byDay = new Map<string, number>();
+  for (const r of dailyRows as { day: string; clicks: number }[]) {
+    byDay.set(r.day, r.clicks);
+  }
+  const daily_14: { day: string; clicks: number }[] = [];
+  for (let i = 13; i >= 0; i--) {
+    const day = istDateDaysAgo(i);
+    daily_14.push({ day, clicks: byDay.get(day) ?? 0 });
+  }
+
+  const best = (bestRows as { day: string; clicks: number }[])[0];
+  return {
+    total_clicks: summary.total_clicks,
+    clicks_today: summary.clicks_today,
+    clicks_7d: summary.clicks_7d,
+    clicks_30d: summary.clicks_30d,
+    top_links: topRows as unknown as ShortLinkInsights["top_links"],
+    daily_14,
+    zero_click_links: zeroRows as unknown as ShortLinkInsights["zero_click_links"],
+    best_day: best ? { day: best.day, clicks: best.clicks } : null,
+    avg_per_day_30d: Math.round((summary.clicks_30d / 30) * 10) / 10,
+  };
+}
+
+/** Every link with its total clicks and clicks in the last 7 IST days. */
 export interface ShortLinkStats {
   code: string;
   target_url: string;
@@ -164,7 +263,6 @@ export interface ShortLinkStats {
   clicks_7d: number;
 }
 
-/** Every link with its total clicks and clicks in the last 7 IST days. */
 export async function getShortLinkStats(): Promise<ShortLinkStats[]> {
   const sql = getSql();
   const since = istDateDaysAgo(6);
