@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   createPyqDownloadUrl,
   isPdfStorageConfigured,
+  toWorkerDownloadUrl,
 } from "@/lib/pdf-storage";
 import pyqPapers from "@/data/pyq-directory.json";
 
@@ -9,9 +10,14 @@ export const dynamic = "force-dynamic";
 
 /**
  * Download a directory paper's PDF from B2.
- * The B2 bucket is private, so this mints a short-lived presigned GET URL
- * and redirects the visitor straight to B2 — the bytes never pass through
- * Vercel, so no serverless bandwidth is consumed.
+ * The B2 bucket is private, so this mints a short-lived presigned GET URL.
+ * When the Cloudflare Worker is configured (PYQ_WORKER_ORIGIN), the visitor
+ * is redirected to the Worker instead: it forwards the signature to B2 and
+ * caches the file at the Cloudflare edge, so repeat downloads never touch
+ * B2 — B2 -> Cloudflare egress is free, keeping downloads off B2's
+ * 1 GB/day free cap. The bytes never pass through Vercel either way, so no
+ * serverless bandwidth is consumed. When the Worker is not configured, the
+ * visitor is redirected straight to the presigned B2 URL as before.
  *
  * Only keys that belong to directory papers may be served: the key must
  * match the directory layout (pyq/<year>/<slug>.pdf) AND be present in
@@ -46,7 +52,9 @@ export async function GET(req: Request) {
 
   try {
     const url = await createPyqDownloadUrl(key);
-    return NextResponse.redirect(url, 307);
+    // Through the Cloudflare Worker cache when configured, else straight
+    // to the presigned B2 URL (fallback while the Worker is not deployed).
+    return NextResponse.redirect(toWorkerDownloadUrl(url) ?? url, 307);
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Download failed." },

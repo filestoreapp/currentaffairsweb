@@ -170,3 +170,38 @@ export async function createPyqDownloadUrl(
     { expiresIn: expiresInSeconds }
   );
 }
+
+// Cloudflare Worker that serves cached PDFs (see ~/workspace/pyq-worker/worker.js).
+// B2 -> Cloudflare egress is free under the Backblaze–Cloudflare Bandwidth
+// Alliance, so routing downloads through the Worker keeps them off B2's
+// 1 GB/day free download cap. Unset = Worker not deployed yet: callers fall
+// back to the presigned B2 URL as before. Set to the Worker's public origin
+// (e.g. https://psc-pyq-files.<account>.workers.dev, later
+// https://files.psccurrentaffairs.online) once it is deployed.
+const PYQ_WORKER_ORIGIN: string | null =
+  process.env.PYQ_WORKER_ORIGIN || null;
+
+/**
+ * Rewrite a presigned B2 download URL to go through the Cloudflare Worker.
+ * Returns null when the Worker is not configured (caller falls back to the
+ * presigned URL) or the URL is not one we minted. The Worker expects the
+ * object key as the path (no bucket prefix) and the signature query intact;
+ * it forwards both to B2 and caches the response by path.
+ */
+export function toWorkerDownloadUrl(presignedUrl: string): string | null {
+  if (!PYQ_WORKER_ORIGIN) return null;
+  let u: URL;
+  try {
+    u = new URL(presignedUrl);
+  } catch {
+    return null;
+  }
+  if (u.origin !== new URL(S3_ENDPOINT).origin) return null;
+  const prefix = `/${S3_BUCKET_NAME}/`;
+  if (!u.pathname.startsWith(prefix)) return null;
+  const key = u.pathname.slice(prefix.length);
+  if (!key) return null;
+  const worker = new URL(PYQ_WORKER_ORIGIN);
+  const base = worker.pathname.replace(/\/+$/, "");
+  return `${worker.origin}${base}/${key}${u.search}`;
+}
