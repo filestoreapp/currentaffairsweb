@@ -1,5 +1,25 @@
 import type { Post, PscUpdate } from "@/lib/types";
 import { postPublicPath } from "@/lib/series-paths";
+import { isShortLinksConfigured, mintShortLink } from "@/lib/short-links";
+
+/**
+ * Swap a site URL for a short /go/ link when the shortener is configured.
+ * Any failure (Neon down, cold start, bad URL) falls back to the full URL —
+ * a Telegram announcement must NEVER fail because the shortener is down.
+ */
+async function shortenForTelegram(url: string, label: string): Promise<string> {
+  if (!isShortLinksConfigured()) return url;
+  try {
+    const { shortUrl } = await mintShortLink(url, label);
+    return shortUrl;
+  } catch (err) {
+    console.error(
+      "Short link mint failed, using full URL:",
+      err instanceof Error ? err.message : err
+    );
+    return url;
+  }
+}
 
 
 /**
@@ -66,7 +86,10 @@ export async function postToTelegram(post: Post) {
     return { skipped: true };
   }
 
-  const link = `${siteBase()}${postPublicPath(post.slug)}`;
+  const link = await shortenForTelegram(
+    `${siteBase()}${postPublicPath(post.slug)}`,
+    post.slug
+  );
   const caption = `📢 <b>${esc(post.title)}</b>\n\n${esc(post.excerpt ?? "")}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   // Every post now gets a cover image (either uploaded, or an
@@ -126,7 +149,10 @@ export async function postMockToTelegram(mock: {
     return { skipped: true };
   }
 
-  const link = `${siteBase()}/mock-tests/${mock.slug}`;
+  const link = await shortenForTelegram(
+    `${siteBase()}/mock-tests/${mock.slug}`,
+    mock.slug
+  );
   const marking =
     mock.negativeMarking > 0
       ? `+1 for correct, −${mock.negativeMarking} for wrong`
@@ -164,7 +190,10 @@ export async function postPscUpdateToTelegram(item: PscUpdate) {
   }
 
   const label = SOURCE_LABELS[item.source] ?? item.source;
-  const link = `${siteBase()}/psc-updates/${item.id}`;
+  const link = await shortenForTelegram(
+    `${siteBase()}/psc-updates/${item.id}`,
+    `psc-update-${item.id}`
+  );
   const text = `📢 <b>New ${esc(label)}</b>\n\n${esc(item.title)}\n\n🔗 ${link}${CHANNEL_FOOTER}`;
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
@@ -207,7 +236,10 @@ export async function postPyqToTelegram(paper: {
   }
 
   const siteUrl = siteBase();
-  const link = `${siteUrl}/pyqs/${paper.slug}`;
+  const link = await shortenForTelegram(
+    `${siteUrl}/pyqs/${paper.slug}`,
+    paper.slug
+  );
   const examLabel =
     [paper.examName, paper.examYear].filter(Boolean).join(" ") || "Kerala PSC";
   const marking =
