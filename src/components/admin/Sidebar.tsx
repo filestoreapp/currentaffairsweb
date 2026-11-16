@@ -17,6 +17,7 @@ import {
   Gauge,
   GraduationCap,
   Hash,
+  Link2,
   Menu,
   X,
   Newspaper,
@@ -28,6 +29,7 @@ const SECTIONS = [
     links: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
       { href: "/admin/usage", label: "Usage", icon: Gauge },
+      { href: "/admin/short-links", label: "Short Links", icon: Link2 },
     ],
   },
   {
