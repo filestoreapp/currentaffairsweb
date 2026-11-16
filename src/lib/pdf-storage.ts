@@ -174,12 +174,12 @@ export async function createPyqDownloadUrl(
 // Cloudflare Worker that serves cached PDFs (see ~/workspace/pyq-worker/worker.js).
 // B2 -> Cloudflare egress is free under the Backblaze–Cloudflare Bandwidth
 // Alliance, so routing downloads through the Worker keeps them off B2's
-// 1 GB/day free download cap. Unset = Worker not deployed yet: callers fall
-// back to the presigned B2 URL as before. Set to the Worker's public origin
-// (e.g. https://psc-pyq-files.<account>.workers.dev, later
-// https://files.psccurrentaffairs.online) once it is deployed.
+// 1 GB/day free download cap. Defaults to the Worker's custom domain
+// (deployed and verified live 2026-11-16); set PYQ_WORKER_ORIGIN to
+// override it, or to "" to disable the Worker and fall back to the
+// presigned B2 URL.
 const PYQ_WORKER_ORIGIN: string | null =
-  process.env.PYQ_WORKER_ORIGIN || null;
+  process.env.PYQ_WORKER_ORIGIN ?? "https://files.psccurrentaffairs.online";
 
 /**
  * Rewrite a presigned B2 download URL to go through the Cloudflare Worker.
