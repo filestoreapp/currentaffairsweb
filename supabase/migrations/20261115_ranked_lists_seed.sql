@@ -1,7 +1,7 @@
 -- 2026-11-15: Ranked-list seed data (generated — do not hand-edit).
 -- Run AFTER 20261115_ranked_lists.sql in the Supabase SQL Editor.
--- Source: 186 official PSC ranked-list PDFs, 8822 entries, 1291 cut-offs.
--- Generated: 2026-11-16T01:39:49.395437+00:00
+-- Source: 187 official PSC ranked-list PDFs, 8979 entries, 1309 cut-offs.
+-- Generated: 2026-11-18T01:21:09.428778+00:00
 
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('316-2025-816-2026-roq', '316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '816/2026/ROQ', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RankList316202500_20261113.pdf', 8, 8, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('720-2024-818-2026-ss-iv', '720/2024', 'LECTURER IN ELECTRONICS ENGINEERING (GOVT. POLYTECHNIC COLLEGES) (Cat No.720/2024)', '818/2026/SS IV', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_720_2024_LectElectronicsEngg_Poly_TED.pdf', 142, 55, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
@@ -189,6 +189,7 @@ insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('468-2025-729-2026-dor', '468/2025', 'ECG TECHNICIAN GR II', '729/2026/DOR', '2026-10-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-10/RankList_468_25_2026.pdf', 57, 10, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('604-2024-726-2026-ss-ii', '604/2024', 'High School Teacher ( Hindi)', '726/2026/SS II', '2026-10-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-10/6042024_01_0_0.pdf', 177, 91, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('427-2024-679-2026-roe', '427/2024', 'Police Constable Driver / Woman Police Constable Driver', '679/2026/ROE', '2026-10-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-10/4272024_00_0_0.pdf', 412, 322, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
+insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('601-2024-822-2026-ss-ii', '601/2024', 'High School Teacher ( Malayalam)', '822/2026/SS II', '2026-11-17', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/6012024_10_0_0-1.pdf', 157, 68, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 
 insert into ranked_list_entries (ranked_list_id, rank, register_number, name, total_marks, community, list_section) values
   ('316-2025-816-2026-roq', 1, '1089261', 'MARY VINEETHA SHAJU', NULL, 'LC', 'main'),
@@ -9046,7 +9047,164 @@ insert into ranked_list_entries (ranked_list_id, rank, register_number, name, to
   ('427-2024-679-2026-roe', 5, '1013591', 'SREERAG R R', 71.67, 'FORWARD', 'supplementary:Hindu Nadar'),
   ('427-2024-679-2026-roe', 6, '1009369', 'ABHIJITH B P', 71.33, 'FORWARD', 'supplementary:Hindu Nadar'),
   ('427-2024-679-2026-roe', 7, '1005753', 'AMAL P V', 66.85, 'FORWARD', 'supplementary:Hindu Nadar'),
-  ('427-2024-679-2026-roe', 8, '1002455', 'MUKESH V L', 63.94, 'FORWARD', 'supplementary:Hindu Nadar')
+  ('427-2024-679-2026-roe', 8, '1002455', 'MUKESH V L', 63.94, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 1, '64', 'SHAHANA SHERIN P P', 70.33, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 2, '131', 'NIKHIL THANKAPPAN', 64.67, 'SC-VELAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 3, '21', 'PRIYA M', 61.0, 'FORWARD', 'main'),
+  ('601-2024-822-2026-ss-ii', 4, '129', 'SARAYU G K', 60.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 5, '118', 'JISHA K', 59.67, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 6, '44', 'MARIYA SUNNY', 59.33, 'FORWARD', 'main'),
+  ('601-2024-822-2026-ss-ii', 7, '22', 'AISWARYA P', 57.67, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 8, '150', 'RESHMA T P', 56.33, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 9, '136', 'MANEESHA P', 56.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 10, '151', 'AMRUTHA T S', 56.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 11, '36', 'NAZRUDHEEN P', 55.33, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 12, '60', 'DHEENA P P', 55.33, 'SC-KANAKKAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 13, '17', 'ARDRA B K', 55.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 14, '23', 'ANJITHA P', 54.0, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 15, '33', 'SRUTHI M', 54.0, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 16, '160', 'SREELETHA M', 53.67, 'FORWARD', 'main'),
+  ('601-2024-822-2026-ss-ii', 17, '67', 'SHYAMLI P P', 53.33, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 18, '28', 'BINSY C', 53.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 19, '145', 'SANDHRA K', 52.67, 'SC-PANAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 20, '155', 'BEENA P', 52.33, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 21, '35', 'MINHAJATH', 52.33, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 22, '162', 'SUBISHA E', 52.33, 'SC-PERUMANNAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 23, '142', 'AFRATH MAFRUSA A P', 52.0, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 24, '41', 'ROHINI N P', 52.0, 'V-THATTAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 25, '149', 'SWATHI V', 52.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 26, '156', 'SREESHMA P', 52.0, 'SC-MANNAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 27, '69', 'SHIJI K N', 51.67, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 28, '56', 'MARY JOHNSON T', 51.67, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 29, '143', 'SOORYA KALAMPARAMBIL', 51.67, 'V-THATTAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 30, '31', 'ARYA K', 51.67, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 31, '153', 'MANJUSHA K', 51.33, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 32, '12', 'HARSHA HARI', 51.33, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 33, '119', 'SHIJI T', 51.0, 'FORWARD', 'main'),
+  ('601-2024-822-2026-ss-ii', 34, '123', 'BINITHA N P', 51.0, 'SC-KANAKKAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 35, '10', 'SHEMEEMUNNEESA M', 51.0, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 36, '13', 'ANJALI K', 50.67, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 37, '92', 'SHINI A', 50.67, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 38, '43', 'DIVYA C T', 50.33, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 39, '42', 'RINCY P', 50.33, 'SC-KANAKKAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 40, '96', 'CITHARA V KARTHA', 50.33, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 41, '86', 'RAJISHA P C', 50.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 42, '53', 'PRASEETHA T K (THEKKUM', 50.0, 'SC-PERUMANNAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 43, '25', 'SYAMLI K V', 50.0, 'SC-KANAKKAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 44, '58', 'SARIGA K', 50.0, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 45, '77', 'ARDRA M P', 50.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 46, '18', 'VAISHNA C', 50.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 47, '85', 'ELIZABETH SHEEN SANDRA', 50.0, 'LC', 'main'),
+  ('601-2024-822-2026-ss-ii', 48, '29', 'ANJANA B NAIR', 50.0, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 49, '27', 'DEEPTHI V', 49.67, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 50, '82', 'SOORYA P', 49.67, 'SC-CHERUMAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 51, '39', 'ANAKHA A', 49.67, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 52, '55', 'RAJITHA RAVI', 49.33, 'V-VISWAKARMA', 'main'),
+  ('601-2024-822-2026-ss-ii', 53, '46', 'JISHA A', 49.33, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 54, '71', 'RAMLA K', 49.33, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 55, '140', 'BABU T P', 49.33, 'SC-KANAKKAN', 'main'),
+  ('601-2024-822-2026-ss-ii', 56, '26', 'SAUMYA P V', 49.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 57, '125', 'ANJU P', 49.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 58, '11', 'ARYA K', 49.0, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 59, '108', 'DIVYA V', 48.67, 'THIYYA', 'main'),
+  ('601-2024-822-2026-ss-ii', 60, '70', 'JISHANA SHIRIL K', 48.67, 'M-MUSLIM', 'main'),
+  ('601-2024-822-2026-ss-ii', 61, '83', 'GEETHAKUMARI G', 48.33, 'OBC-', 'main'),
+  ('601-2024-822-2026-ss-ii', 62, '74', 'SOBHIKA P A', 48.33, 'SC-KURAVA', 'main'),
+  ('601-2024-822-2026-ss-ii', 63, '157', 'SUMAYYA M', 48.33, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 64, '40', 'KAVYASURESH C', 48.33, NULL, 'main'),
+  ('601-2024-822-2026-ss-ii', 65, '152', 'CHITHRA M R', 47.67, 'FORWARD', 'main'),
+  ('601-2024-822-2026-ss-ii', 66, '159', 'JANNATHUNNISA T P N', 47.0, 'M-MAPPILA', 'main'),
+  ('601-2024-822-2026-ss-ii', 67, '147', 'HARITHA R', 46.67, 'OBC-KULALA', 'main'),
+  ('601-2024-822-2026-ss-ii', 68, '14', 'ATHIRA K P', 46.67, 'OBC-SALIYAS', 'main'),
+  ('601-2024-822-2026-ss-ii', 1, '97', 'RANISHA K N', 48.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 2, '121', 'SUVIDA OP', 47.67, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 3, '20', 'SOUMYA P P', 47.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 4, '52', 'JINITHA T', 47.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 5, '130', 'ANASWARA A', 46.67, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 6, '59', 'SIMI K S', 46.33, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 7, '161', 'MEKHA K', 46.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 8, '45', 'VIJI THEKKEKKARA', 46.0, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 9, '100', 'SHIBIN P', 46.0, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 10, '78', 'SOUMYA T S', 45.67, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 11, '68', 'RAMYA P M', 45.0, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 12, '93', 'LIJI K B', 44.33, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 13, '16', 'REEJA K', 44.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 14, '79', 'SOORYA K P', 44.33, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 15, '50', 'ANUSHA K', 44.0, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 16, '24', 'MYDHILI P S', 44.0, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('601-2024-822-2026-ss-ii', 1, '154', 'AMRITHA P P', 47.67, 'SC-KANAKKAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 2, '38', 'RESHMA P', 47.0, 'SC-VETTUVAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 3, '135', 'NAYANA KADINJERI', 46.0, 'SC-KANAKKAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 4, '138', 'RAJITHA M', 46.0, 'SC-CHERUMAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 5, '19', 'SMITHA P', 45.67, 'SC-CHERUMAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 6, '47', 'PRAMEELA K', 45.33, 'SC-KANAKKAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 7, '89', 'NAYANA K', 45.33, 'SC-CHERUMAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 8, '66', 'SHIJILA P', 45.33, 'SC-CHERUMAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 9, '32', 'ADITHYA S A', 45.33, 'SC-PULAYAN', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 10, '117', 'ANITHA E V', 45.0, 'SC-PULAYA', 'supplementary:Scheduled Caste'),
+  ('601-2024-822-2026-ss-ii', 1, '107', 'RESHMA A V', 29.33, 'ST-KURICHIYAN', 'supplementary:Scheduled Tribe'),
+  ('601-2024-822-2026-ss-ii', 2, '109', 'GINCY GEORGE', 20.67, 'ST-MALAI', 'supplementary:Scheduled Tribe'),
+  ('601-2024-822-2026-ss-ii', 3, '146', 'VISMAYA K', 17.67, 'ST-PANIYAN', 'supplementary:Scheduled Tribe'),
+  ('601-2024-822-2026-ss-ii', 1, '112', 'SANOOBA M', 47.0, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 2, '128', 'BUSAIRA PATTARKADAVAN', 44.33, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 3, '158', 'SALEEMA P', 44.0, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 4, '4', 'NASEEF V K', 43.0, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 5, '144', 'MUFSILA P V', 42.67, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 6, '37', 'SABNA K', 42.0, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 7, '62', 'NUSAIBA C K', 41.0, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 8, '15', 'FYROOS JAHAN K T', 40.33, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 9, '34', 'THANSI T P', 40.33, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 10, '30', 'UMMU HABEEBA', 39.67, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 11, '63', 'SALIMATH T M', 39.67, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 12, '139', 'HASEENA RUBY K', 38.33, 'M-MAPPILA', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 1, '103', 'ABHA P XAVIER', 45.67, 'LC', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 2, '114', 'JOMOL V JOHN', 41.67, 'LC', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 3, '94', 'JOLLY T', 41.33, 'LC', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 4, '120', 'RENCY SOLOMON', 40.0, 'LC', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 5, '95', 'JAIN MARY', 36.67, 'LC', 'supplementary:Muslim'),
+  ('601-2024-822-2026-ss-ii', 1, '124', 'SOUMYA N P', 45.0, 'OBC-', 'supplementary:OBC'),
+  ('601-2024-822-2026-ss-ii', 2, '61', 'AMMU NIRANJANA', 44.33, 'OBC-', 'supplementary:OBC'),
+  ('601-2024-822-2026-ss-ii', 3, '72', 'SREEKALA T V', 44.0, 'OBC-SALIYAS', 'supplementary:OBC'),
+  ('601-2024-822-2026-ss-ii', 4, '141', 'ARYA N V', 41.67, 'OBC-SALIYAS', 'supplementary:OBC'),
+  ('601-2024-822-2026-ss-ii', 5, '65', 'ASWATHY M S', 39.33, 'OBC-CHAKKALA', 'supplementary:OBC'),
+  ('601-2024-822-2026-ss-ii', 1, '137', 'ASWATHY C K', 46.33, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('601-2024-822-2026-ss-ii', 2, '54', 'ANJU ARAVIND E P', 45.67, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('601-2024-822-2026-ss-ii', 3, '49', 'SHIJI KOYAPPAKUNNATH', 45.33, 'V-VISWAKARMALA', 'supplementary:Viswakarma'),
+  ('601-2024-822-2026-ss-ii', 4, '75', 'SARANYA V P', 45.0, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('601-2024-822-2026-ss-ii', 1, '98', 'SALI V', 35.67, 'SIUC', 'supplementary:SIUC Nadar'),
+  ('601-2024-822-2026-ss-ii', 2, '132', 'DHANYA S S', 27.33, 'SIUC', 'supplementary:SIUC Nadar'),
+  ('601-2024-822-2026-ss-ii', 3, '76', 'JINI S P', 26.33, 'SIUC', 'supplementary:SIUC Nadar'),
+  ('601-2024-822-2026-ss-ii', 4, '88', 'SHEEJA KUMARI C R', 22.0, 'SIUC', 'supplementary:SIUC Nadar'),
+  ('601-2024-822-2026-ss-ii', 5, '116', 'AKHILA G R', 21.67, 'SIUC', 'supplementary:SIUC Nadar'),
+  ('601-2024-822-2026-ss-ii', 1, '91', 'ANEESHA G', 37.0, 'SCCC-PULAYA', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('601-2024-822-2026-ss-ii', 2, '115', 'LUDHIYA JAMES', 36.0, 'SCCC-CHERAMAR', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('601-2024-822-2026-ss-ii', 3, '111', 'PRIYA JANCY M', 30.67, 'SCCC-PULAYAN', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('601-2024-822-2026-ss-ii', 4, '90', 'SHIBITHA LILLY MATHEW', 29.67, 'SCCC-CHERAMAR', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('601-2024-822-2026-ss-ii', 5, '126', 'HELDA MERIN CHACKO', 26.33, 'SCCC-CHERAMAR', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('601-2024-822-2026-ss-ii', 1, '81', 'RAGITHA P', 46.33, 'D-MUKAYA', 'supplementary:Dheevara'),
+  ('601-2024-822-2026-ss-ii', 2, '106', 'SUMISHA V', 40.67, 'D-MUKKUVAN', 'supplementary:Dheevara'),
+  ('601-2024-822-2026-ss-ii', 3, '127', 'DIVYA K S', 36.33, 'D-DHEEVARA', 'supplementary:Dheevara'),
+  ('601-2024-822-2026-ss-ii', 1, '84', 'RAJI S N', 45.33, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 2, '105', 'VIDHYA LEKSHMI C S', 33.0, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 3, '104', 'BHAGYALEKSHMI B', 31.33, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 4, '102', 'ABHIRAMI A', 29.0, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 5, '87', 'SHERLY S K', 22.33, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 1, '122', 'ADARSH K', 47.33, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 2, '101', 'ATHULYA K', 46.67, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 3, '134', 'PRAJIL P', 44.0, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 4, '113', 'KEERTHI S NAIR', 44.0, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 5, '80', 'REJITHAMOL S', 43.67, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 6, '148', 'JIJI P', 43.0, 'FORWARD', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 1, '4', 'NASEEF V K', 43.0, 'DA-BLIND', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 2, '7', 'HARSHA V', 35.33, 'DA-LV', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 3, '2', 'LAKSHMIBHAI T', 25.0, 'DA-LV', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 4, '6', 'ABOOBACKER P A', 23.0, 'DA-BLIND', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 5, '5', 'HAJIRA A N', 21.67, 'DA-BLIND', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 1, '9', 'PRASAD K KOVAYIL', 36.67, 'DA-LD/CP', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 2, '73', 'SALINI C KUNJAN', 30.33, 'DA-LD/CP', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 3, '8', 'ANCY MARY VARGHESE M', 28.0, 'DA-LD/CP', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 4, '1', 'SANGEETHA C P', 25.33, 'DA-LD/CP', 'supplementary:Hindu Nadar'),
+  ('601-2024-822-2026-ss-ii', 5, '3', 'SISIRA P', 17.33, 'DA-LD/CP', 'supplementary:Hindu Nadar')
   on conflict (ranked_list_id, list_section, rank) do nothing;
 
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '316-2025-816-2026-roq', 2026, 'ALL', NULL, 8, 8) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
@@ -10340,5 +10498,23 @@ insert into cutoffs (category_number, post, ranked_list_id, list_year, community
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('427/2024', 'Police Constable Driver / Woman Police Constable Driver', '427-2024-679-2026-roe', 2026, 'THIYYA', 63.67, 313, 53) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('427/2024', 'Police Constable Driver / Woman Police Constable Driver', '427-2024-679-2026-roe', 2026, 'V-ASARI', 62.67, 321, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('427/2024', 'Police Constable Driver / Woman Police Constable Driver', '427-2024-679-2026-roe', 2026, 'V-THATTAN', 91.0, 6, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'ALL', 46.67, 68, 68) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'FORWARD', 47.67, 65, 5) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'LC', 50.0, 47, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'M-MAPPILA', 47.0, 66, 8) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'M-MUSLIM', 48.67, 60, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'OBC-', 48.33, 61, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'OBC-KULALA', 46.67, 67, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'OBC-SALIYAS', 46.67, 68, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-CHERUMAN', 49.67, 50, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-KANAKKAN', 49.33, 55, 5) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-KURAVA', 48.33, 62, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-MANNAN', 52.0, 26, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-PANAN', 52.67, 19, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-PERUMANNAN', 50.0, 42, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'SC-VELAN', 64.67, 2, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'THIYYA', 48.67, 59, 21) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'V-THATTAN', 51.67, 29, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('601/2024', 'High School Teacher ( Malayalam)', '601-2024-822-2026-ss-ii', 2026, 'V-VISWAKARMA', 49.33, 52, 6) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 
 select (select count(*) from ranked_lists) as ranked_lists, (select count(*) from ranked_list_entries) as entries, (select count(*) from cutoffs) as cutoffs;
