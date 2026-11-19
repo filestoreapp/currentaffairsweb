@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Serve images straight from the CDN (already-compressed WebP).
+    // Vercel Hobby image-optimization quota ran out on 2026-11-19 and
+    // /_next/image started answering 402, breaking every thumbnail.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
