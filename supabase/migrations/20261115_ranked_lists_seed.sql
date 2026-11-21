@@ -1,7 +1,7 @@
 -- 2026-11-15: Ranked-list seed data (generated — do not hand-edit).
 -- Run AFTER 20261115_ranked_lists.sql in the Supabase SQL Editor.
--- Source: 192 official PSC ranked-list PDFs, 9499 entries, 1357 cut-offs.
--- Generated: 2026-11-20T01:20:48.582722+00:00
+-- Source: 195 official PSC ranked-list PDFs, 9608 entries, 1373 cut-offs.
+-- Generated: 2026-11-21T01:20:46.501033+00:00
 
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('316-2025-816-2026-roq', '316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '816/2026/ROQ', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RankList316202500_20261113.pdf', 8, 8, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('720-2024-818-2026-ss-iv', '720/2024', 'LECTURER IN ELECTRONICS ENGINEERING (GOVT. POLYTECHNIC COLLEGES) (Cat No.720/2024)', '818/2026/SS IV', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_720_2024_LectElectronicsEngg_Poly_TED.pdf', 142, 55, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
@@ -195,6 +195,9 @@ insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('646-2023-825-2026-ss-vi', '646/2023', 'Junior Instructor(Hospital House Keeping)', '825/2026/SS VI', '2026-11-18', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_646_2023_JrInstructor_Hospital%20HouseKeeping_ITD.pdf', 15, 9, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('411-2025-815-2026-dor', '411/2025', 'LAST GRADE SERVANTS (EX-SERVICEMEN ONLY)(Ist NCA for : SCCC SCHEDULED CASTE CONVERTS TO CHRISTIANITY )', '815/2026/DOR', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL41125.pdf', 1, 1, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('410-2025-814-2026-dor', '410/2025', 'LAST GRADE SERVANTS (EX-SERVICEMEN ONLY)(Ist NCA for : HINDU NADAR )', '814/2026/DOR', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL41025.pdf', 4, 4, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
+insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('287-2025-826-2026-ss-ii', '287/2025', 'HIGH SCHOOL TEACHER (ENGLISH) (Recruitment By Transfer)', '826/2026/SS II', '2026-11-19', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/ranklist2872025_with_mark.pdf', 6, 6, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
+insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('776-2025-823-2026-doj', '776/2025', 'LINEMAN', '823/2026/DOJ', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/LINEMAN.pdf', 99, 34, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
+insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('389-2025-828-2026-ss-iv', '389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '828/2026/SS IV', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_389_2025_AgriOfficer_2ndNCA_SCCC.pdf', 4, 4, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 
 insert into ranked_list_entries (ranked_list_id, rank, register_number, name, total_marks, community, list_section) values
   ('316-2025-816-2026-roq', 1, '1089261', 'MARY VINEETHA SHAJU', NULL, 'LC', 'main'),
@@ -9731,7 +9734,118 @@ insert into ranked_list_entries (ranked_list_id, rank, register_number, name, to
   ('410-2025-814-2026-dor', 1, '1003670', 'PRASAD N', NULL, 'HINDU', 'main'),
   ('410-2025-814-2026-dor', 2, '1004177', 'VIPIN A K', NULL, 'HINDU', 'main'),
   ('410-2025-814-2026-dor', 3, '1005021', 'VIVA VISWAN V V', NULL, 'HINDU', 'main'),
-  ('410-2025-814-2026-dor', 4, '1002039', 'BINU N V', NULL, 'HINDU', 'main')
+  ('410-2025-814-2026-dor', 4, '1002039', 'BINU N V', NULL, 'HINDU', 'main'),
+  ('287-2025-826-2026-ss-ii', 1, '5', 'JISHILA P P', 65.0, NULL, 'main')
+  on conflict (ranked_list_id, list_section, rank) do nothing;
+insert into ranked_list_entries (ranked_list_id, rank, register_number, name, total_marks, community, list_section) values
+  ('287-2025-826-2026-ss-ii', 2, '8', 'AMRITHA P', 54.0, NULL, 'main'),
+  ('287-2025-826-2026-ss-ii', 3, '6', 'NEENA', 52.0, NULL, 'main'),
+  ('287-2025-826-2026-ss-ii', 4, '3', 'SHANIBA K H', 44.67, NULL, 'main'),
+  ('287-2025-826-2026-ss-ii', 5, '4', 'ANANTHU KRISHNAN', 35.33, NULL, 'main'),
+  ('287-2025-826-2026-ss-ii', 6, '2', 'SHAJITHA K M', 33.33, NULL, 'main'),
+  ('776-2025-823-2026-doj', 1, '1053608', 'SOJIMON VARGHESE', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 2, '1054741', 'HAREESH K S', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 3, '1053915', 'ROYSON SIMENDI', NULL, 'AI', 'main'),
+  ('776-2025-823-2026-doj', 4, '1055632', 'SUDHEESH K P', NULL, 'V-VILKURUP', 'main'),
+  ('776-2025-823-2026-doj', 5, '1052778', 'ANANDHU MOHANAN M', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 6, '1054754', 'NIKHIL K V', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 7, '1054515', 'NIVYA P S', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 8, '1056731', 'ATHUL K K', NULL, 'THIYYA', 'main'),
+  ('776-2025-823-2026-doj', 9, '1053662', 'ASHMITHA HABEEB', NULL, 'M-MUSLIM', 'main'),
+  ('776-2025-823-2026-doj', 10, '1051894', 'VISHNU CHANDRAN', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 11, '1051529', 'ANJU CHANDRAN', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 12, '1055895', 'HARSHAQ P T', NULL, 'M-MAPPILA', 'main'),
+  ('776-2025-823-2026-doj', 13, '1050618', 'AJIN P WILFRED', NULL, 'LC', 'main'),
+  ('776-2025-823-2026-doj', 14, '1054330', 'KIRAN KUMAR N L', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 15, '1052926', 'AKHIL SHAJI', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 16, '1053936', 'JEENU STEPHEN', NULL, 'EWS', 'main'),
+  ('776-2025-823-2026-doj', 17, '1056624', 'SHYNU K', NULL, 'THIYYA', 'main'),
+  ('776-2025-823-2026-doj', 18, '1053566', 'VYSAKHAN T N', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 19, '1051335', 'HARIKRISHNAN K', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 20, '1051039', 'ABHIJITH R', NULL, 'OBC-NADAR', 'main'),
+  ('776-2025-823-2026-doj', 21, '1053392', 'HARI SOMAN', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 22, '1053705', 'CHITHIRA JOHNY', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 23, '1053527', 'PHILIP SHIBU', NULL, 'EWS', 'main'),
+  ('776-2025-823-2026-doj', 24, '1053670', 'THAHIRA T A', NULL, 'M-MUSLIM', 'main'),
+  ('776-2025-823-2026-doj', 25, '1053367', 'ANOOP P U', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 26, '1054312', 'CRISWIN SKARIA', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 27, '1052712', 'MUHAMMED HAZAM K H', NULL, 'M-MUSLIM', 'main'),
+  ('776-2025-823-2026-doj', 28, '1055000', 'KULMOHAMMED S', NULL, 'M-MUSLIM', 'main'),
+  ('776-2025-823-2026-doj', 29, '1051526', 'ANU MARY WILLIAM', NULL, 'LC', 'main'),
+  ('776-2025-823-2026-doj', 30, '1053533', 'SARANYA', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 31, '1050662', 'ABIN RAJ S', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 32, '1053630', 'ANIL MOHAN', NULL, 'V-VISWAKARMA', 'main'),
+  ('776-2025-823-2026-doj', 33, '1053726', 'SMITHA A G', NULL, 'EZHAVA', 'main'),
+  ('776-2025-823-2026-doj', 34, '1050250', 'SILPA S R', NULL, NULL, 'main'),
+  ('776-2025-823-2026-doj', 1, '1055234', 'ROHITH R', NULL, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 2, '1050213', 'RAKESH R S', NULL, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 3, '1054454', 'JYOTHIR KRISHNA V U', NULL, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 4, '1054325', 'KARISHMA K K', NULL, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 5, '1057316', 'ARDRA K', NULL, 'THIYYA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 6, '1051460', 'KALAJI L K', NULL, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 7, '1054817', 'JEEVA R', NULL, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 8, '1054644', 'ARUN P D', NULL, 'EZHAVA', 'supplementary:Ezhava/Thiyya/Billava'),
+  ('776-2025-823-2026-doj', 1, '1053404', 'SANGEETHA K', NULL, 'SC-PALLAN', 'supplementary:Scheduled Caste'),
+  ('776-2025-823-2026-doj', 2, '1054665', 'NITHIN KRISHNA K S', NULL, 'SC-PADANNA', 'supplementary:Scheduled Caste'),
+  ('776-2025-823-2026-doj', 3, '1051603', 'SREEJA B', NULL, 'SC-THANDAN', 'supplementary:Scheduled Caste'),
+  ('776-2025-823-2026-doj', 4, '1054773', 'RAHUL K R', NULL, 'SC-VETTUVAN', 'supplementary:Scheduled Caste'),
+  ('776-2025-823-2026-doj', 5, '1052206', 'SARATH S', NULL, 'SC-KURAVA', 'supplementary:Scheduled Caste'),
+  ('776-2025-823-2026-doj', 1, '1053356', 'ARUN K K', NULL, 'ST-URALY', 'supplementary:Scheduled Tribe'),
+  ('776-2025-823-2026-doj', 2, '1053501', 'JIJINLAL C R', NULL, 'ST-MALA', 'supplementary:Scheduled Tribe'),
+  ('776-2025-823-2026-doj', 3, '1052925', 'DEEFULJITH', NULL, 'ST-MALA', 'supplementary:Scheduled Tribe'),
+  ('776-2025-823-2026-doj', 4, '1053473', 'SACHU S', NULL, 'ST-MALA', 'supplementary:Scheduled Tribe'),
+  ('776-2025-823-2026-doj', 5, '1053555', 'WESLY M JOHNSON', NULL, 'ST-MALA', 'supplementary:Scheduled Tribe'),
+  ('776-2025-823-2026-doj', 1, '1053839', 'ANCY A M', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 2, '1053732', 'THAJUN NISHA T M', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 3, '1054991', 'RAMSEENA A', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 4, '1053737', 'SABINSHA HASSAN', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 5, '1051499', 'SHAMNA N', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 6, '1053889', 'MIRZA T YOOSAPH', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 7, '1053112', 'SHANU SALIM', NULL, 'M-MUSLIM', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 1, '1050867', 'JIJO JUSTIN', NULL, 'LC', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 2, '1050263', 'FRANCIS STEPHEN', NULL, 'LC', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 3, '1053856', 'JOHN ANTONY P J', NULL, 'LC', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 4, '1053848', 'RAHUL XAVIER SABU', NULL, 'LC', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 5, '1053617', 'JIBIN JOY', NULL, 'LC', 'supplementary:Muslim'),
+  ('776-2025-823-2026-doj', 1, '1056364', 'ANUVIND M S', NULL, 'OBC-SALIYAS', 'supplementary:OBC'),
+  ('776-2025-823-2026-doj', 2, '1055193', 'SREEJITH S', NULL, 'OBC-', 'supplementary:OBC'),
+  ('776-2025-823-2026-doj', 3, '1054352', 'ANJU KUNJAPPAN', NULL, 'OBC-', 'supplementary:OBC'),
+  ('776-2025-823-2026-doj', 4, '1053289', 'NIDHEESHKUMAR D', NULL, 'OBC-', 'supplementary:OBC'),
+  ('776-2025-823-2026-doj', 5, '1051109', 'ARUN N', NULL, 'OBC-NADAR', 'supplementary:OBC'),
+  ('776-2025-823-2026-doj', 1, '1050654', 'VISHNU V S', NULL, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('776-2025-823-2026-doj', 2, '1055875', 'MUKESH A', NULL, 'V-THATTAN', 'supplementary:Viswakarma'),
+  ('776-2025-823-2026-doj', 3, '1053535', 'ANANDU', NULL, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('776-2025-823-2026-doj', 4, '1051426', 'SOUMYA S', NULL, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('776-2025-823-2026-doj', 5, '1053462', 'ASHALAKSHMI PRABHA', NULL, 'V-VISWAKARMA', 'supplementary:Viswakarma'),
+  ('776-2025-823-2026-doj', 1, '1051387', 'VIPIN W', NULL, NULL, 'supplementary:SIUC Nadar'),
+  ('776-2025-823-2026-doj', 2, '1050179', 'SHEEJA JOHN J L', NULL, NULL, 'supplementary:SIUC Nadar'),
+  ('776-2025-823-2026-doj', 3, '1050894', 'JIJO CHRISTIN C', NULL, NULL, 'supplementary:SIUC Nadar'),
+  ('776-2025-823-2026-doj', 4, '1050933', 'SABIN S S', NULL, NULL, 'supplementary:SIUC Nadar'),
+  ('776-2025-823-2026-doj', 5, '1051287', 'SAJAN S S', NULL, NULL, 'supplementary:SIUC Nadar'),
+  ('776-2025-823-2026-doj', 1, '1053389', 'RAMESHKUMAR A', NULL, 'SCCC-PARAYAN', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('776-2025-823-2026-doj', 2, '1052166', 'SHERIN THOMAS', NULL, 'SCCC-', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('776-2025-823-2026-doj', 3, '1053461', 'BIVIN BABU', NULL, 'SCCC-', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('776-2025-823-2026-doj', 4, '1053587', 'PRAVEEN R', NULL, 'SCCC-PALLAN', 'supplementary:Scheduled Caste Converts to Christianity'),
+  ('776-2025-823-2026-doj', 1, '1054113', 'VAISAKH S', NULL, 'D-ARAYAN', 'supplementary:Dheevara'),
+  ('776-2025-823-2026-doj', 2, '1053716', 'GOURY JAYARAJ', NULL, 'D-DHEEVARA', 'supplementary:Dheevara'),
+  ('776-2025-823-2026-doj', 3, '1052566', 'AMAL PRAKASH P P', NULL, 'D-DHEEVARA', 'supplementary:Dheevara'),
+  ('776-2025-823-2026-doj', 4, '1052433', 'ABHISHEK SURESH', NULL, 'D-ARAYAN', 'supplementary:Dheevara'),
+  ('776-2025-823-2026-doj', 5, '1052743', 'SHIDHIL N S', NULL, 'D-DHEEVARA', 'supplementary:Dheevara'),
+  ('776-2025-823-2026-doj', 1, '1051360', 'VIPINKUMAR V S', NULL, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 2, '1050215', 'MAYA C', NULL, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 3, '1053250', 'GANESHAN S', NULL, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 4, '1050312', 'AKSHAY S R', NULL, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 5, '1050878', 'PRAJEESH P A', NULL, 'HINDU', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 1, '1053761', 'STEPHY MATHEW', NULL, 'EWS', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 2, '1051356', 'VISHNU R G', NULL, 'EWS', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 3, '1050893', 'ANIL KUMAR G K', NULL, 'EWS', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 4, '1053642', 'ALGIN GEORGE', NULL, 'EWS', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 5, '1053682', 'ARUN JOY', NULL, 'EWS', 'supplementary:Hindu Nadar'),
+  ('776-2025-823-2026-doj', 1, '1053336', 'SONY MON JOSEPH', NULL, 'DA-LD/CP', 'supplementary:Hindu Nadar'),
+  ('389-2025-828-2026-ss-iv', 1, '3', 'PRETHEUSH JOSE', 52.0, 'SCCC-', 'main'),
+  ('389-2025-828-2026-ss-iv', 2, '1', 'JESRIN HERMITHA', 51.33, 'SCCC-SAMBAVAR', 'main'),
+  ('389-2025-828-2026-ss-iv', 3, '2', 'ANGEL R MATHEW', 48.67, 'SCCC-', 'main'),
+  ('389-2025-828-2026-ss-iv', 4, '5', 'SNEHA MATHEW', 44.67, 'SCCC-SAMBAVA', 'main')
   on conflict (ranked_list_id, list_section, rank) do nothing;
 
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '316-2025-816-2026-roq', 2026, 'ALL', NULL, 8, 8) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
@@ -11091,5 +11205,21 @@ insert into cutoffs (category_number, post, ranked_list_id, list_year, community
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('411/2025', 'LAST GRADE SERVANTS (EX-SERVICEMEN ONLY)(Ist NCA for : SCCC SCHEDULED CASTE CONVERTS TO CHRISTIANITY )', '411-2025-815-2026-dor', 2026, 'SCCC-KURAVA', NULL, 1, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('410/2025', 'LAST GRADE SERVANTS (EX-SERVICEMEN ONLY)(Ist NCA for : HINDU NADAR )', '410-2025-814-2026-dor', 2026, 'ALL', NULL, 4, 4) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('410/2025', 'LAST GRADE SERVANTS (EX-SERVICEMEN ONLY)(Ist NCA for : HINDU NADAR )', '410-2025-814-2026-dor', 2026, 'HINDU', NULL, 4, 4) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('287/2025', 'HIGH SCHOOL TEACHER (ENGLISH) (Recruitment By Transfer)', '287-2025-826-2026-ss-ii', 2026, 'ALL', 33.33, 6, 6) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'ALL', NULL, 34, 34) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'AI', NULL, 3, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'EWS', NULL, 23, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'EZHAVA', NULL, 33, 13) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'LC', NULL, 29, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'M-MAPPILA', NULL, 12, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'M-MUSLIM', NULL, 28, 4) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'OBC-NADAR', NULL, 20, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'THIYYA', NULL, 17, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'V-VILKURUP', NULL, 4, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('776/2025', 'LINEMAN', '776-2025-823-2026-doj', 2026, 'V-VISWAKARMA', NULL, 32, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'ALL', 44.67, 4, 4) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-', 48.67, 3, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-SAMBAVA', 44.67, 4, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-SAMBAVAR', 51.33, 2, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 
 select (select count(*) from ranked_lists) as ranked_lists, (select count(*) from ranked_list_entries) as entries, (select count(*) from cutoffs) as cutoffs;
