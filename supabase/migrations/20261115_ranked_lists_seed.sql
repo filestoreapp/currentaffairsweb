@@ -1,7 +1,7 @@
 -- 2026-11-15: Ranked-list seed data (generated — do not hand-edit).
 -- Run AFTER 20261115_ranked_lists.sql in the Supabase SQL Editor.
--- Source: 195 official PSC ranked-list PDFs, 9608 entries, 1373 cut-offs.
--- Generated: 2026-11-21T01:20:46.501033+00:00
+-- Source: 196 official PSC ranked-list PDFs, 9627 entries, 1377 cut-offs.
+-- Generated: 2026-11-22T01:21:20.099602+00:00
 
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('316-2025-816-2026-roq', '316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '816/2026/ROQ', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RankList316202500_20261113.pdf', 8, 8, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('720-2024-818-2026-ss-iv', '720/2024', 'LECTURER IN ELECTRONICS ENGINEERING (GOVT. POLYTECHNIC COLLEGES) (Cat No.720/2024)', '818/2026/SS IV', '2026-11-12', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_720_2024_LectElectronicsEngg_Poly_TED.pdf', 142, 55, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
@@ -198,6 +198,7 @@ insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('287-2025-826-2026-ss-ii', '287/2025', 'HIGH SCHOOL TEACHER (ENGLISH) (Recruitment By Transfer)', '826/2026/SS II', '2026-11-19', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/ranklist2872025_with_mark.pdf', 6, 6, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('776-2025-823-2026-doj', '776/2025', 'LINEMAN', '823/2026/DOJ', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/LINEMAN.pdf', 99, 34, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('389-2025-828-2026-ss-iv', '389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '828/2026/SS IV', '2026-11-01', 'https://www.keralapsc.gov.in/sites/default/files/2026-11/RL_389_2025_AgriOfficer_2ndNCA_SCCC.pdf', 4, 4, true) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
+insert into ranked_lists (id, category_number, post, list_no, published_on, pdf_url, entry_count, main_count, has_marks) values ('835-2025-702-2026-ssiii', '835/2025', 'HIGH SCHOOL TEACHER (MATHEMATICS) MALAYALAM MEDIUM (FOURTH NCA - SCHEDULED TRIBE) (Cat.No.835/2025)', '702/2026/SSIII', '2026-10-06', 'https://www.keralapsc.gov.in/sites/default/files/2026-10/8352025_14_0_0.pdf', 19, 3, false) on conflict (id) do update set entry_count = excluded.entry_count, main_count = excluded.main_count, has_marks = excluded.has_marks, parsed_at = now();
 
 insert into ranked_list_entries (ranked_list_id, rank, register_number, name, total_marks, community, list_section) values
   ('316-2025-816-2026-roq', 1, '1089261', 'MARY VINEETHA SHAJU', NULL, 'LC', 'main'),
@@ -9845,7 +9846,26 @@ insert into ranked_list_entries (ranked_list_id, rank, register_number, name, to
   ('389-2025-828-2026-ss-iv', 1, '3', 'PRETHEUSH JOSE', 52.0, 'SCCC-', 'main'),
   ('389-2025-828-2026-ss-iv', 2, '1', 'JESRIN HERMITHA', 51.33, 'SCCC-SAMBAVAR', 'main'),
   ('389-2025-828-2026-ss-iv', 3, '2', 'ANGEL R MATHEW', 48.67, 'SCCC-', 'main'),
-  ('389-2025-828-2026-ss-iv', 4, '5', 'SNEHA MATHEW', 44.67, 'SCCC-SAMBAVA', 'main')
+  ('389-2025-828-2026-ss-iv', 4, '5', 'SNEHA MATHEW', 44.67, 'SCCC-SAMBAVA', 'main'),
+  ('835-2025-702-2026-ssiii', 1, '20', 'NIKHILA P', NULL, 'ST-MAVILAN', 'main'),
+  ('835-2025-702-2026-ssiii', 2, '7', 'ARUNDHATHI RAMAN', NULL, 'ST-KURUMANS', 'main'),
+  ('835-2025-702-2026-ssiii', 3, '1', 'PANALI R', NULL, 'ST-IRULAR', 'main'),
+  ('835-2025-702-2026-ssiii', 1, '14', 'SUDHI SUDARSANAN', NULL, 'SC-PULAYA', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 2, '17', 'ABHIJITH B', NULL, 'SC-PULAYA', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 3, '6', 'AKSHAYA P S', NULL, 'SC-PANAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 4, '4', 'DRISYA DIVAKARAN', NULL, 'SC-KURAVAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 5, '22', 'AMRITHA B', NULL, 'SC-THACHAR', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 6, '18', 'MAYA DEVI P T', NULL, 'SC-PANAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 7, '25', 'NIYATHI S ANAND', NULL, 'SC-VETAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 8, '8', 'KRISHNA VENI T G', NULL, 'SC-VETTUVAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 9, '19', 'SUBEESH O', NULL, 'SC-KANAKKAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 10, '23', 'AMRUTHA C', NULL, 'SC-CHERUMAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 11, '26', 'AMRUTHA P R', NULL, 'SC-PERUMANNAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 12, '2', 'SABITHA P K', NULL, 'SC-PULAYA', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 13, '13', 'ANEESH P', NULL, 'SC-KURAVA', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 14, '9', 'INDHU K', NULL, 'SC-PALLAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 15, '16', 'NITHIN JISHNU E', NULL, 'SC-PULAYAN', 'supplementary:Scheduled Caste'),
+  ('835-2025-702-2026-ssiii', 16, '12', 'VINAYA SURENDRAN', NULL, 'SC-PULAYA', 'supplementary:Scheduled Caste')
   on conflict (ranked_list_id, list_section, rank) do nothing;
 
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('316/2025', 'FEMALE ASSISTANT PRISON OFFICER(I NCA for LATIN CATHOLIC / ANGLO INDIAN )', '316-2025-816-2026-roq', 2026, 'ALL', NULL, 8, 8) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
@@ -11221,5 +11241,9 @@ insert into cutoffs (category_number, post, ranked_list_id, list_year, community
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-', 48.67, 3, 2) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-SAMBAVA', 44.67, 4, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('389/2025', 'AGRICULTURAL OFFICER (IInd NCA - SCCC ) (Cat. No. 389/2025)', '389-2025-828-2026-ss-iv', 2026, 'SCCC-SAMBAVAR', 51.33, 2, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('835/2025', 'HIGH SCHOOL TEACHER (MATHEMATICS) MALAYALAM MEDIUM (FOURTH NCA - SCHEDULED TRIBE) (Cat.No.835/2025)', '835-2025-702-2026-ssiii', 2026, 'ALL', NULL, 3, 3) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('835/2025', 'HIGH SCHOOL TEACHER (MATHEMATICS) MALAYALAM MEDIUM (FOURTH NCA - SCHEDULED TRIBE) (Cat.No.835/2025)', '835-2025-702-2026-ssiii', 2026, 'ST-IRULAR', NULL, 3, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('835/2025', 'HIGH SCHOOL TEACHER (MATHEMATICS) MALAYALAM MEDIUM (FOURTH NCA - SCHEDULED TRIBE) (Cat.No.835/2025)', '835-2025-702-2026-ssiii', 2026, 'ST-KURUMANS', NULL, 2, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
+insert into cutoffs (category_number, post, ranked_list_id, list_year, community, cutoff_marks, cutoff_rank, main_count) values ('835/2025', 'HIGH SCHOOL TEACHER (MATHEMATICS) MALAYALAM MEDIUM (FOURTH NCA - SCHEDULED TRIBE) (Cat.No.835/2025)', '835-2025-702-2026-ssiii', 2026, 'ST-MAVILAN', NULL, 1, 1) on conflict (ranked_list_id, community) do update set cutoff_marks = excluded.cutoff_marks, cutoff_rank = excluded.cutoff_rank, main_count = excluded.main_count;
 
 select (select count(*) from ranked_lists) as ranked_lists, (select count(*) from ranked_list_entries) as entries, (select count(*) from cutoffs) as cutoffs;
