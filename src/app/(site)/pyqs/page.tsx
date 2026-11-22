@@ -1,14 +1,18 @@
 import Link from "next/link";
 import PyqDirectory from "@/components/site/PyqDirectory";
+import HubFaq from "@/components/site/HubFaq";
 import { breadcrumbJsonLd } from "@/lib/seo";
 import pyqPapers from "@/data/pyq-directory.json";
 import { ChevronRight, ScrollText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: { absolute: "Kerala PSC PYQ Papers 2014–2026 — Download PDFs" },
+  title: {
+    absolute:
+      "Kerala PSC Previous Year Question Papers — PYQ PDFs 2014–2026 | മുൻവർഷ ചോദ്യപേപ്പറുകൾ",
+  },
   description:
-    "Kerala PSC previous year question papers 2014–2026 — 1,442 papers with post name, category number and exam date. Download PDFs or the official PSC paper.",
+    "Kerala PSC previous year question papers 2014–2026 — 1,447 papers listed with post name, category number and exam date, and 1,252 papers ready to download as PDFs. Search by post, paper code or category number.",
   alternates: { canonical: "https://www.psccurrentaffairs.online/pyqs" },
 };
 
@@ -57,7 +61,10 @@ export default function PyqsDirectoryPage() {
         </span>
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-            കേരള പിഎസ്‌സി മുൻവർഷ ചോദ്യപേപ്പറുകൾ
+            Kerala PSC Previous Year Question Papers
+            <span className="mt-1 block text-xl text-slate-600 sm:text-2xl">
+              കേരള പിഎസ്‌സി മുൻവർഷ ചോദ്യപേപ്പറുകൾ
+            </span>
           </h1>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
             2014 മുതൽ 2026 വരെയുള്ള {pyqPapers.length} കേരള പിഎസ്‌സി
@@ -66,6 +73,14 @@ export default function PyqsDirectoryPage() {
             {pyqPapers.filter((p) => p.b2_key).length} പേപ്പറുകളുടെ PDF ഇവിടെ
             നിന്ന് നേരിട്ട് ഡൗൺലോഡ് ചെയ്യാം; മറ്റുള്ളവ ഔദ്യോഗിക സൈറ്റിൽ നിന്ന്.
             2017–2019 വർഷങ്ങളിലെ പേപ്പറുകൾ ഔദ്യോഗിക ആർക്കൈവിൽ ലഭ്യമല്ല.
+          </p>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
+            This directory lists 1,447 Kerala PSC previous year question
+            papers from 2014 to 2026, and 1,252 of them can be downloaded
+            here as PDFs; the rest link to the official PSC website. Solving
+            previous year papers is the surest way to learn the question
+            pattern, the repeated topics and the difficulty level of your
+            exam before you sit for it.
           </p>
         </div>
       </div>
@@ -96,6 +111,31 @@ export default function PyqsDirectoryPage() {
           സിലബസ് ട്രാക്കർ
         </Link>
       </div>
+
+      <HubFaq
+        faqs={[
+          {
+            q: "Where can I download Kerala PSC previous year question papers?",
+            a: "Right here. This directory lists 1,447 Kerala PSC previous year question papers from 2014 to 2026, and 1,252 of them can be downloaded directly as PDFs. For the remaining papers, each entry links to the official PSC website.",
+          },
+          {
+            q: "Are the previous year question papers free?",
+            a: "Yes. Browsing the directory and downloading the question paper PDFs is completely free — no login or payment is needed.",
+          },
+          {
+            q: "How do I find the question paper for a specific post?",
+            a: "Use the search on this page to look up a paper by post name, paper code or Kerala PSC category number. Each entry also shows the exam date, so you can pick the most recent papers for your post.",
+          },
+          {
+            q: "Which years are covered in the PYQ directory?",
+            a: "Papers from 2014 to 2026 are listed. Papers from 2017–2019 are not available in the official PSC archive, so a few of those years have gaps.",
+          },
+          {
+            q: "മുൻവർഷ ചോദ്യപേപ്പറുകൾ എങ്ങനെ പഠനത്തിന് ഉപയോഗിക്കാം? (How should I practise with previous year papers?)",
+            a: "ആദ്യം സിലബസ് പൂർത്തിയാക്കി, പിന്നീട് സമയം നിശ്ചയിച്ച് പേപ്പറുകൾ എഴുതി പരിശീലിക്കുക. Start by solving the latest papers under timed conditions, note the topics that repeat across years, and then revise those topics first — repeated questions are common in Kerala PSC exams.",
+          },
+        ]}
+      />
     </div>
   );
 }

@@ -7,12 +7,16 @@ import {
 } from "@/lib/quizzes";
 import { ClipboardList, Clock, Trophy, Users, Medal, Flame } from "lucide-react";
 import GameProgressCard from "@/components/site/GameProgressCard";
+import HubFaq from "@/components/site/HubFaq";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Kerala PSC Mock Tests 2026",
+  title: {
+    absolute:
+      "Kerala PSC Mock Test — Free Online Mock Tests 2026 | കേരള പിഎസ്‌സി മോക്ക് ടെസ്റ്റ്",
+  },
   description:
-    "Free Kerala PSC mock tests 2026 for LDC, LGS, University Assistant, Police Constable and more — 100-mark papers, 75-minute timer, −0.33 negative marking and live leaderboards. No login needed.",
+    "Kerala PSC mock test practice for free — full-length mock tests for LDC, LGS, University Assistant and Police Constable with a 75-minute timer, −0.33 negative marking and live leaderboards, plus 438 quizzes and 7,512 practice questions. No login needed.",
   alternates: {
     canonical: "https://www.psccurrentaffairs.online/mock-tests",
   },
@@ -42,12 +46,20 @@ export default async function MockTestsPage() {
           ),
         }}
       />
-      <h1 className="text-3xl font-extrabold tracking-tight">Free Kerala PSC Mock Tests</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Mock Test — സൗജന്യ മോക്ക് ടെസ്റ്റുകൾ</h1>
       <p className="mt-2 max-w-2xl text-slate-500">
         Full-length Kerala PSC mock tests for LDC, LGS, University Assistant
         and Police Constable — exam-style timer, negative marking, and a live
         leaderboard. Free forever, no login needed. Enter your name, take the
         test, and see where you rank.
+      </p>
+      <p className="mt-3 max-w-2xl text-slate-500">
+        Every Kerala PSC mock test here follows the real exam pattern, so you
+        practise with the same pressure you will face in the hall. The mock
+        tests are part of a larger practice bank on this site — 438 quizzes
+        and 7,512 questions in total — and new tests are added regularly. ഒരു
+        പരീക്ഷയ്ക്ക് മുമ്പ് മോക്ക് ടെസ്റ്റ് എഴുതി പരിശീലിക്കുന്നത് സമയ
+        മാനേജ്‌മെന്റും ആത്മവിശ്വാസവും വർദ്ധിപ്പിക്കും.
       </p>
 
       {mocks.length === 0 ? (
@@ -165,6 +177,31 @@ export default async function MockTestsPage() {
       <div className="mt-8">
         <GameProgressCard />
       </div>
+
+      <HubFaq
+        faqs={[
+          {
+            q: "Are these Kerala PSC mock tests really free?",
+            a: "Yes. Every Kerala PSC mock test on this page is completely free — no login, no payment and no sign-up. Just enter your name, start the test and check your score and rank on the leaderboard.",
+          },
+          {
+            q: "Do the mock tests follow the real Kerala PSC exam pattern?",
+            a: "Yes. The mock tests mirror the actual exam format — a 100-mark paper with a 75-minute timer and −0.33 negative marking for wrong answers, so your practice score is a realistic estimate of your exam readiness.",
+          },
+          {
+            q: "Which exams do the Kerala PSC mock tests cover?",
+            a: "Mock tests are available for popular exams such as LDC, LGS, University Assistant and Police Constable, and the collection keeps growing. For shorter practice, the site also has 438 quizzes with 7,512 questions across topics.",
+          },
+          {
+            q: "മോക്ക് ടെസ്റ്റുകൾ മലയാളത്തിൽ ലഭ്യമാണോ? (Are the mock tests available in Malayalam?)",
+            a: "അതെ, മിക്ക മോക്ക് ടെസ്റ്റുകളും മലയാളത്തിലാണ് തയ്യാറാക്കിയിരിക്കുന്നത്. Yes — the mock tests are prepared for Malayalam-medium aspirants, matching the language style of Kerala PSC exams.",
+          },
+          {
+            q: "How does the mock test leaderboard work?",
+            a: "The overall leaderboard ranks you by your average best score across all the mock tests you attempt, and daily streaks reward you for practising every day. Consistency across tests matters more than one lucky score.",
+          },
+        ]}
+      />
     </div>
   );
 }

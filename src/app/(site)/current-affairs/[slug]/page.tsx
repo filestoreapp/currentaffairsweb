@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import PostViewTracker from "@/components/site/PostViewTracker";
 import ShareButtons from "@/components/site/ShareButtons";
 import PostCard from "@/components/site/PostCard";
-import { ClipboardList, Clock, ChevronRight, Tag } from "lucide-react";
+import { ClipboardList, Clock, ChevronRight, Tag, HelpCircle, ScrollText, Newspaper } from "lucide-react";
 import { postPublicPath } from "@/lib/series-paths";
 import { postSearchTitle } from "@/lib/seo";
 
@@ -377,6 +377,61 @@ export default async function PostPage({
             />
           </Link>
         )}
+
+        <nav
+          aria-label="Explore"
+          className="mt-10 rounded-2xl border border-slate-200 bg-white p-5"
+        >
+          <p className="text-sm font-extrabold uppercase tracking-wide text-slate-900">
+            Explore — കൂടുതൽ പഠന സാമഗ്രികൾ
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {[
+              {
+                href: "/mock-tests",
+                icon: ClipboardList,
+                title: "Kerala PSC Mock Tests",
+                sub: "സൗജന്യ മോക്ക് ടെസ്റ്റുകൾ പരിശീലിക്കാം",
+              },
+              {
+                href: "/quiz",
+                icon: HelpCircle,
+                title: "Kerala PSC Quiz",
+                sub: "ദൈനംദിന ക്വിസ് പരിശീലനം",
+              },
+              {
+                href: "/pyqs",
+                icon: ScrollText,
+                title: "Kerala PSC Previous Year Papers",
+                sub: "മുൻവർഷ ചോദ്യപേപ്പറുകൾ ഡൗൺലോഡ് ചെയ്യാം",
+              },
+              {
+                href: "/current-affairs",
+                icon: Newspaper,
+                title: "Kerala PSC Current Affairs Malayalam",
+                sub: "ദൈനംദിന കറന്റ് അഫയേഴ്‌സ്",
+              },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300 hover:shadow-md"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                  <item.icon size={18} />
+                </span>
+                <span>
+                  <span className="block font-semibold text-slate-800 group-hover:text-indigo-700">
+                    {item.title}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    {item.sub}
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </nav>
       </article>
 
       {relatedPosts.length > 0 && (

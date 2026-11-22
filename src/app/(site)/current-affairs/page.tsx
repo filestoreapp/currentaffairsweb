@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import { getPublishedPosts } from "@/lib/posts";
 import CurrentAffairsList from "@/components/site/CurrentAffairsList";
+import HubFaq from "@/components/site/HubFaq";
 import type { Metadata } from "next";
 
-const LISTING_TITLE = "Daily Kerala PSC Current Affairs in Malayalam";
+const LISTING_TITLE =
+  "Kerala PSC Current Affairs Malayalam — Daily Current Affairs in Malayalam";
 const LISTING_DESCRIPTION =
-  "Daily Kerala PSC current affairs in Malayalam — exam-oriented facts, quick-revision tables and quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.";
+  "Kerala PSC current affairs Malayalam — daily current affairs in Malayalam with exam-oriented facts, quick-revision tables and free quizzes for LDC, LGS, University Assistant and all Kerala PSC exams. Updated every day, free.";
 const PER_PAGE = 12;
 
 // Paginated listings canonical to their own clean URL (page 1 has no
@@ -68,16 +70,49 @@ export default async function CurrentAffairsPage({
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Daily Kerala PSC Current Affairs</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Kerala PSC Current Affairs Malayalam — ദൈനംദിന കറന്റ് അഫയേഴ്‌സ്</h1>
       <p className="mt-2 text-slate-500">
         {count} articles published — daily current affairs in Malayalam for
         Kerala PSC exams, with exam-oriented facts, quick-revision tables and
         free quizzes.
       </p>
+      <p className="mt-3 max-w-2xl text-slate-500">
+        If you are searching for Kerala PSC current affairs in Malayalam,
+        this is the page to bookmark: a fresh Malayalam current affairs
+        digest is published here every morning, covering the Kerala, India
+        and world news that PSC examiners actually ask about. ഓരോ ദിവസത്തെയും
+        പ്രധാന വാർത്തകൾ പരീക്ഷാ കേന്ദ്രീകൃതമായി ചുരുക്കി നൽകുന്നു — കൂടെ
+        സൗജന്യ ക്വിസും.
+      </p>
 
       <Suspense fallback={<ListSkeleton />}>
         <CurrentAffairsList searchParams={searchParams} />
       </Suspense>
+
+      <HubFaq
+        faqs={[
+          {
+            q: "Where can I read Kerala PSC current affairs in Malayalam?",
+            a: "Right here. This page carries Kerala PSC current affairs in Malayalam, written for exam aspirants — the day's important news explained with the facts, names, dates and figures that PSC questions are made from.",
+          },
+          {
+            q: "How often is the current affairs page updated?",
+            a: "Every day. A new Malayalam current affairs digest is published each morning, and topic articles on awards, appointments, sports, science and Kerala news are added through the week.",
+          },
+          {
+            q: "Is there a quiz with the daily current affairs?",
+            a: "Yes. The daily current affairs digest comes with a free quiz, so you can test the same day's news immediately and check the answers with explanations.",
+          },
+          {
+            q: "Which exams does this current affairs coverage help with?",
+            a: "The digests are useful for all Kerala PSC exams with a current affairs component — LDC, LGS, University Assistant, Secretariat Assistant, Police Constable and degree-level exams.",
+          },
+          {
+            q: "കറന്റ് അഫയേഴ്‌സ് വായിക്കാൻ പണം നൽകേണ്ടതുണ്ടോ? (Is the current affairs content free?)",
+            a: "ഇല്ല, എല്ലാം സൗജന്യമാണ്. No — every article and quiz here is free to read, with no login or subscription needed.",
+          },
+        ]}
+      />
     </div>
   );
 }
