@@ -7,6 +7,7 @@ import { getPublishedPscCategories } from "@/lib/psc-categories";
 import { postPublicPath } from "@/lib/series-paths";
 import { STUDY_TOPICS_WITH_CONTENT } from "@/data/study-notes";
 import { getCategories, getRankedLists } from "@/lib/ranked-lists";
+import type { RankedListMeta } from "@/lib/ranked-lists";
 import { categorySlug } from "@/lib/rank-cutoffs";
 
 
@@ -38,9 +39,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Ranked-list pages come from the bundled seed index (no DB dependency).
+  // Both calls read the seed, so guard them together: a seed failure
+  // degrades to a sitemap without ranked-list entries instead of a 500.
   let rankedCategories: { category: string }[] = [];
+  let rankedLists: RankedListMeta[] = [];
   try {
     rankedCategories = getCategories();
+    rankedLists = getRankedLists();
   } catch (err) {
     console.error("sitemap: failed to load ranked-list seed", err);
   }
@@ -56,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
     })),
     // One page per ranked list (auto-generated from the same seed).
-    ...getRankedLists()
+    ...rankedLists
       .filter((l) => l.category)
       .map((l) => ({
         url: `${siteUrl}/ranked-lists/${categorySlug(l.category as string)}/${l.id}`,

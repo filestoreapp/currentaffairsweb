@@ -1,5 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
+import seedData from "@/data/ranked-lists-seed.json";
 import type { CutoffRow } from "@/lib/rank-cutoffs";
 import { categoryFromSlug } from "@/lib/rank-cutoffs";
 
@@ -55,8 +54,11 @@ let cached: SeedData | null = null;
 
 export function loadSeed(): SeedData {
   if (!cached) {
-    const file = path.join(process.cwd(), "src", "data", "ranked-lists-seed.json");
-    cached = JSON.parse(fs.readFileSync(file, "utf-8")) as SeedData;
+    // Static import: the seed is bundled at build time. The previous
+    // fs.readFileSync(process.cwd(), "src", "data", ...) form broke on
+    // Cloudflare Workers, where process.cwd() doesn't resolve to the
+    // bundle directory at runtime. Behaviour is identical on Vercel.
+    cached = seedData as unknown as SeedData;
   }
   return cached;
 }
