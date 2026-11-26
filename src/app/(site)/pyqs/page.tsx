@@ -12,7 +12,7 @@ export const metadata: Metadata = {
       "Kerala PSC Previous Year Question Papers — PYQ PDFs 2014–2026 | മുൻവർഷ ചോദ്യപേപ്പറുകൾ",
   },
   description:
-    "Kerala PSC previous year question papers 2014–2026 — 1,448 papers listed with post name, category number and exam date, and 1,253 papers ready to download as PDFs. Search by post, paper code or category number.",
+    "Kerala PSC previous year question papers 2014–2026 — 1,449 papers listed with post name, category number and exam date, and 1,254 papers ready to download as PDFs. Search by post, paper code or category number.",
   alternates: { canonical: "https://www.psccurrentaffairs.online/pyqs" },
 };
 
@@ -75,8 +75,8 @@ export default function PyqsDirectoryPage() {
             2017–2019 വർഷങ്ങളിലെ പേപ്പറുകൾ ഔദ്യോഗിക ആർക്കൈവിൽ ലഭ്യമല്ല.
           </p>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
-            This directory lists 1,448 Kerala PSC previous year question
-            papers from 2014 to 2026, and 1,253 of them can be downloaded
+            This directory lists 1,449 Kerala PSC previous year question
+            papers from 2014 to 2026, and 1,254 of them can be downloaded
             here as PDFs; the rest link to the official PSC website. Solving
             previous year papers is the surest way to learn the question
             pattern, the repeated topics and the difficulty level of your
@@ -116,7 +116,7 @@ export default function PyqsDirectoryPage() {
         faqs={[
           {
             q: "Where can I download Kerala PSC previous year question papers?",
-            a: "Right here. This directory lists 1,448 Kerala PSC previous year question papers from 2014 to 2026, and 1,253 of them can be downloaded directly as PDFs. For the remaining papers, each entry links to the official PSC website.",
+            a: "Right here. This directory lists 1,449 Kerala PSC previous year question papers from 2014 to 2026, and 1,254 of them can be downloaded directly as PDFs. For the remaining papers, each entry links to the official PSC website.",
           },
           {
             q: "Are the previous year question papers free?",
